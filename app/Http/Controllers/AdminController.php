@@ -42,7 +42,7 @@ class AdminController extends Controller
         Auth::guard('admin')->login($admin);
         $request->session()->regenerate();
 
-        return redirect()->route('admin.orders.index');
+        return redirect()->route('admin.dashboard');
     }
 
     public function logout(Request $request)
@@ -75,10 +75,6 @@ class AdminController extends Controller
         $orders = $query->orderBy('created_at', 'desc')->get();
 
         return view('admin.orders.index', compact('orders'));
-    }
-    public function dashboard()
-    {
-        return view('admin.dashboard.index');
     }
 
     // --- ORDER DETAIL ---
@@ -130,5 +126,10 @@ class AdminController extends Controller
         return redirect()
             ->route('admin.orders.index')
             ->with('success', 'Đã gán Agent thành công cho đơn ' . $order->tracking_id);
+    }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard.index');
     }
 }
