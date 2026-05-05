@@ -8,20 +8,19 @@ Route::get('/', function () {
     return view('customer.landing');
 })->name('landing');
 
-//CustomerAuth Routes
+//Customer Routes
 Route::get('/register', [CustomerController::class, 'showRegister'])->name('register');
 Route::post('/register', [CustomerController::class, 'register'])->name('register.post');
 Route::get('/login', [CustomerController::class, 'showLogin'])->name('login');
 Route::post('/login', [CustomerController::class, 'login'])->name('login.post');
 Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
-//
-//CustomerBooking Routes
+
 Route::middleware(['auth:customer'])->group(function () {
     Route::get('/booking', [CustomerController::class, 'showBooking'])->name('booking');
     Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
 });
-//
-//AdminAuth Routes
+
+//Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminController::class, 'login'])->name('login.post');
@@ -34,11 +33,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
     });
 });
-
 Route::get('/admin', function () {
-    return view('admin.layout');
+    if (auth()->guard('admin')->check()) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('admin.login');
 });
 
+//Agent Routes
 use App\Http\Controllers\AgentController;
 Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function () {
     Route::get('/orders', [AgentController::class, 'index'])->name('orders.index');
