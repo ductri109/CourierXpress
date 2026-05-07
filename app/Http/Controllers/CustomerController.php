@@ -85,4 +85,20 @@ class CustomerController extends Controller
     
         return redirect()->route('landing')->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
     }
+
+    public function showAbout() {
+        return view('customer.about');
+    }
+
+    public function showContact() {
+        return view('customer.contact');
+    }
+
+    public function showTerms() {
+        return view('customer.terms');
+    }
+
+    public function showPolicy() {
+        return view('customer.policy');
+    }
 }

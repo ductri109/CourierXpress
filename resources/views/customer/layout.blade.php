@@ -99,10 +99,68 @@
                 </a>
 
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#features" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">Tính năng</a>
-                    <a href="#tracking" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">Tra cứu</a>
-                    <a href="#pricing" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">Bảng giá</a>
-                    <a href="#testimonials" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">Đánh giá</a>
+
+                    <a href="{{ route('landing') }}"
+                    class="{{ request()->routeIs('landing') 
+                            ? 'text-primary-600 font-bold' 
+                            : 'text-gray-600 hover:text-primary-600' }}
+                            font-medium transition-colors">
+                        Trang chủ
+                    </a>
+
+                    <a href="#tracking"
+                    class="text-gray-600 hover:text-primary-600 font-medium transition-colors">
+                        Tra cứu
+                    </a>
+
+                    <a href="{{ route('about') }}"
+                    class="{{ request()->routeIs('about') 
+                            ? 'text-primary-600 font-bold' 
+                            : 'text-gray-600 hover:text-primary-600' }}
+                            font-medium transition-colors">
+                        Về chúng tôi
+                    </a>
+
+                    <div class="relative group">
+                        <button class="flex items-center
+                            {{ request()->routeIs('terms') || request()->routeIs('policy')
+                                ? 'text-primary-600 font-bold'
+                                : 'text-gray-600 group-hover:text-primary-600' }}
+                            font-semibold text-sm transition-colors gap-1">
+
+                            Pháp lý
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                        </button>
+
+                        <div class="absolute hidden group-hover:block w-48 bg-white shadow-xl rounded-xl border border-gray-50 py-2 mt-0 z-50">
+
+                            <a href="{{ route('terms') }}"
+                            class="{{ request()->routeIs('terms')
+                                    ? 'bg-red-50 text-primary-600 font-bold'
+                                    : 'text-gray-600 hover:bg-red-50 hover:text-primary-600' }}
+                                    block px-4 py-2 text-xs font-medium">
+                                Điều khoản sử dụng
+                            </a>
+
+                            <a href="{{ route('policy') }}"
+                            class="{{ request()->routeIs('policy')
+                                    ? 'bg-red-50 text-primary-600 font-bold'
+                                    : 'text-gray-600 hover:bg-red-50 hover:text-primary-600' }}
+                                    block px-4 py-2 text-xs font-medium">
+                                Chính sách bảo mật
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <a href="{{ route('contact') }}"
+                    class="{{ request()->routeIs('contact')
+                            ? 'text-primary-600 font-bold'
+                            : 'text-gray-600 hover:text-primary-600' }}
+                            font-semibold text-sm transition-colors">
+                        Liên hệ
+                    </a>
+
                 </div>
 
                 <div class="hidden md:flex items-center space-x-4">
@@ -213,8 +271,8 @@
             <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-500 text-sm">© 2024 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
-                    <a href="#" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
-                    <a href="#" class="hover:text-white transition-colors">Chính sách bảo mật</a>
+                    <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
+                    <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
                 </div>
             </div>
         </div>
