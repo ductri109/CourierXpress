@@ -14,7 +14,10 @@ Route::post('/register', [CustomerController::class, 'register'])->name('registe
 Route::get('/login', [CustomerController::class, 'showLogin'])->name('login');
 Route::post('/login', [CustomerController::class, 'login'])->name('login.post');
 Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
-
+Route::get('/about', [CustomerController::class, 'showAbout'])->name('about');
+Route::get('/contact', [CustomerController::class, 'showContact'])->name('contact');
+Route::get('/terms', [CustomerController::class, 'showTerms'])->name('terms');
+Route::get('/policy', [CustomerController::class, 'showPolicy'])->name('policy');
 Route::middleware(['auth:customer'])->group(function () {
     Route::get('/booking', [CustomerController::class, 'showBooking'])->name('booking');
     Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
@@ -62,3 +65,4 @@ Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function
     Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
     Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
 });
+    
