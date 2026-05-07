@@ -132,4 +132,155 @@ class AdminController extends Controller
     {
         return view('admin.dashboard.index');
     }
+
+    public function customerOverview($id)
+    {
+        $customerId = $id;
+        return view('admin.customers.overview', compact('customerId'));
+    }
+
+    public function customerSecurity($id)
+    {
+        $customerId = $id;
+        return view('admin.customers.security', compact('customerId'));
+    }
+
+    public function customerBilling($id)
+    {
+        $customerId = $id;
+        return view('admin.customers.billing', compact('customerId'));
+    }
+
+    public function customerNotifications($id)
+    {
+        $customerId = $id;
+        return view('admin.customers.notifications', compact('customerId'));
+    }
+
+    public function fleet()
+    {
+        return view('admin.fleet.index');
+    }
+
+    public function userAccount($id = 1)
+    {
+        $userId = $id;
+        return view('admin.users.account', compact('userId'));
+    }
+
+
+    private function demoEmployees()
+    {
+        return collect([
+            [
+                'id' => 1,
+                'name' => 'Nguyễn Văn An',
+                'email' => 'an.nguyen@courierxpress.vn',
+                'phone' => '0981 234 567',
+                'role' => 'Quản trị viên',
+                'department' => 'Vận hành',
+                'status' => 'active',
+                'avatar' => '1.png',
+                'joined_at' => '12/03/2025',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Trần Minh Đức',
+                'email' => 'duc.tran@courierxpress.vn',
+                'phone' => '0972 111 222',
+                'role' => 'Nhân viên giao hàng',
+                'department' => 'Last Mile',
+                'status' => 'active',
+                'avatar' => '2.png',
+                'joined_at' => '22/04/2025',
+            ],
+            [
+                'id' => 3,
+                'name' => 'Lê Thị Mai',
+                'email' => 'mai.le@courierxpress.vn',
+                'phone' => '0963 555 888',
+                'role' => 'Nhân viên kho',
+                'department' => 'Warehouse',
+                'status' => 'pending',
+                'avatar' => '3.png',
+                'joined_at' => '01/05/2025',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Phạm Quốc Huy',
+                'email' => 'huy.pham@courierxpress.vn',
+                'phone' => '0912 789 456',
+                'role' => 'Điều phối viên',
+                'department' => 'Dispatching',
+                'status' => 'inactive',
+                'avatar' => '4.png',
+                'joined_at' => '18/01/2025',
+            ],
+        ]);
+    }
+
+    public function employeesIndex()
+    {
+        $employees = $this->demoEmployees();
+
+        if (request('keyword')) {
+            $keyword = mb_strtolower(request('keyword'));
+            $employees = $employees->filter(function ($employee) use ($keyword) {
+                return str_contains(mb_strtolower($employee['name']), $keyword)
+                    || str_contains(mb_strtolower($employee['email']), $keyword)
+                    || str_contains(mb_strtolower($employee['role']), $keyword)
+                    || str_contains(mb_strtolower($employee['department']), $keyword);
+            });
+        }
+
+        return view('admin.employees.index', compact('employees'));
+    }
+
+    public function employeeShow($id)
+    {
+        $employee = $this->demoEmployees()->firstWhere('id', (int) $id);
+
+        if (!$employee) {
+            abort(404);
+        }
+
+        return view('admin.employees.show', compact('employee'));
+    }
+
+    public function employeeStore(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:30',
+            'department' => 'required|string|max:100',
+            'role' => 'required|string|max:100',
+        ]);
+
+        return redirect()
+            ->route('admin.employees.index')
+            ->with('success', 'Đã nhận thông tin thêm nhân viên. Hiện tại đây là bản demo giao diện, chưa lưu xuống database.');
+    }
+
+    public function employeeUpdate(\Illuminate\Http\Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:30',
+            'role' => 'nullable|string|max:100',
+        ]);
+
+        return redirect()
+            ->route('admin.employees.index')
+            ->with('success', 'Đã nhận thông tin cập nhật nhân viên #' . $id . '. Hiện tại đây là bản demo giao diện, chưa lưu xuống database.');
+    }
+
+    public function employeeDestroy($id)
+    {
+        return redirect()
+            ->route('admin.employees.index')
+            ->with('success', 'Đã nhận yêu cầu xoá nhân viên #' . $id . '. Hiện tại đây là bản demo giao diện, chưa xoá trong database.');
+    }
+
 }

@@ -5,7 +5,7 @@
   class="light-style layout-navbar-fixed layout-menu-fixed layout-compact"
   dir="ltr"
   data-theme="theme-default"
-  data-assets-path="../../assets/"
+  data-assets-path="/assets/"
   data-template="vertical-menu-template-starter"
   data-style="light">
   <head>
@@ -19,7 +19,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,29 +28,29 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
       rel="stylesheet" />
 
-    <link rel="stylesheet" href="../../assets/vendor/fonts/remixicon/remixicon.css" />
-    <!-- <link rel="stylesheet" href="../../assets/vendor/fonts/flag-icons.css" /> -->
+    <link rel="stylesheet" href="/assets/vendor/fonts/remixicon/remixicon.css" />
+    <!-- <link rel="stylesheet" href="/assets/vendor/fonts/flag-icons.css" /> -->
 
     <!-- Menu waves for no-customizer fix -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="../../assets/css/demo.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <!-- Page CSS -->
 
     <!-- Helpers -->
-    <script src="../../assets/vendor/js/helpers.js"></script>
+    <script src="/assets/vendor/js/helpers.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
-    <script src="../../assets/vendor/js/template-customizer.js"></script>
+    <script src="/assets/vendor/js/template-customizer.js"></script>
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="../../assets/js/config.js"></script>
+    <script src="/assets/js/config.js"></script>
   </head>
 
   <body>
@@ -148,6 +148,56 @@
                     <div data-i18n="Page 1">Quản lý vận đơn</div>
                 </a>
             </li>
+              <li class="menu-item {{ request()->routeIs('admin.customers.*') ? 'active open' : '' }}">
+                  <a href="javascript:void(0);" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons ri-user-3-line"></i>
+                      <div>Customer Details</div>
+                  </a>
+                  <ul class="menu-sub">
+                      <li class="menu-item {{ request()->routeIs('admin.customers.overview') ? 'active' : '' }}">
+                          <a href="{{ route('admin.customers.overview', 1) }}" class="menu-link">
+                              <div>Overview</div>
+                          </a>
+                      </li>
+                      <li class="menu-item {{ request()->routeIs('admin.customers.security') ? 'active' : '' }}">
+                          <a href="{{ route('admin.customers.security', 1) }}" class="menu-link">
+                              <div>Security</div>
+                          </a>
+                      </li>
+                      <li class="menu-item {{ request()->routeIs('admin.customers.billing') ? 'active' : '' }}">
+                          <a href="{{ route('admin.customers.billing', 1) }}" class="menu-link">
+                              <div>Address & Billing</div>
+                          </a>
+                      </li>
+                      <li class="menu-item {{ request()->routeIs('admin.customers.notifications') ? 'active' : '' }}">
+                          <a href="{{ route('admin.customers.notifications', 1) }}" class="menu-link">
+                              <div>Notifications</div>
+                          </a>
+                      </li>
+                  </ul>
+              </li>
+
+              <li class="menu-item {{ request()->routeIs('admin.fleet.*') ? 'active' : '' }}">
+                  <a href="{{ route('admin.fleet.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons ri-truck-line"></i>
+                      <div>Fleet</div>
+                  </a>
+              </li>
+
+              <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                  <a href="{{ route('admin.users.account', 1) }}" class="menu-link">
+                      <i class="menu-icon tf-icons ri-account-circle-line"></i>
+                      <div>User Account</div>
+                  </a>
+              </li>
+
+              <li class="menu-item {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
+                  <a href="{{ route('admin.employees.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons ri-team-line"></i>
+                      <div>Quản lý nhân viên</div>
+                  </a>
+              </li>
+
           </ul>
         </aside>
         <!-- / Menu -->
@@ -234,7 +284,7 @@
                       </li>
                       <li>
                           {{-- Sửa phần Logout --}}
-                          <a class="dropdown-item text-danger" href="javascript:void(0);" 
+                          <a class="dropdown-item text-danger" href="javascript:void(0);"
                             onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                               <i class="ri-shut-down-line me-2"></i>
                               <span class="align-middle">Đăng xuất</span>
@@ -303,21 +353,21 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="../../assets/vendor/libs/popper/popper.js"></script>
-    <script src="../../assets/vendor/js/bootstrap.js"></script>
-    <script src="../../assets/vendor/libs/node-waves/node-waves.js"></script>
-    <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/libs/hammer/hammer.js"></script>
 
-    <script src="../../assets/vendor/js/menu.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
 
     <!-- endbuild -->
 
     <!-- Vendors JS -->
 
     <!-- Main JS -->
-    <script src="../../assets/js/main.js"></script>
+    <script src="/assets/js/main.js"></script>
 
     <!-- Page JS -->
   </body>

@@ -25,12 +25,26 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminController::class, 'login'])->name('login.post');
 
-    Route::middleware(['auth:admin'])->group(function () {   
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');   
+    Route::middleware(['auth:admin'])->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/orders', [AdminController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}', [AdminController::class, 'show'])->name('orders.show');
         Route::post('/orders/{id}/assign', [AdminController::class, 'assignAgent'])->name('orders.assign');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+        Route::get('/customers/{id}/overview', [AdminController::class, 'customerOverview'])->name('customers.overview');
+        Route::get('/customers/{id}/security', [AdminController::class, 'customerSecurity'])->name('customers.security');
+        Route::get('/customers/{id}/billing', [AdminController::class, 'customerBilling'])->name('customers.billing');
+        Route::get('/customers/{id}/notifications', [AdminController::class, 'customerNotifications'])->name('customers.notifications');
+
+        Route::get('/fleet', [AdminController::class, 'fleet'])->name('fleet.index');
+        Route::get('/users/{id}/account', [AdminController::class, 'userAccount'])->name('users.account');
+
+        Route::get('/employees', [AdminController::class, 'employeesIndex'])->name('employees.index');
+        Route::post('/employees', [AdminController::class, 'employeeStore'])->name('employees.store');
+        Route::get('/employees/{id}', [AdminController::class, 'employeeShow'])->name('employees.show');
+        Route::put('/employees/{id}', [AdminController::class, 'employeeUpdate'])->name('employees.update');
+        Route::delete('/employees/{id}', [AdminController::class, 'employeeDestroy'])->name('employees.destroy');
+
     });
 });
 Route::get('/admin', function () {
