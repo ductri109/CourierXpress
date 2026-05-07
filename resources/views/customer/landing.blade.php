@@ -17,11 +17,11 @@
                         <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                         <span class="text-sm font-medium">Hệ thống đang hoạt động ổn định</span>
                     </div>
-                    
+
                     <h1 class="text-5xl lg:text-7xl font-bold leading-tight">
                         Giải pháp Logistics <br><span class="text-yellow-300">toàn diện</span>
                     </h1>
-                    
+
                     <p class="text-xl text-white/90 max-w-xl leading-relaxed">
                         Chào mừng bạn đến với hệ thống CourierXpress. Quản lý vận đơn, tra cứu lộ trình và cập nhật trạng thái realtime dễ dàng hơn bao giờ hết.
                     </p>
@@ -32,7 +32,7 @@
                                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
                                 <span>Tạo Đơn Hàng Mới</span>
                             </a>
-                        
+
                             <a href="#tracking" class="bg-white/20 text-white backdrop-blur-md border border-white/30 px-8 py-3.5 rounded-xl font-bold hover:bg-white/30 transition-all shadow-lg text-center flex items-center justify-center space-x-2">
                                 <i data-lucide="search" class="w-5 h-5"></i>
                                 <span>Tra Cứu Vận Đơn</span>
@@ -58,9 +58,9 @@
 
                 <div class="relative scroll-reveal">
                     <div class="relative floating">
-                        <img src="https://i0.wp.com/blog.locus.sh/wp-content/uploads/2023/05/mem-9.jpg?resize=650%2C431&ssl=1" alt="Logistics Banner" 
+                        <img src="https://i0.wp.com/blog.locus.sh/wp-content/uploads/2023/05/mem-9.jpg?resize=650%2C431&ssl=1" alt="Logistics Banner"
                             class="rounded-3xl shadow-2xl w-full border-4 border-white/10">
-                        
+
                         <div class="absolute -left-8 top-1/4 bg-white p-4 rounded-2xl shadow-xl animate-bounce" style="animation-duration: 3s;">
                             <div class="flex items-center space-x-3">
                                 <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -167,7 +167,7 @@
                 <div class="flex flex-col md:flex-row gap-4 mb-8">
                     <div class="flex-1 relative">
                         <i data-lucide="package" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                        <input type="text" placeholder="Ví dụ: CX123456789" 
+                        <input type="text" placeholder="Ví dụ: CX123456789"
                             class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none text-lg font-mono">
                     </div>
                     <button class="bg-primary-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-primary-700 transition-all flex items-center justify-center space-x-2">
@@ -430,3 +430,4 @@
         </div>
     </section>
 @endsection
+
