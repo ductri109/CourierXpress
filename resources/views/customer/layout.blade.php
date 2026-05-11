@@ -99,7 +99,6 @@
             </a>
 
             <div class="hidden md:flex items-center space-x-8">
-
                 <a href="{{ route('landing') }}"
                    class="{{ request()->routeIs('landing')
                             ? 'text-primary-600 font-bold'
@@ -136,7 +135,6 @@
                             font-semibold text-sm transition-colors">
                     Liên hệ
                 </a>
-
             </div>
 
             <div class="hidden md:flex items-center space-x-4">
@@ -190,7 +188,6 @@
                         <span>Đăng Nhập</span>
                     </a>
                 @endauth
-
             </div>
 
             <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
