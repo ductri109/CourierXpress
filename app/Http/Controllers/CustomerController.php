@@ -37,20 +37,20 @@ class CustomerController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         $customer = Customer::where('email', $request->email)->first();
-    
+
         if ($customer && Hash::check($request->password, $customer->password_hash)) {
             Auth::guard('customer')->login($customer);
             $request->session()->regenerate();
             return redirect()->intended(route('landing'));
         }
-    
+
         return back()->withErrors(['email' => 'Thông tin đăng nhập không chính xác.'])->withInput();
     }
 
     public function logout(Request $request) {
-        Auth::guard('customer')->logout(); 
+        Auth::guard('customer')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login');
@@ -69,9 +69,9 @@ class CustomerController extends Controller
             'receiver_address' => 'required|string',
             'total_weight' => 'required|numeric|min:0.1',
         ]);
-    
+
         $tracking_id = 'CX-' . strtoupper(bin2hex(random_bytes(3)));
-    
+
         \App\Models\Courier::create([
             'tracking_id' => $tracking_id,
             'sender_name' => $request->sender_name,
@@ -82,7 +82,7 @@ class CustomerController extends Controller
             'status' => 'pending',
             'customer_id' => auth('customer')->id(),
         ]);
-    
+
         return redirect()->route('landing')->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
     }
 
@@ -90,15 +90,19 @@ class CustomerController extends Controller
         return view('customer.about');
     }
 
+    public function showServices() {
+        return view('customer.services');
+    }
+
     public function showContact() {
         return view('customer.contact');
     }
 
-    public function showTerms() {
+    public function showServiceTerms() {
         return view('customer.terms');
     }
 
-    public function showPolicy() {
+    public function showServicePolicy() {
         return view('customer.policy');
     }
 }
