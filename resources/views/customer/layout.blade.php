@@ -170,10 +170,12 @@
                                 <button class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-xl hover:bg-gray-100 transition-all">
                                     <div class="text-right hidden lg:block">
                                         <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::guard('customer')->user()->name }}</p>
-                                        <p class="text-[10px] text-primary-600 font-medium uppercase tracking-wider">Khách hàng</p>
+                                        <p class="text-[15px] text-primary-600 font-medium uppercase tracking-wider">
+                                            {{ Auth::guard('customer')->user()->full_name }}
+                                        </p>
                                     </div>
                                     <div class="relative">
-                                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('customer')->user()->name) }}&background=ef4444&color=fff"
+                                        <img src="https://ui-avatars.com/api/?name={{ Str::substr(Auth::guard('customer')->user()->full_name, 0, 1) }}&background=ef4444&color=fff"
                                              alt="Avatar"
                                              class="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm">
                                         <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
@@ -188,10 +190,14 @@
                                         <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
                                     </div>
 
-                                    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                                        <i data-lucide="user" class="w-4 h-4"></i>
-                                        <span class="font-medium">Hồ sơ của tôi</span>
-                                    </a>
+                                    <form method="GET" action="{{ route('customer.profile.index')  }}">
+                                        @csrf
+                                        <button type="submit" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                                            <i data-lucide="user" class="w-4 h-4"></i>
+                                            <span class="font-medium">Hồ sơ của tôi</span>
+                                        </button>
+                                    </form>
+
 
                                     <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                                         <i data-lucide="package" class="w-4 h-4"></i>

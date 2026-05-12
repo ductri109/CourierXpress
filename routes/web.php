@@ -3,7 +3,19 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
+Route::middleware(['auth:customer'])->group(function () {
+
+    // Route hiển thị trang hồ sơ (GET)
+    Route::get('/profile', [ProfileController::class, 'index'])->name('customer.profile.index');
+    Route::get('/profile/update', [ProfileController::class, 'editProfile'])->name('customer.profile.edit');
+
+    // Route xử lý cập nhật thông tin (PUT hoặc POST)
+    // Lưu ý: Ở phần view trước ta dùng @method('PUT') nên ở đây dùng Route::put
+    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('customer.profile.update');
+
+});
 Route::get('/', function () {
     return view('customer.landing');
 })->name('landing');
@@ -65,4 +77,5 @@ Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function
     Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
     Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
 });
-    
+
+
