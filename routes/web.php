@@ -34,6 +34,7 @@ Route::get('/services/policy', [CustomerController::class, 'showServicePolicy'])
 Route::middleware(['auth:customer'])->group(function () {
     Route::get('/booking', [CustomerController::class, 'showBooking'])->name('booking');
     Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
+    Route::get('/my-orders', [CustomerController::class, 'showOrders'])->name('customer.orders.index');
 });
 
 //Admin Routes
@@ -78,4 +79,3 @@ Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function
     Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
     Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
 });
-

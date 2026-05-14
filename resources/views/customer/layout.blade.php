@@ -139,111 +139,111 @@
 
             <div class="hidden md:flex items-center space-x-4">
                 @auth('customer')
-                        <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
-                            <div class="px-4 py-3 border-b border-gray-50 mb-1">
-                                <p class="text-xs text-gray-500">Tài khoản của bạn</p>
-                                <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
-                            </div>
-
-                            <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                                <i data-lucide="user" class="w-4 h-4"></i>
-                                <span class="font-medium">Hồ sơ của tôi</span>
-                            </a>
-
-                            <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                                <i data-lucide="package" class="w-4 h-4"></i>
-                                <span class="font-medium">Đơn hàng của tôi</span>
-                            </a>
-
-                            <div class="h-px bg-gray-100 my-1 mx-2"></div>
-
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
-                                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                                    <span>Đăng xuất</span>
-                                </button>
-                            </form>
+                    <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
+                        <div class="px-4 py-3 border-b border-gray-50 mb-1">
+                            <p class="text-xs text-gray-500">Tài khoản của bạn</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
                         </div>
+
+                        <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                            <span class="font-medium">Hồ sơ của tôi</span>
+                        </a>
+
+                        <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <i data-lucide="package" class="w-4 h-4"></i>
+                            <span class="font-medium">Đơn hàng của tôi</span>
+                        </a>
+
+                        <div class="h-px bg-gray-100 my-1 mx-2"></div>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
+                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                <span>Đăng xuất</span>
+                            </button>
+                        </form>
                     </div>
-
-                @else
-                    <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
-                        <span>Đăng Nhập</span>
-                    </a>
-
-                </div>
-            @endauth
-
-                <div class="hidden md:flex items-center space-x-4">
-                        @auth('customer')
-                            <!-- User Profile Dropdown -->
-                            <div class="relative group" id="userDropdown">
-                                <button class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-xl hover:bg-gray-100 transition-all">
-                                    <div class="text-right hidden lg:block">
-                                        <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::guard('customer')->user()->name }}</p>
-                                        <p class="text-[15px] text-primary-600 font-medium uppercase tracking-wider">
-                                            {{ Auth::guard('customer')->user()->full_name }}
-                                        </p>
-                                    </div>
-                                    <div class="relative">
-                                        <img src="https://ui-avatars.com/api/?name={{ Str::substr(Auth::guard('customer')->user()->full_name, 0, 1) }}&background=ef4444&color=fff"
-                                             alt="Avatar"
-                                             class="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm">
-                                        <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
-                                    </div>
-                                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors"></i>
-                                </button>
-
-                                <!-- Dropdown Menu -->
-                                <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
-                                    <div class="px-4 py-3 border-b border-gray-50 mb-1">
-                                        <p class="text-xs text-gray-500">Tài khoản của bạn</p>
-                                        <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
-                                    </div>
-
-                                    <form method="GET" action="{{ route('customer.profile.index')  }}">
-                                        @csrf
-                                        <button type="submit" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                                            <i data-lucide="user" class="w-4 h-4"></i>
-                                            <span class="font-medium">Hồ sơ của tôi</span>
-                                        </button>
-                                    </form>
-
-
-                                    <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                                        <i data-lucide="package" class="w-4 h-4"></i>
-                                        <span class="font-medium">Đơn hàng của tôi</span>
-                                    </a>
-
-                                    <div class="h-px bg-gray-100 my-1 mx-2"></div>
-
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
-                                            <i data-lucide="log-out" class="w-4 h-4"></i>
-                                            <span>Đăng xuất</span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @else
-                            <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
-                                <span>Đăng Nhập</span>
-                            </a>
-                        @endauth
-
-                </div>
-
-                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
-                    <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-                </button>
             </div>
 
-            <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
-                <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-            </button>
+            @else
+                <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
+                    <span>Đăng Nhập</span>
+                </a>
+
         </div>
+        @endauth
+
+        <div class="hidden md:flex items-center space-x-4">
+            @auth('customer')
+                <!-- User Profile Dropdown -->
+                <div class="relative group" id="userDropdown">
+                    <button class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-xl hover:bg-gray-100 transition-all">
+                        <div class="text-right hidden lg:block">
+                            <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::guard('customer')->user()->name }}</p>
+                            <p class="text-[15px] text-primary-600 font-medium uppercase tracking-wider">
+                                {{ Auth::guard('customer')->user()->full_name }}
+                            </p>
+                        </div>
+                        <div class="relative">
+                            <img src="https://ui-avatars.com/api/?name={{ Str::substr(Auth::guard('customer')->user()->full_name, 0, 1) }}&background=ef4444&color=fff"
+                                 alt="Avatar"
+                                 class="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm">
+                            <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
+                        <div class="px-4 py-3 border-b border-gray-50 mb-1">
+                            <p class="text-xs text-gray-500">Tài khoản của bạn</p>
+                            <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
+                        </div>
+
+                        <form method="GET" action="{{ route('customer.profile.index')  }}">
+                            @csrf
+                            <button type="submit" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                                <span class="font-medium">Hồ sơ của tôi</span>
+                            </button>
+                        </form>
+
+
+                        <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <i data-lucide="package" class="w-4 h-4"></i>
+                            <span class="font-medium">Đơn hàng của tôi</span>
+                        </a>
+
+                        <div class="h-px bg-gray-100 my-1 mx-2"></div>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
+                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                <span>Đăng xuất</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @else
+                <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
+                    <span>Đăng Nhập</span>
+                </a>
+            @endauth
+
+        </div>
+
+        <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
+            <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+        </button>
+    </div>
+
+    <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
+        <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+    </button>
+    </div>
     </div>
 
     <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
