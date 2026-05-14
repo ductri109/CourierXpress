@@ -316,15 +316,15 @@
                 <ul class="space-y-3 text-gray-400">
                     <li class="flex items-center space-x-3">
                         <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
-                        <span>1900 9999</span>
+                        <span>1900 123 456</span>
                     </li>
                     <li class="flex items-center space-x-3">
                         <i data-lucide="mail" class="w-5 h-5 text-primary-400"></i>
-                        <span>cskh@courierxpress.vn</span>
+                        <span>support@courierxpress.vn</span>
                     </li>
                     <li class="flex items-start space-x-3">
                         <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
-                        <span>Tòa nhà Logistics, Q.1, TP.HCM</span>
+                        <span>13 Phan Tây Nhạc, Xuân Phương, Hà Nội</span>
                     </li>
                 </ul>
             </div>
