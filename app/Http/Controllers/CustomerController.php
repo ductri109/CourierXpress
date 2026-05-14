@@ -86,6 +86,45 @@ class CustomerController extends Controller
         return redirect()->route('landing')->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
     }
 
+    public function showOrders(Request $request)
+    {
+        $customer = auth('customer')->user();
+
+        $query = \App\Models\Courier::where('customer_id', $customer->id)
+            ->latest();
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Search by tracking_id or receiver_name
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_id', 'like', "%{$search}%")
+                    ->orWhere('receiver_name', 'like', "%{$search}%")
+                    ->orWhere('sender_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Sort
+        if ($request->sort === 'oldest') {
+            $query->oldest();
+        }
+
+        $orders = $query->paginate(8)->withQueryString();
+
+        // Status counts for this customer
+        $statusCounts = \App\Models\Courier::where('customer_id', $customer->id)
+            ->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        return view('customer.orders.index', compact('orders', 'statusCounts'));
+    }
+
     public function showAbout() {
         return view('customer.about');
     }
