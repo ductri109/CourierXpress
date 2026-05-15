@@ -215,7 +215,6 @@
                             <i data-lucide="package" class="w-4 h-4"></i>
                             <span class="font-medium">Đơn hàng của tôi</span>
                         </a>
-
                         <div class="h-px bg-gray-100 my-1 mx-2"></div>
 
                         <form method="POST" action="{{ route('logout') }}">
@@ -232,7 +231,6 @@
                     <span>Đăng Nhập</span>
                 </a>
             @endauth
-
         </div>
 
         <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
