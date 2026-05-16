@@ -4,7 +4,7 @@
 
 @section('content')
 
-<section class="gradient-hero min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section class="gradient-hero min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
             <div class="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -59,7 +59,7 @@
                 <div class="relative scroll-reveal">
                     <div class="relative floating">
                         <img src="https://i0.wp.com/blog.locus.sh/wp-content/uploads/2023/05/mem-9.jpg?resize=650%2C431&ssl=1" alt="Logistics Banner"
-                            class="rounded-3xl shadow-2xl w-full border-4 border-white/10">
+                             class="rounded-3xl shadow-2xl w-full border-4 border-white/10">
 
                         <div class="absolute -left-8 top-1/4 bg-white p-4 rounded-2xl shadow-xl animate-bounce" style="animation-duration: 3s;">
                             <div class="flex items-center space-x-3">
@@ -168,7 +168,7 @@
                     <div class="flex-1 relative">
                         <i data-lucide="package" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
                         <input type="text" placeholder="Ví dụ: CX123456789"
-                            class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none text-lg font-mono">
+                               class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none text-lg font-mono">
                     </div>
                     <button class="bg-primary-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-primary-700 transition-all flex items-center justify-center space-x-2">
                         <i data-lucide="search" class="w-5 h-5"></i>
@@ -383,7 +383,9 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Giao hàng cực nhanh, shipper thân thiện. App theo dõi đơn hàng rất tiện, biết chính xác khi nào hàng đến. Sẽ tiếp tục ủng hộ CourierXpress!"</p>
                     <div class="flex items-center space-x-4">
-                        <img src="https://dummyimage.com/100x100/dee2e6/6c757d.jpg&text=U1" alt="User" class="w-12 h-12 rounded-full object-cover">
+                        <!-- LINK ẢNH MỚI CHO CHỦ SHOP THỜI TRANG TẠI ĐÂY -->
+                        <img src="https://camo.githubusercontent.com/f047788470a9310869a8979e27c006509193297a783307525381665a3d463d1e/687474703a2f2f676f6f676c6575736572636f6e74656e742e636f6d2f696d6167655f67656e65726174696f6e5f636f6e74656e742f313635"
+                             alt="User" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Nguyễn Thị Hương</p>
                             <p class="text-sm text-gray-500">Chủ shop thời trang</p>
@@ -430,4 +432,3 @@
         </div>
     </section>
 @endsection
-
