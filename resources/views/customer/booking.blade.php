@@ -31,7 +31,6 @@
                 <form action="{{ route('booking.post') }}" method="POST" class="p-8 md:p-12 space-y-10">
                     @csrf
 
-                    <!-- Thông tin người gửi -->
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
                             <h3 class="text-xl font-bold text-gray-900">Thông tin người gửi</h3>
@@ -70,7 +69,6 @@
                         </div>
                     </div>
 
-                    <!-- Thông tin người nhận -->
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
                             <h3 class="text-xl font-bold text-gray-900">Thông tin người nhận</h3>
@@ -109,7 +107,6 @@
                         </div>
                     </div>
 
-                    <!-- Thông tin hàng hóa -->
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
                             <h3 class="text-xl font-bold text-gray-900">Chi tiết hàng hóa</h3>
@@ -117,40 +114,28 @@
                         </div>
 
                         <div class="bg-primary-50/30 p-6 rounded-2xl border border-primary-100 space-y-6">
-                            <div class="grid md:grid-cols-3 gap-6 items-end">
+                            <div class="grid md:grid-cols-3 gap-6 items-start">
                                 {{-- Dropdown phân loại Khối lượng --}}
                                 <div class="space-y-2 md:col-span-1">
                                     <label class="block text-sm font-semibold text-gray-700">Khối lượng ước tính <span class="text-primary-500">*</span></label>
                                     <select name="weight_range" required
                                             class="w-full px-4 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm bg-white font-medium text-gray-700">
                                         <option value="">-- Chọn mức cân nặng --</option>
-                                        <option value="0.5-1">Từ 0.5kg đến 1kg</option>
-                                        <option value="1-2">Từ 1kg đến 2kg</option>
-                                        <option value="2-5">Từ 2kg đến 5kg</option>
-                                        <option value=">5">Trên 5kg</option>
+                                        {{-- THAY ĐỔI: Thêm mục 0.5 kg ngay bên dưới mục dưới 0.5 kg và đổi định dạng hiển thị --}}
+                                        <option value="under_0.5">Dưới 0.5 kg</option>
+                                        <option value="0.5">0.5 kg</option>
+                                        <option value="0.5-1">Từ 0.5 kg đến 1 kg</option>
+                                        <option value="1-2">Từ 1 kg đến 2 kg</option>
+                                        <option value="2-5">Từ 2 kg đến 5 kg</option>
+                                        <option value="above_5">Trên 5 kg</option>
                                     </select>
                                 </div>
 
-                                {{-- Ô nhập Kích thước --}}
+                                {{-- Ô nhập Textarea ghi chú cho người giao hàng --}}
                                 <div class="md:col-span-2 space-y-2">
-                                    <label class="block text-sm font-semibold text-gray-700">Kích thước gói hàng (Không bắt buộc)</label>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        <div class="relative">
-                                            <input type="number" step="1" name="length" placeholder="Dài"
-                                                   class="w-full pl-4 pr-10 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm">
-                                            <span class="absolute right-3 top-3.5 text-xs font-semibold text-gray-400">cm</span>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="number" step="1" name="width" placeholder="Rộng"
-                                                   class="w-full pl-4 pr-10 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm">
-                                            <span class="absolute right-3 top-3.5 text-xs font-semibold text-gray-400">cm</span>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="number" step="1" name="height" placeholder="Cao"
-                                                   class="w-full pl-4 pr-10 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm">
-                                            <span class="absolute right-3 top-3.5 text-xs font-semibold text-gray-400">cm</span>
-                                        </div>
-                                    </div>
+                                    <label class="block text-sm font-semibold text-gray-700">Ghi chú cho người giao hàng</label>
+                                    <textarea name="shipping_notes" rows="2" placeholder="Ví dụ: Hàng dễ vỡ, liên hệ trước khi giao, hàng chất lỏng..."
+                                              class="w-full px-4 py-3 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm font-medium resize-none text-gray-700 placeholder-gray-400"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +150,7 @@
                         <div class="mt-6 p-4 bg-yellow-50 rounded-xl flex items-start space-x-3 border border-yellow-100">
                             <i data-lucide="info" class="w-5 h-5 text-yellow-600 shrink-0 mt-0.5"></i>
                             <p class="text-yellow-800 text-sm leading-relaxed">
-                                <strong>Lưu ý:</strong> Phí vận chuyển tạm tính dựa trên phân mức khối lượng và kích thước quy đổi. Nhân viên bưu tá sẽ kiểm tra thực tế khi lấy hàng để cập nhật giá cước chính xác nhất.
+                                <strong>Lưu ý:</strong> Phí vận chuyển tạm tính dựa trên phân mức khối lượng và ghi chú đặc thù hàng hóa. Nhân viên bưu tá sẽ kiểm tra thực tế khi lấy hàng để cập nhật giá cước chính xác nhất.
                             </p>
                         </div>
                     </div>
@@ -180,7 +165,7 @@
             const senderWardSelect = document.getElementById('sender_ward');
             const receiverWardSelect = document.getElementById('receiver_ward');
 
-            // Danh sách Phường / Xã / Thị trấn theo yêu cầu của bạn
+            // Danh sách Phường / Xã / Thị trấn
             const wardsData = [
                 "Hoàn Kiếm", "Cửa Nam", "Ba Đình", "Ngọc Hà", "Giảng Võ", "Hai Bà Trưng",
                 "Vĩnh Tuy", "Bạch Mai", "Đống Đa", "Kim Liên", "Văn Miếu - Quốc Tử Giám",
@@ -193,7 +178,7 @@
                 "Thanh Liệt", "Chương Mỹ", "Sơn Tây", "Tùng Thiện"
             ];
 
-            // Sắp xếp danh sách theo bảng chữ cái A-Z để người dùng dễ tìm kiếm
+            // Sắp xếp danh sách theo bảng chữ cái A-Z
             wardsData.sort((a, b) => a.localeCompare(b, 'vi'));
 
             // Đổ dữ liệu đồng thời vào cả dropdown người gửi và người nhận
