@@ -293,22 +293,22 @@
                     <ul class="space-y-3 text-gray-400">
                         <li class="flex items-center space-x-3">
                             <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
-                            <span>1900 9999</span>
+                            <span>1900 123 456</span>
                         </li>
                         <li class="flex items-center space-x-3">
                             <i data-lucide="mail" class="w-5 h-5 text-primary-400"></i>
-                            <span>cskh@courierxpress.vn</span>
+                            <span>support@courierxpress.vn</span>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
-                            <span>Tòa nhà Logistics, Q.1, TP.HCM</span>
+                            <span>13 Phan Tây Nhạc, Xuân Phương, Hà Nội</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm">© 2024 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
+                <p class="text-gray-500 text-sm">© 2026 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
                     <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
                     <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
