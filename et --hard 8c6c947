@@ -1,0 +1,40 @@
+[33m02f4bb3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Merge pull request #15 from ductri109/LTA/sửa-booking
+[33m733dfa2[m[33m ([m[1;31morigin/LTA/sửa-booking[m[33m)[m Merge branch 'LTA/sửa-booking' of https://github.com/ductri109/CourierXpress into LTA/sửa-booking
+[33mc22eb3a[m updated booking
+[33m8c6c947[m Merge pull request #14 from ductri109/LTA/sua-giao-dien-1
+[33m05bc1a4[m[33m ([m[1;31morigin/LTA/sua-giao-dien-1[m[33m)[m Merge branch 'main' into LTA/sua-giao-dien-1
+[33mdd80444[m Update landing page
+[33m53ac3b3[m Merge pull request #13 from ductri109/LTA/sửa-booking
+[33mf967b83[m Merge branch 'main' into LTA/sửa-booking
+[33m8a9783e[m Merge pull request #12 from ductri109/LTA/sua-giao-dien
+[33ma8a725f[m[33m ([m[1;31morigin/LTA/sua-giao-dien[m[33m)[m Merge branch 'main' into LTA/sua-giao-dien
+[33mc938ac3[m Merge branch 'LTA/sua-giao-dien' of https://github.com/ductri109/CourierXpress into LTA/sua-giao-dien
+[33m67e86d5[m Update landing và layout
+[33mdb3b133[m Chỉnh sửa booking
+[33mc688c4a[m Merge pull request #11 from ductri109/TA/sua-loi-giao-dien-conflict
+[33m4931ba2[m[33m ([m[1;31morigin/TA/sua-loi-giao-dien-conflict[m[33m)[m Merge branch 'main' into TA/sua-loi-giao-dien-conflict
+[33m1b78b14[m fix bugs giao dien
+[33m066dc7b[m Merge pull request #10 from ductri109/TA/Agent-login-register
+[33m00deb56[m[33m ([m[1;31morigin/TA/Agent-login-register[m[33m)[m Sua loi footer
+[33mf479b64[m Merge pull request #9 from ductri109/TA/quan-ly-don-hang
+[33m44c61bf[m Merge pull request #8 from ductri109/Khang_VeChungToi
+[33m06de94e[m[33m ([m[1;31morigin/TA/quan-ly-don-hang[m[33m)[m Giao dien quan ly don hang Customer
+[33m269e3a8[m[33m ([m[1;31morigin/Khang_VeChungToi[m[33m)[m Thêm ảnh về chúng tôi
+[33m7e29600[m Merge pull request #7 from ductri109/TA/sua-loi-giao-dien-conflict
+[33m03ae661[m fix loi giao dien layout conflict
+[33m710e848[m Merge pull request #6 from ductri109/Dropdown_user
+[33m37ad34a[m[33m ([m[1;31morigin/Dropdown_user[m[33m)[m Merge branch 'main' into Dropdown_user
+[33me5e2ba2[m Update drop-down, thêm hồ sơ cá nhân, chỉnh sửa thông tin
+[33mef176bd[m Resolve merge conflict in customer layout, keeping new user dropdown and routes
+[33m207cef3[m day trang dich vu
+[33m5217714[m Merge pull request #5 from ductri109/Dropdown_user
+[33m8064580[m Thêm dropdown user
+[33m83b1729[m day lan dau
+[33m5975bfa[m[33m ([m[1;32mTri/hoan-thien-luong-chinh-phia-agent[m[33m, [m[1;32mTri/hoan-thien-luong-chinh[m[33m)[m Merge pull request #3 from ductri109/Tri/day-giao-dien-user
+[33mbd29e81[m[33m ([m[1;31morigin/Tri/day-giao-dien-user[m[33m)[m day-giao-dien-nguoi-dung
+[33m08af3dc[m Merge pull request #2 from ductri109/TA/day-giao-dien-admin
+[33m0e63cf9[m[33m ([m[1;31morigin/TA/day-giao-dien-admin[m[33m)[m day giao dien admin
+[33mfddb4fe[m Merge pull request #1 from ductri109/Tri/template
+[33m514b5ee[m[33m ([m[1;31morigin/Tri/template[m[33m, [m[1;32mTri/template[m[33m)[m cap nhat route cho dashboard phia admin
+[33ma46b1b8[m day project giai doan dau
+[33m8906db2[m first commit
