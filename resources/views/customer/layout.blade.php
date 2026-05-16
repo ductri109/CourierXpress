@@ -132,7 +132,7 @@
                    class="{{ request()->routeIs('contact')
                             ? 'text-primary-600 font-bold'
                             : 'text-gray-600 hover:text-primary-600' }}
-                            font-semibold text-sm transition-colors">
+                            font-medium transition-colors">
                     Liên hệ
                 </a>
             </div>
@@ -291,7 +291,7 @@
         </div>
 
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-500 text-sm">© 2024 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
+            <p class="text-gray-500 text-sm">© 2026 CourierXpress - Hệ thống quản lý vận đơn trực tuyến.</p>
             <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
                 <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
                 <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
