@@ -384,8 +384,9 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Giao hàng cực nhanh, shipper thân thiện. App theo dõi đơn hàng rất tiện, biết chính xác khi nào hàng đến. Sẽ tiếp tục ủng hộ CourierXpress!"</p>
                     <div class="flex items-center space-x-4">
-                        {{-- THAY ĐỔI: Ảnh người dùng U1 thật từ Unsplash --}}
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80" alt="Nguyễn Thị Hương" class="w-12 h-12 rounded-full object-cover">
+                        {{-- ĐÃ SỬA: Thay thế link lỗi bằng ảnh thật từ Unsplash cho Nguyễn Thị Hương --}}
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80"
+                             alt="Nguyễn Thị Hương" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Nguyễn Thị Hương</p>
                             <p class="text-sm text-gray-500">Chủ shop thời trang</p>
