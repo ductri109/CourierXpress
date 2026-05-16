@@ -99,6 +99,7 @@
             </a>
 
             <div class="hidden md:flex items-center space-x-8">
+
                 <a href="{{ route('landing') }}"
                    class="{{ request()->routeIs('landing')
                             ? 'text-primary-600 font-bold'
@@ -120,13 +121,37 @@
                     Về chúng tôi
                 </a>
 
-                <a href="{{ route('services') }}"
-                   class="{{ request()->routeIs('services', 'terms', 'policy')
-                            ? 'text-primary-600 font-bold'
-                            : 'text-gray-600 hover:text-primary-600' }}
-                            font-medium transition-colors">
-                    Dịch vụ
-                </a>
+                <div class="relative group">
+                    <button class="flex items-center
+                            {{ request()->routeIs('terms') || request()->routeIs('policy')
+                                ? 'text-primary-600 font-bold'
+                                : 'text-gray-600 group-hover:text-primary-600' }}
+                            font-semibold text-sm transition-colors gap-1">
+
+                        Pháp lý
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <div class="absolute hidden group-hover:block w-48 bg-white shadow-xl rounded-xl border border-gray-50 py-2 mt-0 z-50">
+
+                        <a href="{{ route('terms') }}"
+                           class="{{ request()->routeIs('terms')
+                                    ? 'bg-red-50 text-primary-600 font-bold'
+                                    : 'text-gray-600 hover:bg-red-50 hover:text-primary-600' }}
+                                    block px-4 py-2 text-xs font-medium">
+                            Điều khoản sử dụng
+                        </a>
+
+                        <a href="{{ route('policy') }}"
+                           class="{{ request()->routeIs('policy')
+                                    ? 'bg-red-50 text-primary-600 font-bold'
+                                    : 'text-gray-600 hover:bg-red-50 hover:text-primary-600' }}
+                                    block px-4 py-2 text-xs font-medium">
+                            Chính sách bảo mật
+                        </a>
+
+                    </div>
+                </div>
 
                 <a href="{{ route('contact') }}"
                    class="{{ request()->routeIs('contact')
@@ -135,113 +160,67 @@
                             font-semibold text-sm transition-colors">
                     Liên hệ
                 </a>
+
             </div>
 
             <div class="hidden md:flex items-center space-x-4">
                 @auth('customer')
-                    <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
-                        <div class="px-4 py-3 border-b border-gray-50 mb-1">
-                            <p class="text-xs text-gray-500">Tài khoản của bạn</p>
-                            <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
-                        </div>
+                    <!-- User Profile Dropdown -->
+                    <div class="relative group" id="userDropdown">
+                        <button class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-xl hover:bg-gray-100 transition-all">
+                            <div class="text-right hidden lg:block">
+                                <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::guard('customer')->user()->name }}</p>
+                                <p class="text-[10px] text-primary-600 font-medium uppercase tracking-wider">Khách hàng</p>
+                            </div>
+                            <div class="relative">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('customer')->user()->name) }}&background=ef4444&color=fff"
+                                     alt="Avatar"
+                                     class="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm">
+                                <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors"></i>
+                        </button>
 
-                        <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <i data-lucide="user" class="w-4 h-4"></i>
-                            <span class="font-medium">Hồ sơ của tôi</span>
-                        </a>
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
+                            <div class="px-4 py-3 border-b border-gray-50 mb-1">
+                                <p class="text-xs text-gray-500">Tài khoản của bạn</p>
+                                <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
+                            </div>
 
-                        <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <i data-lucide="package" class="w-4 h-4"></i>
-                            <span class="font-medium">Đơn hàng của tôi</span>
-                        </a>
-
-                        <div class="h-px bg-gray-100 my-1 mx-2"></div>
-
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
-                                <i data-lucide="log-out" class="w-4 h-4"></i>
-                                <span>Đăng xuất</span>
-                            </button>
-                        </form>
-                    </div>
-            </div>
-
-            @else
-                <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
-                    <span>Đăng Nhập</span>
-                </a>
-
-        </div>
-        @endauth
-
-        <div class="hidden md:flex items-center space-x-4">
-            @auth('customer')
-                <!-- User Profile Dropdown -->
-                <div class="relative group" id="userDropdown">
-                    <button class="flex items-center space-x-3 focus:outline-none p-1.5 rounded-xl hover:bg-gray-100 transition-all">
-                        <div class="text-right hidden lg:block">
-                            <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::guard('customer')->user()->name }}</p>
-                            <p class="text-[15px] text-primary-600 font-medium uppercase tracking-wider">
-                                {{ Auth::guard('customer')->user()->full_name }}
-                            </p>
-                        </div>
-                        <div class="relative">
-                            <img src="https://ui-avatars.com/api/?name={{ Str::substr(Auth::guard('customer')->user()->full_name, 0, 1) }}&background=ef4444&color=fff"
-                                 alt="Avatar"
-                                 class="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm">
-                            <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
-                        </div>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors"></i>
-                    </button>
-
-                    <!-- Dropdown Menu -->
-                    <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
-                        <div class="px-4 py-3 border-b border-gray-50 mb-1">
-                            <p class="text-xs text-gray-500">Tài khoản của bạn</p>
-                            <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->email }}</p>
-                        </div>
-
-                        <form method="GET" action="{{ route('customer.profile.index')  }}">
-                            @csrf
-                            <button type="submit" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                                 <i data-lucide="user" class="w-4 h-4"></i>
                                 <span class="font-medium">Hồ sơ của tôi</span>
-                            </button>
-                        </form>
+                            </a>
 
+                            <a href="#" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                                <i data-lucide="package" class="w-4 h-4"></i>
+                                <span class="font-medium">Đơn hàng của tôi</span>
+                            </a>
 
-                        <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
-                            <i data-lucide="package" class="w-4 h-4"></i>
-                            <span class="font-medium">Đơn hàng của tôi</span>
-                        </a>
-                        <div class="h-px bg-gray-100 my-1 mx-2"></div>
+                            <div class="h-px bg-gray-100 my-1 mx-2"></div>
 
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
-                                <i data-lucide="log-out" class="w-4 h-4"></i>
-                                <span>Đăng xuất</span>
-                            </button>
-                        </form>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    <span>Đăng xuất</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
-                    <span>Đăng Nhập</span>
-                </a>
-            @endauth
+                @else
+                    <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
+                        <span>Đăng Nhập</span>
+                    </a>
+                @endauth
+
+            </div>
+
+            <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
+                <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+            </button>
         </div>
-
-        <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
-            <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-        </button>
-    </div>
-
-    <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
-        <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-    </button>
-    </div>
     </div>
 
     <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
@@ -250,10 +229,21 @@
             <a href="#tracking" class="block py-2 text-gray-600 hover:text-primary-600">Tra cứu</a>
             <a href="#pricing" class="block py-2 text-gray-600 hover:text-primary-600">Bảng giá</a>
             <a href="#testimonials" class="block py-2 text-gray-600 hover:text-primary-600">Đánh giá</a>
-            <a href="{{ route('login') }}" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold mt-2 flex justify-center items-center space-x-2">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
-                <span>Đăng Xuất</span>
-            </a>
+            @guest
+                <a href="{{ route('login') }}" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold mt-2 flex justify-center items-center space-x-2">
+                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                    <span>Đăng Nhập</span>
+                </a>
+            @endguest
+            @auth('customer')
+                <form method="POST" action="{{ route('logout') }}" id="mobileLogoutForm">
+                    @csrf
+                    <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-semibold mt-2 flex justify-center items-center space-x-2">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span>Đăng Xuất</span>
+                    </button>
+                </form>
+            @endauth
         </div>
     </div>
 </nav>
@@ -288,36 +278,48 @@
                     </a>
                 </div>
             </div>
-                <div>
-                    <h4 class="font-bold text-lg mb-6">Liên hệ</h4>
-                    <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-center space-x-3">
-                            <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
-                            <span>1900 123 456</span>
-                        </li>
-                        <li class="flex items-center space-x-3">
-                            <i data-lucide="mail" class="w-5 h-5 text-primary-400"></i>
-                            <span>support@courierxpress.vn</span>
-                        </li>
-                        <li class="flex items-start space-x-3">
-                            <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
-                            <span>13 Phan Tây Nhạc, Xuân Phương, Hà Nội</span>
-                        </li>
-                    </ul>
-                </div>
+
+            <div>
+                <h4 class="font-bold text-lg mb-6">Dịch vụ</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Giao hàng tiêu chuẩn</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Giao hàng hỏa tốc</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Kho bãi & Fulfillment</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Tích hợp API</a></li>
+                </ul>
             </div>
 
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm">© 2026 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
-                <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
-                    <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
-                    <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
-                </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Hỗ trợ khách hàng</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Trung tâm trợ giúp</a></li>
+                    <li><a href="#tracking" class="hover:text-primary-400 transition-colors">Tra cứu bưu gửi</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Quy định khiếu nại</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Bảng giá cước</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-lg mb-6">Liên hệ</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li class="flex items-center space-x-3">
+                        <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
+                        <span>1900 123 456</span>
+                    </li>
+                    <li class="flex items-center space-x-3">
+                        <i data-lucide="mail" class="w-5 h-5 text-primary-400"></i>
+                        <span>support@courierxpress.vn</span>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
+                        <span>13 Phan Tây Nhạc, Xuân Phương, Hà Nội</span>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-500 text-sm">© 2024 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
+            <p class="text-gray-500 text-sm">© 2026 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
             <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
                 <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
                 <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
@@ -338,6 +340,22 @@
     mobileMenuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
     });
+
+    // Close mobile menu when login button is clicked
+    const mobileLoginBtn = mobileMenu.querySelector('a[href="{{ route('login') }}"]');
+    if (mobileLoginBtn) {
+        mobileLoginBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    }
+
+    // Close mobile menu when logout button is clicked
+    const mobileLogoutForm = document.getElementById('mobileLogoutForm');
+    if (mobileLogoutForm) {
+        mobileLogoutForm.addEventListener('submit', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    }
 
     // Navbar scroll effect
     const navbar = document.getElementById('navbar');

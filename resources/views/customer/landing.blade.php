@@ -384,9 +384,9 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Giao hàng cực nhanh, shipper thân thiện. App theo dõi đơn hàng rất tiện, biết chính xác khi nào hàng đến. Sẽ tiếp tục ủng hộ CourierXpress!"</p>
                     <div class="flex items-center space-x-4">
-                        <!-- LINK ẢNH MỚI CHO CHỦ SHOP THỜI TRANG TẠI ĐÂY -->
-                        <img src="https://camo.githubusercontent.com/f047788470a9310869a8979e27c006509193297a783307525381665a3d463d1e/687474703a2f2f676f6f676c6575736572636f6e74656e742e636f6d2f696d6167655f67656e65726174696f6e5f636f6e74656e742f313635"
-                             alt="User" class="w-12 h-12 rounded-full object-cover">
+                        {{-- ĐÃ SỬA: Thay thế link lỗi bằng ảnh thật từ Unsplash cho Nguyễn Thị Hương --}}
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80"
+                             alt="Nguyễn Thị Hương" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Nguyễn Thị Hương</p>
                             <p class="text-sm text-gray-500">Chủ shop thời trang</p>
