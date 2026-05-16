@@ -383,7 +383,7 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Giao hàng cực nhanh, shipper thân thiện. App theo dõi đơn hàng rất tiện, biết chính xác khi nào hàng đến. Sẽ tiếp tục ủng hộ CourierXpress!"</p>
                     <div class="flex items-center space-x-4">
-                        <img src="https://dummyimage.com/100x100/dee2e6/6c757d.jpg&text=U1" alt="User" class="w-12 h-12 rounded-full object-cover">
+                        <img src="https://res.cloudinary.com/dpumipugc/image/upload/v1778928106/OIP_nfyhnc.jpg" alt="User" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Nguyễn Thị Hương</p>
                             <p class="text-sm text-gray-500">Chủ shop thời trang</p>
@@ -401,7 +401,7 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Từ khi dùng CourierXpress, tỷ lệ đơn hàng giao thành công tăng 30%. Khách hàng feedback rất tích cực về tốc độ và thái độ của shipper."</p>
                     <div class="flex items-center space-x-4">
-                        <img src="https://dummyimage.com/100x100/dee2e6/6c757d.jpg&text=U2" alt="User" class="w-12 h-12 rounded-full object-cover">
+                        <img src="https://res.cloudinary.com/dpumipugc/image/upload/v1778928106/download_k2vqgj.jpg" alt="User" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Trần Minh Tuấn</p>
                             <p class="text-sm text-gray-500">Đại lý phân phối</p>
@@ -419,7 +419,7 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Giao diện trực quan, tạo đơn nhanh gọn. Mình thích nhất là hệ thống đối soát tiền COD minh bạch, chuyển khoản đúng hẹn mỗi tuần."</p>
                     <div class="flex items-center space-x-4">
-                        <img src="https://dummyimage.com/100x100/dee2e6/6c757d.jpg&text=U3" alt="User" class="w-12 h-12 rounded-full object-cover">
+                        <img src="https://res.cloudinary.com/dpumipugc/image/upload/v1778928106/OIP_1_kiaq64.jpg" alt="User" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Lê Thị Mai</p>
                             <p class="text-sm text-gray-500">Kinh doanh online</p>
