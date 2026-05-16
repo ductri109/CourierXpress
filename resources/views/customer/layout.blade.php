@@ -215,7 +215,6 @@
                             <i data-lucide="package" class="w-4 h-4"></i>
                             <span class="font-medium">Đơn hàng của tôi</span>
                         </a>
-
                         <div class="h-px bg-gray-100 my-1 mx-2"></div>
 
                         <form method="POST" action="{{ route('logout') }}">
@@ -232,7 +231,6 @@
                     <span>Đăng Nhập</span>
                 </a>
             @endauth
-
         </div>
 
         <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
@@ -290,43 +288,31 @@
                     </a>
                 </div>
             </div>
-
-            <div>
-                <h4 class="font-bold text-lg mb-6">Dịch vụ</h4>
-                <ul class="space-y-3 text-gray-400">
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Giao hàng tiêu chuẩn</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Giao hàng hỏa tốc</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Kho bãi & Fulfillment</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Tích hợp API</a></li>
-                </ul>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Liên hệ</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
+                            <span>1900 123 456</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-primary-400"></i>
+                            <span>support@courierxpress.vn</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
+                            <span>13 Phan Tây Nhạc, Xuân Phương, Hà Nội</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div>
-                <h4 class="font-bold text-lg mb-6">Hỗ trợ khách hàng</h4>
-                <ul class="space-y-3 text-gray-400">
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Trung tâm trợ giúp</a></li>
-                    <li><a href="#tracking" class="hover:text-primary-400 transition-colors">Tra cứu bưu gửi</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Quy định khiếu nại</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Bảng giá cước</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-bold text-lg mb-6">Liên hệ</h4>
-                <ul class="space-y-3 text-gray-400">
-                    <li class="flex items-center space-x-3">
-                        <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
-                        <span>1900 9999</span>
-                    </li>
-                    <li class="flex items-center space-x-3">
-                        <i data-lucide="mail" class="w-5 h-5 text-primary-400"></i>
-                        <span>cskh@courierxpress.vn</span>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
-                        <span>Tòa nhà Logistics, Q.1, TP.HCM</span>
-                    </li>
-                </ul>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm">© 2026 CourierXpress. Hệ thống quản lý vận đơn trực tuyến.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
+                    <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
+                    <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
+                </div>
             </div>
         </div>
 

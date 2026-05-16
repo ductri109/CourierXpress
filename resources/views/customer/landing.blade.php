@@ -58,8 +58,9 @@
 
                 <div class="relative scroll-reveal">
                     <div class="relative floating">
-                        <img src="https://i0.wp.com/blog.locus.sh/wp-content/uploads/2023/05/mem-9.jpg?resize=650%2C431&ssl=1" alt="Logistics Banner"
-                             class="rounded-3xl shadow-2xl w-full border-4 border-white/10">
+                        {{-- THAY ĐỔI: Ảnh nền banner giao diện không gian số Logistics thông minh, chuyên nghiệp --}}
+                        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80" alt="Logistics Banner Smart Supply Chain"
+                             class="rounded-3xl shadow-2xl w-full border-4 border-white/10 object-cover h-[431px]">
 
                         <div class="absolute -left-8 top-1/4 bg-white p-4 rounded-2xl shadow-xl animate-bounce" style="animation-duration: 3s;">
                             <div class="flex items-center space-x-3">
@@ -403,7 +404,8 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Từ khi dùng CourierXpress, tỷ lệ đơn hàng giao thành công tăng 30%. Khách hàng feedback rất tích cực về tốc độ và thái độ của shipper."</p>
                     <div class="flex items-center space-x-4">
-                        <img src="https://dummyimage.com/100x100/dee2e6/6c757d.jpg&text=U2" alt="User" class="w-12 h-12 rounded-full object-cover">
+                        {{-- THAY ĐỔI: Ảnh người dùng U2 thật từ Unsplash --}}
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80" alt="Trần Minh Tuấn" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Trần Minh Tuấn</p>
                             <p class="text-sm text-gray-500">Đại lý phân phối</p>
@@ -421,7 +423,8 @@
                     </div>
                     <p class="text-gray-700 mb-6 leading-relaxed">"Giao diện trực quan, tạo đơn nhanh gọn. Mình thích nhất là hệ thống đối soát tiền COD minh bạch, chuyển khoản đúng hẹn mỗi tuần."</p>
                     <div class="flex items-center space-x-4">
-                        <img src="https://dummyimage.com/100x100/dee2e6/6c757d.jpg&text=U3" alt="User" class="w-12 h-12 rounded-full object-cover">
+                        {{-- THAY ĐỔI: Ảnh người dùng U3 thật từ Unsplash --}}
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80" alt="Lê Thị Mai" class="w-12 h-12 rounded-full object-cover">
                         <div>
                             <p class="font-bold text-gray-900">Lê Thị Mai</p>
                             <p class="text-sm text-gray-500">Kinh doanh online</p>
