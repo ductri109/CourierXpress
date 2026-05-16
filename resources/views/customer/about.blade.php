@@ -1,6 +1,6 @@
 @extends('customer.layout')
 
-@section('title', 'Về Chúng Tôi - CourierXpress') 
+@section('title', 'Về Chúng Tôi - CourierXpress')
 @section('content')
 <main class="flex-grow pt-32 pb-20 px-6">
     <div class="max-w-5xl mx-auto space-y-20">
@@ -77,17 +77,23 @@
                 <h3 class="text-3xl font-bold mb-10 text-center">Đội Ngũ Sáng Lập</h3>
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                        <div class="w-20 h-20 bg-primary-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">L</div>
+                        <div class="w-20 h-20 bg-primary-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                            <img src="https://res.cloudinary.com/dpumipugc/image/upload/v1778591374/L%C3%AA_Tu%E1%BA%A5n_Anh_jn31df.jpg" alt="" class="rounded-full">
+                        </div>
                         <h4 class="font-bold text-lg">Lê Tuấn Anh</h4>
                         <p class="text-gray-400 text-xs mt-2">Student1692582</p>
                     </div>
                     <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                        <div class="w-20 h-20 bg-primary-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">T</div>
+                        <div class="w-20 h-20 bg-primary-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                            <img src="https://res.cloudinary.com/dpumipugc/image/upload/v1778591127/photo_2026-05-12_19-48-32_uygxzs.jpg" alt="" class="rounded-full">
+                        </div>
                         <h4 class="font-bold text-lg">Trịnh Tuấn Anh</h4>
                         <p class="text-gray-400 text-xs mt-2">Student1701600</p>
                     </div>
                     <div class="text-center p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                        <div class="w-20 h-20 bg-primary-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">H</div>
+                        <div class="w-20 h-20 bg-primary-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                            <img src="https://res.cloudinary.com/dpumipugc/image/upload/v1778591841/WIN_20260512_20_15_04_Pro_fquuzr.jpg" alt="" class="rounded-full">
+                        </div>
                         <h4 class="font-bold text-lg">Hoàng Nguyễn Gia Khang</h4>
                         <p class="text-gray-400 text-xs mt-2">Student1698950</p>
                     </div>
