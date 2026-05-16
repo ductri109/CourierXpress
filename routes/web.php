@@ -3,7 +3,19 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
+Route::middleware(['auth:customer'])->group(function () {
+
+    // Route hiển thị trang hồ sơ (GET)
+    Route::get('/profile', [ProfileController::class, 'index'])->name('customer.profile.index');
+    Route::get('/profile/update', [ProfileController::class, 'editProfile'])->name('customer.profile.edit');
+
+    // Route xử lý cập nhật thông tin (PUT hoặc POST)
+    // Lưu ý: Ở phần view trước ta dùng @method('PUT') nên ở đây dùng Route::put
+    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('customer.profile.update');
+
+});
 Route::get('/', function () {
     return view('customer.landing');
 })->name('landing');
@@ -16,11 +28,13 @@ Route::post('/login', [CustomerController::class, 'login'])->name('login.post');
 Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
 Route::get('/about', [CustomerController::class, 'showAbout'])->name('about');
 Route::get('/contact', [CustomerController::class, 'showContact'])->name('contact');
-Route::get('/terms', [CustomerController::class, 'showTerms'])->name('terms');
-Route::get('/policy', [CustomerController::class, 'showPolicy'])->name('policy');
+Route::get('/services', [CustomerController::class, 'showServices'])->name('services');
+Route::get('/services/terms', [CustomerController::class, 'showServiceTerms'])->name('terms');
+Route::get('/services/policy', [CustomerController::class, 'showServicePolicy'])->name('policy');
 Route::middleware(['auth:customer'])->group(function () {
     Route::get('/booking', [CustomerController::class, 'showBooking'])->name('booking');
     Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
+    Route::get('/my-orders', [CustomerController::class, 'showOrders'])->name('customer.orders.index');
 });
 
 //Admin Routes
@@ -65,4 +79,3 @@ Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function
     Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
     Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
 });
-    

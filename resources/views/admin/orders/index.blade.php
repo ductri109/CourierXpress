@@ -13,7 +13,7 @@
         <div class="card-body">
             <form method="GET" action="{{ route('admin.orders.index') }}">
                 <div class="row g-3">
-                    
+
                     <div class="col-md-4">
                         <input type="text" name="tracking_id" class="form-control"
                                placeholder="Mã vận đơn"
@@ -68,7 +68,7 @@
                         <td class="text-primary fw-bold">{{ $order->tracking_id }}</td>
 
                         <td>
-                            {{ optional($order->customer)->user_name ?? 'N/A' }}
+                            {{ optional($order->customer)->full_name ?? 'N/A' }}
                         </td>
 
                         <td>{{ $order->receiver_name }}</td>
