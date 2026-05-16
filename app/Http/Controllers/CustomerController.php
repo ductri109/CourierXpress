@@ -61,14 +61,60 @@ class CustomerController extends Controller
         return view('customer.booking');
     }
 
+//    public function storeBooking(Request $request) {
+//        $request->validate([
+//            'sender_name' => 'required|string',
+//            'sender_address' => 'required|string',
+//            'receiver_name' => 'required|string',
+//            'receiver_address' => 'required|string',
+//            'total_weight' => 'required|numeric|min:0.1',
+//        ]);
     public function storeBooking(Request $request) {
+
         $request->validate([
             'sender_name' => 'required|string',
-            'sender_address' => 'required|string',
+            'sender_province' => 'required|string',
+            'sender_ward' => 'required|string',
+            'sender_address_detail' => 'required|string',
+
             'receiver_name' => 'required|string',
-            'receiver_address' => 'required|string',
-            'total_weight' => 'required|numeric|min:0.1',
+            'receiver_province' => 'required|string',
+            'receiver_ward' => 'required|string',
+            'receiver_address_detail' => 'required|string',
+
+            'weight_range' => 'required|string',
         ]);
+
+        $tracking_id = 'CX-' . strtoupper(bin2hex(random_bytes(3)));
+
+        $sender_address = $request->sender_address_detail . ', ' . $request->sender_ward . ', ' . $request->sender_province;
+        $receiver_address = $request->receiver_address_detail . ', ' . $request->receiver_ward . ', ' . $request->receiver_province;
+
+        $weight_map = [
+            'under_0.5' => 0.5,
+            '0.5-1' => 1.0,
+            '1-2' => 2.0,
+            '2-5' => 5.0,
+            'above_5' => 10.0,
+        ];
+        $total_weight = $weight_map[$request->weight_range] ?? 1.0;
+
+        // 4. Lưu vào Database
+        \App\Models\Courier::create([
+            'tracking_id' => $tracking_id,
+            'sender_name' => $request->sender_name,
+            'sender_address' => $sender_address,
+            'receiver_name' => $request->receiver_name,
+            'receiver_address' => $receiver_address,
+            'total_weight' => $total_weight,
+            'status' => 'pending',
+            'customer_id' => auth('customer')->id(),
+
+        ]);
+
+        return redirect()->route('customer.orders.index')
+            ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
+
 
         $tracking_id = 'CX-' . strtoupper(bin2hex(random_bytes(3)));
 
@@ -83,7 +129,7 @@ class CustomerController extends Controller
             'customer_id' => auth('customer')->id(),
         ]);
 
-        return redirect()->route('landing')->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
+        return redirect()->route('customer.orders.index')->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
     }
 
     public function showOrders(Request $request)

@@ -123,7 +123,6 @@
                                         <option value="">-- Chọn mức cân nặng --</option>
                                         {{-- THAY ĐỔI: Thêm mục 0.5 kg ngay bên dưới mục dưới 0.5 kg và đổi định dạng hiển thị --}}
                                         <option value="under_0.5">Dưới 0.5 kg</option>
-                                        <option value="0.5">0.5 kg</option>
                                         <option value="0.5-1">Từ 0.5 kg đến 1 kg</option>
                                         <option value="1-2">Từ 1 kg đến 2 kg</option>
                                         <option value="2-5">Từ 2 kg đến 5 kg</option>
