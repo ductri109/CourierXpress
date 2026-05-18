@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AgentController;
 
 Route::middleware(['auth:customer'])->group(function () {
 
@@ -71,11 +72,35 @@ Route::get('/admin', function () {
     return redirect()->route('admin.login');
 });
 
-//Agent Routes
-use App\Http\Controllers\AgentController;
+////Agent Routes
+//use App\Http\Controllers\AgentController;
+//Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function () {
+//    Route::get('/orders', [AgentController::class, 'index'])->name('orders.index');
+//    Route::get('/orders/{id}', [AgentController::class, 'show'])->name('orders.show');
+//    Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
+//    Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
+//});
+// Agent Auth Routes (public)
+Route::prefix('agent')->name('agent.')->group(function () {
+    Route::get('/login',    [AgentController::class, 'showLogin'])->name('login');
+    Route::post('/login',   [AgentController::class, 'login'])->name('login.post');
+    Route::get('/register', [AgentController::class, 'showRegister'])->name('register');
+    Route::post('/register',[AgentController::class, 'register'])->name('register.post');
+    Route::post('/logout',  [AgentController::class, 'logout'])->name('logout');
+});
+
+// Agent Protected Routes
 Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function () {
-    Route::get('/orders', [AgentController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{id}', [AgentController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
-    Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
+    // Orders
+    Route::get('/orders',                    [AgentController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}',               [AgentController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/accept',       [AgentController::class, 'accept'])->name('orders.accept');
+    Route::post('/orders/{id}/complete',     [AgentController::class, 'complete'])->name('orders.complete');
+
+    // Couriers (tra cứu theo ID)
+    Route::get('/couriers',                  [AgentController::class, 'couriersIndex'])->name('couriers.index');
+
+    // Customers
+    Route::get('/customers',                 [AgentController::class, 'customersIndex'])->name('customers.index');
+    Route::get('/customers/{id}',            [AgentController::class, 'customersShow'])->name('customers.show');
 });

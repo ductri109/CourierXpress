@@ -17,4 +17,9 @@ class Customer extends Authenticatable
         'password_hash',
         'address',
     ];
+
+    public function couriers()
+    {
+        return $this->hasMany(Courier::class, 'customer_id');
+    }
 }

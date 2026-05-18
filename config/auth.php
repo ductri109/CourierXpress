@@ -47,8 +47,12 @@ return [
             'provider' => 'customers',
         ],
         'admin' => [
-                'driver' => 'session',
-                'provider' => 'admins',
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        'agent' => [
+            'driver'   => 'session',
+            'provider' => 'agents',
         ],
     ],
 
@@ -79,8 +83,12 @@ return [
             'model' => App\Models\Customer::class,
         ],
         'admins' => [
-                'driver' => 'eloquent',
-                'model' => App\Models\Admin::class,
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+        'agents' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Agent::class,
         ],
         // 'users' => [
         //     'driver' => 'database',
