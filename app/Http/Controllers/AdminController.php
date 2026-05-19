@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Courier;
 use App\Models\Agent;
 use App\Models\Admin;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +59,7 @@ class AdminController extends Controller
 
     public function index(Request $request)
     {
-        $query = Courier::with('customer');
+        $query = Courier::with(['customer', 'agent']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -81,9 +82,9 @@ class AdminController extends Controller
 
     public function show($id)
     {
-        $order = Courier::findOrFail($id);
+        $order = Courier::with(['customer', 'agent'])->findOrFail($id);
 
-        // 🔥 chỉ lấy agent đang rảnh
+        // Chỉ lấy agent đang rảnh (active)
         $freeAgents = Agent::where('Status', 'active')->get();
 
         return view('admin.orders.show', compact('order', 'freeAgents'));
@@ -100,27 +101,25 @@ class AdminController extends Controller
         $order = Courier::findOrFail($id);
         $agent = Agent::find($request->agent_id);
 
-        // ❗ tránh assign 2 lần
+        // Tránh assign 2 lần
         if ($order->agent_id) {
             return back()->with('error', 'Đơn này đã được gán agent rồi.');
         }
 
-        // ❗ agent phải đang rảnh
+        // Agent phải đang rảnh
         if (!$agent || $agent->Status !== 'active') {
             return back()->with('error', 'Agent này không khả dụng.');
         }
 
-        // 🔥 transaction chống lỗi
+        // Transaction chống lỗi
         DB::transaction(function () use ($order, $agent) {
             $order->update([
                 'agent_id' => $agent->ID,
-                'status' => 'assigned'
+                'status'   => 'assigned'
             ]);
 
-            // đổi trạng thái agent → bận
-            $agent->update([
-                'Status' => 'busy'
-            ]);
+            // Đổi trạng thái agent → bận
+            $agent->update(['Status' => 'busy']);
         });
 
         return redirect()
@@ -128,10 +127,72 @@ class AdminController extends Controller
             ->with('success', 'Đã gán Agent thành công cho đơn ' . $order->tracking_id);
     }
 
+    // --- DASHBOARD (dữ liệu thật từ DB) ---
+
     public function dashboard()
     {
-        return view('admin.dashboard.index');
+        // Thống kê đơn hàng
+        $totalOrders     = Courier::count();
+        $pendingOrders   = Courier::where('status', 'pending')->count();
+        $assignedOrders  = Courier::where('status', 'assigned')->count();
+        $inTransitOrders = Courier::where('status', 'in_transit')->count();
+        $deliveredOrders = Courier::where('status', 'delivered')->count();
+
+        // Thống kê agent
+        $totalAgents  = Agent::count();
+        $activeAgents = Agent::where('Status', 'active')->count();
+        $busyAgents   = Agent::where('Status', 'busy')->count();
+
+        // Tổng khách hàng
+        $totalCustomers = Customer::count();
+
+        // Đơn hàng gần đây nhất (10 đơn)
+        $recentOrders = Courier::with(['customer', 'agent'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Đơn đang chờ gán (pending) — để admin nhanh tay gán
+        $pendingList = Courier::with('customer')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'asc')
+            ->limit(5)
+            ->get();
+
+        // Agent đang rảnh (để hiển thị nhanh)
+        $availableAgents = Agent::where('Status', 'active')
+            ->withCount(['couriers as total_orders'])
+            ->get();
+
+        // Thống kê theo ngày (7 ngày gần nhất) cho chart
+        $dailyStats = Courier::select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total'),
+            DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered")
+        )
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return view('admin.dashboard.index', compact(
+            'totalOrders',
+            'pendingOrders',
+            'assignedOrders',
+            'inTransitOrders',
+            'deliveredOrders',
+            'totalAgents',
+            'activeAgents',
+            'busyAgents',
+            'totalCustomers',
+            'recentOrders',
+            'pendingList',
+            'availableAgents',
+            'dailyStats'
+        ));
     }
+
+    // --- CUSTOMERS ---
 
     public function customerOverview($id)
     {
@@ -168,54 +229,15 @@ class AdminController extends Controller
         return view('admin.users.account', compact('userId'));
     }
 
+    // --- EMPLOYEES ---
 
     private function demoEmployees()
     {
         return collect([
-            [
-                'id' => 1,
-                'name' => 'Nguyễn Văn An',
-                'email' => 'an.nguyen@courierxpress.vn',
-                'phone' => '0981 234 567',
-                'role' => 'Quản trị viên',
-                'department' => 'Vận hành',
-                'status' => 'active',
-                'avatar' => '1.png',
-                'joined_at' => '12/03/2025',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Trần Minh Đức',
-                'email' => 'duc.tran@courierxpress.vn',
-                'phone' => '0972 111 222',
-                'role' => 'Nhân viên giao hàng',
-                'department' => 'Last Mile',
-                'status' => 'active',
-                'avatar' => '2.png',
-                'joined_at' => '22/04/2025',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Lê Thị Mai',
-                'email' => 'mai.le@courierxpress.vn',
-                'phone' => '0963 555 888',
-                'role' => 'Nhân viên kho',
-                'department' => 'Warehouse',
-                'status' => 'pending',
-                'avatar' => '3.png',
-                'joined_at' => '01/05/2025',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Phạm Quốc Huy',
-                'email' => 'huy.pham@courierxpress.vn',
-                'phone' => '0912 789 456',
-                'role' => 'Điều phối viên',
-                'department' => 'Dispatching',
-                'status' => 'inactive',
-                'avatar' => '4.png',
-                'joined_at' => '18/01/2025',
-            ],
+            ['id' => 1, 'name' => 'Nguyễn Văn An', 'email' => 'an.nguyen@courierxpress.vn', 'phone' => '0981 234 567', 'role' => 'Quản trị viên', 'department' => 'Vận hành', 'status' => 'active', 'avatar' => '1.png', 'joined_at' => '12/03/2025'],
+            ['id' => 2, 'name' => 'Trần Minh Đức', 'email' => 'duc.tran@courierxpress.vn', 'phone' => '0972 111 222', 'role' => 'Nhân viên giao hàng', 'department' => 'Last Mile', 'status' => 'active', 'avatar' => '2.png', 'joined_at' => '22/04/2025'],
+            ['id' => 3, 'name' => 'Lê Thị Mai', 'email' => 'mai.le@courierxpress.vn', 'phone' => '0963 555 888', 'role' => 'Nhân viên kho', 'department' => 'Warehouse', 'status' => 'pending', 'avatar' => '3.png', 'joined_at' => '01/05/2025'],
+            ['id' => 4, 'name' => 'Phạm Quốc Huy', 'email' => 'huy.pham@courierxpress.vn', 'phone' => '0912 789 456', 'role' => 'Điều phối viên', 'department' => 'Dispatching', 'status' => 'inactive', 'avatar' => '4.png', 'joined_at' => '18/01/2025'],
         ]);
     }
 
@@ -239,48 +261,33 @@ class AdminController extends Controller
     public function employeeShow($id)
     {
         $employee = $this->demoEmployees()->firstWhere('id', (int) $id);
-
-        if (!$employee) {
-            abort(404);
-        }
-
+        if (!$employee) abort(404);
         return view('admin.employees.show', compact('employee'));
     }
 
-    public function employeeStore(\Illuminate\Http\Request $request)
+    public function employeeStore(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:30',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|max:255',
+            'phone'      => 'required|string|max:30',
             'department' => 'required|string|max:100',
-            'role' => 'required|string|max:100',
+            'role'       => 'required|string|max:100',
         ]);
 
-        return redirect()
-            ->route('admin.employees.index')
-            ->with('success', 'Đã nhận thông tin thêm nhân viên. Hiện tại đây là bản demo giao diện, chưa lưu xuống database.');
+        return redirect()->route('admin.employees.index')
+            ->with('success', 'Đã nhận thông tin thêm nhân viên. Hiện tại đây là bản demo giao diện.');
     }
 
-    public function employeeUpdate(\Illuminate\Http\Request $request, $id)
+    public function employeeUpdate(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:30',
-            'role' => 'nullable|string|max:100',
-        ]);
-
-        return redirect()
-            ->route('admin.employees.index')
-            ->with('success', 'Đã nhận thông tin cập nhật nhân viên #' . $id . '. Hiện tại đây là bản demo giao diện, chưa lưu xuống database.');
+        return redirect()->route('admin.employees.index')
+            ->with('success', 'Đã nhận thông tin cập nhật nhân viên #' . $id . '.');
     }
 
     public function employeeDestroy($id)
     {
-        return redirect()
-            ->route('admin.employees.index')
-            ->with('success', 'Đã nhận yêu cầu xoá nhân viên #' . $id . '. Hiện tại đây là bản demo giao diện, chưa xoá trong database.');
+        return redirect()->route('admin.employees.index')
+            ->with('success', 'Đã nhận yêu cầu xoá nhân viên #' . $id . '.');
     }
-
 }

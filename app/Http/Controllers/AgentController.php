@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 
 class AgentController extends Controller
 {
+    // --- AUTH ---
+
     public function showLogin()
     {
         return view('agent.auth.login');
@@ -31,11 +33,11 @@ class AgentController extends Controller
             return back()->withErrors(['username' => 'Tên đăng nhập hoặc mật khẩu không đúng.'])->withInput();
         }
 
-        // Đăng nhập và ÉP TẠO SESSION MỚI (Lệnh bắt buộc để không bị văng)
         Auth::guard('agent')->login($agent);
         $request->session()->regenerate();
 
-        return redirect()->route('agent.orders.index');
+        // Redirect về dashboard (không phải orders.index như cũ)
+        return redirect()->route('agent.dashboard');
     }
 
     public function showRegister()
@@ -65,6 +67,44 @@ class AgentController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('agent.login');
     }
+
+    // --- DASHBOARD (mới — dữ liệu thật) ---
+
+    public function dashboard()
+    {
+        $agentId = Auth::guard('agent')->id();
+
+        // Thống kê theo trạng thái
+        $totalOrders     = Courier::where('agent_id', $agentId)->count();
+        $assignedOrders  = Courier::where('agent_id', $agentId)->where('status', 'assigned')->count();
+        $inTransitOrders = Courier::where('agent_id', $agentId)->where('status', 'in_transit')->count();
+        $deliveredOrders = Courier::where('agent_id', $agentId)->where('status', 'delivered')->count();
+
+        // Đơn cần xử lý ngay (trạng thái assigned — agent chưa nhận)
+        $urgentOrders = Courier::where('agent_id', $agentId)
+            ->where('status', 'assigned')
+            ->with('customer')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        // 10 đơn gần nhất
+        $recentOrders = Courier::where('agent_id', $agentId)
+            ->with('customer')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('agent.dashboard.index', compact(
+            'totalOrders',
+            'assignedOrders',
+            'inTransitOrders',
+            'deliveredOrders',
+            'urgentOrders',
+            'recentOrders'
+        ));
+    }
+
+    // --- ORDERS ---
 
     public function index()
     {
@@ -105,6 +145,8 @@ class AgentController extends Controller
         DB::transaction(function () use ($order) {
             $agent = Agent::find($order->agent_id);
             $order->update(['status' => 'delivered']);
+
+            // Trả agent về trạng thái rảnh sau khi hoàn thành
             if ($agent) {
                 $agent->update(['Status' => 'active']);
             }
@@ -112,6 +154,8 @@ class AgentController extends Controller
 
         return back()->with('success', 'Đã giao hàng thành công!');
     }
+
+    // --- COURIERS ---
 
     public function couriersIndex(Request $request)
     {
@@ -134,6 +178,8 @@ class AgentController extends Controller
 
         return view('agent.couriers.index', compact('orders', 'courier'));
     }
+
+    // --- CUSTOMERS ---
 
     public function customersIndex(Request $request)
     {

@@ -10,9 +10,6 @@ class Agent extends Authenticatable
     use HasFactory;
 
     protected $table = 'agents';
-
-    // ĐIỀN ĐÚNG TÊN CỘT ID TRONG DATABASE CỦA BẠN VÀO ĐÂY (Phân biệt chữ hoa/thường)
-    // Ví dụ nó là chữ ID viết hoa thì phải ghi thế này:
     protected $primaryKey = 'ID';
 
     protected $fillable = [
@@ -22,5 +19,13 @@ class Agent extends Authenticatable
     public function getAuthPassword()
     {
         return $this->PasswordHash;
+    }
+
+    /**
+     * Tất cả đơn hàng được gán cho agent này
+     */
+    public function couriers()
+    {
+        return $this->hasMany(Courier::class, 'agent_id', 'ID');
     }
 }
