@@ -28,7 +28,41 @@
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                 </div>
 
-                <form action="{{ route('booking.post') }}" method="POST" class="p-8 md:p-12 space-y-10">
+                {{-- THÔNG BÁO (ALERTS) --}}
+                <div class="px-8 md:px-12 pt-8 pb-0">
+                    {{-- Thông báo thành công --}}
+                    @if(session('success'))
+                        <div class="bg-green-50 border border-green-200 p-4 rounded-xl flex items-start space-x-3 mb-2">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5 shrink-0"></i>
+                            <p class="text-sm text-green-700 font-medium">{{ session('success') }}</p>
+                        </div>
+                    @endif
+
+                    {{-- Thông báo lỗi chung --}}
+                    @if(session('error'))
+                        <div class="bg-red-50 border border-red-200 p-4 rounded-xl flex items-start space-x-3 mb-2">
+                            <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 mt-0.5 shrink-0"></i>
+                            <p class="text-sm text-red-700 font-medium">{{ session('error') }}</p>
+                        </div>
+                    @endif
+
+                    {{-- Thông báo lỗi Validate Form --}}
+                    @if($errors->any())
+                        <div class="bg-red-50 border border-red-200 p-4 rounded-xl flex items-start space-x-3 mb-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500 mt-0.5 shrink-0"></i>
+                            <div class="text-sm text-red-700 font-medium">
+                                <p class="mb-1">Vui lòng kiểm tra lại các thông tin sau:</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <form action="{{ route('booking.post') }}" method="POST" class="p-8 md:p-12 space-y-10 pt-4 md:pt-4">
                     @csrf
 
                     <div class="relative">
@@ -40,7 +74,7 @@
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
                             <div class="space-y-2 md:col-span-2">
                                 <label class="block text-sm font-semibold text-gray-700">Họ tên người gửi</label>
-                                <input type="text" name="sender_name" value="{{ auth('customer')->user()->full_name }}"
+                                <input type="text" name="sender_name" value="{{ old('sender_name', auth('customer')->user()?->full_name) }}"
                                        class="w-full pl-4 pr-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none bg-gray-50 font-medium text-gray-600">
                             </div>
                         </div>
@@ -64,7 +98,7 @@
 
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-gray-700">Số nhà, ngõ ngách, tên đường người gửi <span class="text-primary-500">*</span></label>
-                            <input type="text" name="sender_address_detail" placeholder="Ví dụ: Số 5, ngách 12/2 Đội Cấn" required
+                            <input type="text" name="sender_address_detail" value="{{ old('sender_address_detail') }}" placeholder="Ví dụ: Số 5, ngách 12/2 Đội Cấn" required
                                    class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-50 transition-all">
                         </div>
                     </div>
@@ -78,7 +112,7 @@
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
                             <div class="space-y-2 md:col-span-2">
                                 <label class="block text-sm font-semibold text-gray-700">Họ tên người nhận <span class="text-primary-500">*</span></label>
-                                <input type="text" name="receiver_name" placeholder="Nhập tên người nhận" required
+                                <input type="text" name="receiver_name" value="{{ old('receiver_name') }}" placeholder="Nhập tên người nhận" required
                                        class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-50 transition-all">
                             </div>
                         </div>
@@ -102,7 +136,7 @@
 
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-gray-700">Số nhà, ngõ ngách, tên đường người nhận <span class="text-primary-500">*</span></label>
-                            <input type="text" name="receiver_address_detail" placeholder="Ví dụ: Số 20, ngõ 55 Hoàng Hoa Thám" required
+                            <input type="text" name="receiver_address_detail" value="{{ old('receiver_address_detail') }}" placeholder="Ví dụ: Số 20, ngõ 55 Hoàng Hoa Thám" required
                                    class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-50 transition-all">
                         </div>
                     </div>
@@ -121,12 +155,11 @@
                                     <select name="weight_range" required
                                             class="w-full px-4 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm bg-white font-medium text-gray-700">
                                         <option value="">-- Chọn mức cân nặng --</option>
-                                        {{-- THAY ĐỔI: Thêm mục 0.5 kg ngay bên dưới mục dưới 0.5 kg và đổi định dạng hiển thị --}}
-                                        <option value="under_0.5">Dưới 0.5 kg</option>
-                                        <option value="0.5-1">Từ 0.5 kg đến 1 kg</option>
-                                        <option value="1-2">Từ 1 kg đến 2 kg</option>
-                                        <option value="2-5">Từ 2 kg đến 5 kg</option>
-                                        <option value="above_5">Trên 5 kg</option>
+                                        <option value="under_0.5" {{ old('weight_range') == 'under_0.5' ? 'selected' : '' }}>Dưới 0.5 kg</option>
+                                        <option value="0.5-1" {{ old('weight_range') == '0.5-1' ? 'selected' : '' }}>Từ 0.5 kg đến 1 kg</option>
+                                        <option value="1-2" {{ old('weight_range') == '1-2' ? 'selected' : '' }}>Từ 1 kg đến 2 kg</option>
+                                        <option value="2-5" {{ old('weight_range') == '2-5' ? 'selected' : '' }}>Từ 2 kg đến 5 kg</option>
+                                        <option value="above_5" {{ old('weight_range') == 'above_5' ? 'selected' : '' }}>Trên 5 kg</option>
                                     </select>
                                 </div>
 
@@ -134,7 +167,7 @@
                                 <div class="md:col-span-2 space-y-2">
                                     <label class="block text-sm font-semibold text-gray-700">Ghi chú cho người giao hàng</label>
                                     <textarea name="shipping_notes" rows="2" placeholder="Ví dụ: Hàng dễ vỡ, liên hệ trước khi giao, hàng chất lỏng..."
-                                              class="w-full px-4 py-3 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm font-medium resize-none text-gray-700 placeholder-gray-400"></textarea>
+                                              class="w-full px-4 py-3 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm font-medium resize-none text-gray-700 placeholder-gray-400">{{ old('shipping_notes') }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -180,14 +213,25 @@
             // Sắp xếp danh sách theo bảng chữ cái A-Z
             wardsData.sort((a, b) => a.localeCompare(b, 'vi'));
 
+            const oldSenderWard = "{{ old('sender_ward') }}";
+            const oldReceiverWard = "{{ old('receiver_ward') }}";
+
             // Đổ dữ liệu đồng thời vào cả dropdown người gửi và người nhận
             wardsData.forEach(wardName => {
-                let optionSender = new Option(wardName, wardName);
-                let optionReceiver = new Option(wardName, wardName);
+                let isSenderSelected = oldSenderWard === wardName;
+                let isReceiverSelected = oldReceiverWard === wardName;
+
+                let optionSender = new Option(wardName, wardName, false, isSenderSelected);
+                let optionReceiver = new Option(wardName, wardName, false, isReceiverSelected);
 
                 senderWardSelect.add(optionSender);
                 receiverWardSelect.add(optionReceiver);
             });
+
+            // Re-render lucide icons if needed
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         });
     </script>
 @endsection

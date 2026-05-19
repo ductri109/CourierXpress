@@ -18,7 +18,6 @@ class CustomerController extends Controller
      * Thay đổi tham số truyền vào thành CustomerRegisterRequest để tự động chạy bộ kiểm lỗi riêng.
      */
     public function register(CustomerRegisterRequest $request) {
-        // Đoạn code $request->validate([ ... ]) cũ đã được lược bỏ
 
         Customer::create([
             'full_name'     => $request->full_name,
@@ -98,13 +97,18 @@ class CustomerController extends Controller
             'receiver_address' => $receiver_address,
             'total_weight'     => $total_weight,
             'status'           => 'pending',
-            'customer_id'      => auth('customer')->id(),
+            'customer_id'      => auth('customer')->check() ? auth('customer')->id() : null,
         ]);
 
         // Đã dọn dẹp các khối lệnh trùng lặp và đoạn code chết (dead code) ở phía cuối hàm cũ
+        if (auth('customer')->check()) {
+            return redirect()->route('customer.orders.index')
+                ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
+        }
 
-        return redirect()->route('customer.orders.index')
-            ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
+        // NẾU KHÁCH CHƯA ĐĂNG NHẬP -> Chuyển về trang đặt đơn (hoặc trang chủ)
+        return redirect()->route('booking')
+            ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id . '. Vui lòng lưu lại mã này để tra cứu.');
     }
 
     public function showOrders(Request $request)
@@ -143,6 +147,26 @@ class CustomerController extends Controller
             ->toArray();
 
         return view('customer.orders.index', compact('orders', 'statusCounts'));
+    }
+
+    public function showTracking(Request $request)
+    {
+        $order = null;
+        $tracking_id = $request->input('tracking_id');
+
+        if ($tracking_id) {
+            // Xóa khoảng trắng 2 đầu nếu khách vô tình copy thừa
+            $tracking_id = trim($tracking_id);
+
+            // Truy vấn đơn hàng trong DB
+            $order = \App\Models\Courier::where('tracking_id', $tracking_id)->first();
+
+            if (!$order) {
+                return back()->with('error', 'Không tìm thấy vận đơn: ' . $tracking_id . '. Vui lòng kiểm tra lại mã.');
+            }
+        }
+
+        return view('customer.tracking', compact('order', 'tracking_id'));
     }
 
     public function showAbout() { return view('customer.about'); }

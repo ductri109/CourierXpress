@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('receiver_name');
             $table->string('receiver_address');
             $table->float('total_weight');
-            $table->string('status')->default('pending'); 
-            $table->foreignId('customer_id')->constrained('customers'); 
-            $table->foreignId('agent_id')->nullable()->constrained('agents'); 
-            $table->timestamps(); 
+            $table->string('status')->default('pending');
+            $table->foreignId('customer_id')->nullable()->constrained('customers');
+            $table->foreignId('agent_id')->nullable()->constrained('agents');
+            $table->timestamps();
         });
     }
 

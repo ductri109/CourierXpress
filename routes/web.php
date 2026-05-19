@@ -9,9 +9,7 @@ use App\Http\Controllers\AgentController;
 // ============================================================
 // CUSTOMER ROUTES
 // ============================================================
-Route::get('/', function () {
-    return view('customer.landing');
-})->name('landing');
+Route::get('/', fn() => view('customer.landing'))->name('landing');
 
 Route::get('/register', [CustomerController::class, 'showRegister'])->name('register');
 Route::post('/register', [CustomerController::class, 'register'])->name('register.post');
@@ -23,13 +21,14 @@ Route::get('/contact', [CustomerController::class, 'showContact'])->name('contac
 Route::get('/services', [CustomerController::class, 'showServices'])->name('services');
 Route::get('/services/terms', [CustomerController::class, 'showServiceTerms'])->name('terms');
 Route::get('/services/policy', [CustomerController::class, 'showServicePolicy'])->name('policy');
+Route::get('/booking', [CustomerController::class, 'showBooking'])->name('booking');
+Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
+Route::get('/tracking', [CustomerController::class, 'showTracking'])->name('tracking');
 
 Route::middleware(['auth:customer'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('customer.profile.index');
     Route::get('/profile/update', [ProfileController::class, 'editProfile'])->name('customer.profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('customer.profile.update');
-    Route::get('/booking', [CustomerController::class, 'showBooking'])->name('booking');
-    Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
     Route::get('/my-orders', [CustomerController::class, 'showOrders'])->name('customer.orders.index');
 });
 
@@ -38,17 +37,34 @@ Route::middleware(['auth:customer'])->group(function () {
 // ============================================================
 Route::prefix('admin')->name('admin.')->group(function () {
 
+    // Public
     Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminController::class, 'login'])->name('login.post');
 
     Route::middleware(['auth:admin'])->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+
+        // Dashboard
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
         // Orders
         Route::get('/orders', [AdminController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}', [AdminController::class, 'show'])->name('orders.show');
         Route::post('/orders/{id}/assign', [AdminController::class, 'assignAgent'])->name('orders.assign');
+
+        // User Account (admin profile) — HOẠT ĐỘNG THẬT
+        Route::get('/account', [AdminController::class, 'account'])->name('account');
+        Route::put('/account/username', [AdminController::class, 'updateUsername'])->name('account.username');
+        Route::put('/account/password', [AdminController::class, 'updatePassword'])->name('account.password');
+
+        // Agent Management (CRUD thật từ DB)
+        Route::get('/agents', [AdminController::class, 'agentsIndex'])->name('agents.index');
+        Route::post('/agents', [AdminController::class, 'agentsStore'])->name('agents.store');
+        Route::get('/agents/{id}', [AdminController::class, 'agentsShow'])->name('agents.show');
+        Route::put('/agents/{id}', [AdminController::class, 'agentsUpdate'])->name('agents.update');
+        Route::patch('/agents/{id}/status', [AdminController::class, 'agentsUpdateStatus'])->name('agents.status');
+        Route::delete('/agents/{id}', [AdminController::class, 'agentsDestroy'])->name('agents.destroy');
 
         // Customers
         Route::get('/customers/{id}/overview', [AdminController::class, 'customerOverview'])->name('customers.overview');
@@ -56,55 +72,39 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/customers/{id}/billing', [AdminController::class, 'customerBilling'])->name('customers.billing');
         Route::get('/customers/{id}/notifications', [AdminController::class, 'customerNotifications'])->name('customers.notifications');
 
-        // Employees
+        // Employees (demo)
         Route::get('/employees', [AdminController::class, 'employeesIndex'])->name('employees.index');
         Route::post('/employees', [AdminController::class, 'employeeStore'])->name('employees.store');
         Route::get('/employees/{id}', [AdminController::class, 'employeeShow'])->name('employees.show');
         Route::put('/employees/{id}', [AdminController::class, 'employeeUpdate'])->name('employees.update');
         Route::delete('/employees/{id}', [AdminController::class, 'employeeDestroy'])->name('employees.destroy');
-
-        // Other
-        Route::get('/fleet', [AdminController::class, 'fleet'])->name('fleet.index');
-        Route::get('/users/{id}/account', [AdminController::class, 'userAccount'])->name('users.account');
     });
 });
 
 Route::get('/admin', function () {
-    if (auth()->guard('admin')->check()) {
-        return redirect()->route('admin.dashboard');
-    }
-    return redirect()->route('admin.login');
+    return auth()->guard('admin')->check()
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('admin.login');
 });
 
 // ============================================================
 // AGENT ROUTES
 // ============================================================
-
-// Public (auth không yêu cầu)
 Route::prefix('agent')->name('agent.')->group(function () {
-    Route::get('/login',    [AgentController::class, 'showLogin'])->name('login');
-    Route::post('/login',   [AgentController::class, 'login'])->name('login.post');
-    Route::get('/register', [AgentController::class, 'showRegister'])->name('register');
+    Route::get('/login',     [AgentController::class, 'showLogin'])->name('login');
+    Route::post('/login',    [AgentController::class, 'login'])->name('login.post');
+    Route::get('/register',  [AgentController::class, 'showRegister'])->name('register');
     Route::post('/register', [AgentController::class, 'register'])->name('register.post');
-    Route::post('/logout',  [AgentController::class, 'logout'])->name('logout');
+    Route::post('/logout',   [AgentController::class, 'logout'])->name('logout');
 });
 
-// Protected (yêu cầu auth:agent)
 Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function () {
-
-    // ⭐ Dashboard mới — trang chủ của agent
     Route::get('/dashboard', [AgentController::class, 'dashboard'])->name('dashboard');
-
-    // Orders
-    Route::get('/orders',                [AgentController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{id}',           [AgentController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{id}/accept',   [AgentController::class, 'accept'])->name('orders.accept');
+    Route::get('/orders', [AgentController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [AgentController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
     Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');
-
-    // Couriers
     Route::get('/couriers', [AgentController::class, 'couriersIndex'])->name('couriers.index');
-
-    // Customers
-    Route::get('/customers',     [AgentController::class, 'customersIndex'])->name('customers.index');
+    Route::get('/customers', [AgentController::class, 'customersIndex'])->name('customers.index');
     Route::get('/customers/{id}', [AgentController::class, 'customersShow'])->name('customers.show');
 });
