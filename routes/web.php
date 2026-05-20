@@ -100,7 +100,15 @@ Route::prefix('agent')->name('agent.')->group(function () {
 
 Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function () {
     Route::get('/dashboard', [AgentController::class, 'dashboard'])->name('dashboard');
+
+    // Orders
     Route::get('/orders', [AgentController::class, 'index'])->name('orders.index');
+
+    // --- CHỈ SỬA THÊM 2 ROUTE NÀY CHO AGENT ---
+    Route::get('/orders/by-time', [AgentController::class, 'byTime'])->name('orders.by-time');
+    Route::get('/orders/by-status', [AgentController::class, 'byStatus'])->name('orders.by-status');
+    // ------------------------------------------
+
     Route::get('/orders/{id}', [AgentController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/accept', [AgentController::class, 'accept'])->name('orders.accept');
     Route::post('/orders/{id}/complete', [AgentController::class, 'complete'])->name('orders.complete');

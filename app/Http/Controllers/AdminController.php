@@ -114,9 +114,11 @@ class AdminController extends Controller
     {
         $query = Courier::with(['customer', 'agent']);
 
-        if ($request->filled('status'))       $query->where('status', $request->status);
-        if ($request->filled('tracking_id'))  $query->where('tracking_id', 'LIKE', '%' . $request->tracking_id . '%');
+        if ($request->filled('status'))        $query->where('status', $request->status);
+        if ($request->filled('tracking_id'))   $query->where('tracking_id', 'LIKE', '%' . $request->tracking_id . '%');
         if ($request->filled('receiver_name')) $query->where('receiver_name', 'LIKE', '%' . $request->receiver_name . '%');
+        if ($request->filled('date_from'))     $query->whereDate('created_at', '>=', $request->date_from);
+        if ($request->filled('date_to'))       $query->whereDate('created_at', '<=', $request->date_to);
 
         $orders = $query->orderBy('created_at', 'desc')->get();
         return view('admin.orders.index', compact('orders'));
@@ -261,7 +263,11 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.agents.index')
-            ->with('success', 'Đã thêm agent ' . $request->FullName . ' thành công!');
+            ->with('success', 'Đã thêm agent ' . $request->FullName . ' thành công!')
+            ->with('new_agent', [
+                'username' => $request->Username,
+                'password' => $request->password,
+            ]);
     }
 
     public function agentsShow($id)
