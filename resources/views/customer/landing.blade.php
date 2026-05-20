@@ -27,17 +27,15 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                        @auth('customer')
                             <a href="{{ route('booking') }}" class="bg-yellow-400 text-primary-900 px-8 py-3.5 rounded-xl font-bold hover:bg-yellow-300 transition-all shadow-lg text-center flex items-center justify-center space-x-2">
                                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
                                 <span>Tạo Đơn Hàng Mới</span>
                             </a>
 
-                            <a href="#tracking" class="bg-white/20 text-white backdrop-blur-md border border-white/30 px-8 py-3.5 rounded-xl font-bold hover:bg-white/30 transition-all shadow-lg text-center flex items-center justify-center space-x-2">
+                            <a href="{{ route('tracking') }}" class="bg-white/20 text-white backdrop-blur-md border border-white/30 px-8 py-3.5 rounded-xl font-bold hover:bg-white/30 transition-all shadow-lg text-center flex items-center justify-center space-x-2">
                                 <i data-lucide="search" class="w-5 h-5"></i>
                                 <span>Tra Cứu Vận Đơn</span>
                             </a>
-                        @endauth
                     </div>
 
                     <div class="flex space-x-8 pt-6 border-t border-white/20 mt-8">
@@ -146,102 +144,6 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Hỗ trợ 24/7</h3>
                     <p class="text-gray-600 leading-relaxed">Đội ngũ CSKH luôn sẵn sàng hỗ trợ giải quyết khiếu nại và tra cứu bất kỳ lúc nào.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="tracking" class="py-24 px-4 sm:px-6 lg:px-8 bg-gray-900 relative overflow-hidden">
-        <div class="absolute inset-0">
-            <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl"></div>
-        </div>
-
-        <div class="max-w-5xl mx-auto relative z-10">
-            <div class="text-center mb-12 scroll-reveal">
-                <span class="text-primary-400 font-semibold text-sm uppercase tracking-wider">Theo dõi đơn hàng</span>
-                <h2 class="text-4xl font-bold text-white mt-3">Tra cứu đơn hàng dễ dàng</h2>
-                <p class="text-gray-400 mt-4">Nhập mã vận đơn để xem hành trình đơn hàng của bạn trên CourierXpress</p>
-            </div>
-
-            <div class="bg-white rounded-3xl p-8 shadow-2xl scroll-reveal">
-                <div class="flex flex-col md:flex-row gap-4 mb-8">
-                    <div class="flex-1 relative">
-                        <i data-lucide="package" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                        <input type="text" placeholder="Ví dụ: CX123456789"
-                               class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none text-lg font-mono">
-                    </div>
-                    <button class="bg-primary-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-primary-700 transition-all flex items-center justify-center space-x-2">
-                        <i data-lucide="search" class="w-5 h-5"></i>
-                        <span>Tra cứu lộ trình</span>
-                    </button>
-                </div>
-
-                <div class="relative">
-                    <div class="absolute left-8 top-0 bottom-0 w-1 bg-gray-200"></div>
-                    <div class="absolute left-8 top-0 h-2/3 w-1 tracking-line rounded-full"></div>
-
-                    <div class="space-y-8">
-                        <div class="flex items-start space-x-4 relative">
-                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center z-10 shadow-lg">
-                                <i data-lucide="check" class="w-8 h-8 text-white"></i>
-                            </div>
-                            <div class="flex-1 pt-2">
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 text-lg">Giao hàng thành công</h4>
-                                        <p class="text-gray-600 mt-1">Người nhận: Nguyễn Văn A - Đã ký nhận</p>
-                                    </div>
-                                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap">Hôm nay, 14:30</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4 relative">
-                            <div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center z-10 shadow-lg">
-                                <i data-lucide="truck" class="w-7 h-7 text-white"></i>
-                            </div>
-                            <div class="flex-1 pt-2">
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 text-lg">Đang giao hàng</h4>
-                                        <p class="text-gray-600 mt-1">Nhân viên tuyến đang vận chuyển đến địa chỉ</p>
-                                    </div>
-                                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap">Hôm nay, 13:45</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4 relative">
-                            <div class="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center z-10 shadow-lg">
-                                <i data-lucide="warehouse" class="w-7 h-7 text-white"></i>
-                            </div>
-                            <div class="flex-1 pt-2">
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 text-lg">Đến bưu cục phát Quận 7</h4>
-                                        <p class="text-gray-600 mt-1">Đơn hàng đã đến kho và đang chờ phân hướng</p>
-                                    </div>
-                                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap">Hôm nay, 08:20</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4 relative opacity-60">
-                            <div class="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center z-10">
-                                <i data-lucide="box" class="w-7 h-7 text-white"></i>
-                            </div>
-                            <div class="flex-1 pt-2">
-                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 text-lg">Đã tiếp nhận hàng</h4>
-                                        <p class="text-gray-600 mt-1">Lấy hàng thành công tại địa chỉ người gửi</p>
-                                    </div>
-                                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap">Hôm qua, 16:00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

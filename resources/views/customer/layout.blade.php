@@ -107,8 +107,11 @@
                     Trang chủ
                 </a>
 
-                <a href="#tracking"
-                   class="text-gray-600 hover:text-primary-600 font-medium transition-colors">
+                <a href="{{ route('tracking') }}"
+                   class="{{ request()->routeIs('tracking')
+                            ? 'text-primary-600 font-bold'
+                            : 'text-gray-600 hover:text-primary-600' }}
+                            font-medium transition-colors">
                     Tra cứu
                 </a>
 

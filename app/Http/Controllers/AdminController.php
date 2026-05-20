@@ -13,12 +13,14 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    // --- AUTH ---
+    // ================================================================
+    // AUTH
+    // ================================================================
 
     public function showLogin()
     {
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.orders.index');
+            return redirect()->route('admin.dashboard');
         }
         return view('admin.auth.login');
     }
@@ -51,120 +53,42 @@ class AdminController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect()->route('admin.login');
     }
 
-    // --- ORDER LIST ---
-
-    public function index(Request $request)
-    {
-        $query = Courier::with(['customer', 'agent']);
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('tracking_id')) {
-            $query->where('tracking_id', 'LIKE', '%' . $request->tracking_id . '%');
-        }
-
-        if ($request->filled('receiver_name')) {
-            $query->where('receiver_name', 'LIKE', '%' . $request->receiver_name . '%');
-        }
-
-        $orders = $query->orderBy('created_at', 'desc')->get();
-
-        return view('admin.orders.index', compact('orders'));
-    }
-
-    // --- ORDER DETAIL ---
-
-    public function show($id)
-    {
-        $order = Courier::with(['customer', 'agent'])->findOrFail($id);
-
-        // Chỉ lấy agent đang rảnh (active)
-        $freeAgents = Agent::where('Status', 'active')->get();
-
-        return view('admin.orders.show', compact('order', 'freeAgents'));
-    }
-
-    // --- ASSIGN AGENT ---
-
-    public function assignAgent(Request $request, $id)
-    {
-        $request->validate([
-            'agent_id' => 'required|exists:agents,ID'
-        ]);
-
-        $order = Courier::findOrFail($id);
-        $agent = Agent::find($request->agent_id);
-
-        // Tránh assign 2 lần
-        if ($order->agent_id) {
-            return back()->with('error', 'Đơn này đã được gán agent rồi.');
-        }
-
-        // Agent phải đang rảnh
-        if (!$agent || $agent->Status !== 'active') {
-            return back()->with('error', 'Agent này không khả dụng.');
-        }
-
-        // Transaction chống lỗi
-        DB::transaction(function () use ($order, $agent) {
-            $order->update([
-                'agent_id' => $agent->ID,
-                'status'   => 'assigned'
-            ]);
-
-            // Đổi trạng thái agent → bận
-            $agent->update(['Status' => 'busy']);
-        });
-
-        return redirect()
-            ->route('admin.orders.index')
-            ->with('success', 'Đã gán Agent thành công cho đơn ' . $order->tracking_id);
-    }
-
-    // --- DASHBOARD (dữ liệu thật từ DB) ---
+    // ================================================================
+    // DASHBOARD
+    // ================================================================
 
     public function dashboard()
     {
-        // Thống kê đơn hàng
         $totalOrders     = Courier::count();
         $pendingOrders   = Courier::where('status', 'pending')->count();
         $assignedOrders  = Courier::where('status', 'assigned')->count();
         $inTransitOrders = Courier::where('status', 'in_transit')->count();
         $deliveredOrders = Courier::where('status', 'delivered')->count();
 
-        // Thống kê agent
         $totalAgents  = Agent::count();
         $activeAgents = Agent::where('Status', 'active')->count();
         $busyAgents   = Agent::where('Status', 'busy')->count();
 
-        // Tổng khách hàng
         $totalCustomers = Customer::count();
 
-        // Đơn hàng gần đây nhất (10 đơn)
         $recentOrders = Courier::with(['customer', 'agent'])
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
-        // Đơn đang chờ gán (pending) — để admin nhanh tay gán
         $pendingList = Courier::with('customer')
             ->where('status', 'pending')
             ->orderBy('created_at', 'asc')
             ->limit(5)
             ->get();
 
-        // Agent đang rảnh (để hiển thị nhanh)
         $availableAgents = Agent::where('Status', 'active')
             ->withCount(['couriers as total_orders'])
             ->get();
 
-        // Thống kê theo ngày (7 ngày gần nhất) cho chart
         $dailyStats = Courier::select(
             DB::raw('DATE(created_at) as date'),
             DB::raw('COUNT(*) as total'),
@@ -176,85 +100,277 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.dashboard.index', compact(
-            'totalOrders',
-            'pendingOrders',
-            'assignedOrders',
-            'inTransitOrders',
-            'deliveredOrders',
-            'totalAgents',
-            'activeAgents',
-            'busyAgents',
-            'totalCustomers',
-            'recentOrders',
-            'pendingList',
-            'availableAgents',
-            'dailyStats'
+            'totalOrders', 'pendingOrders', 'assignedOrders', 'inTransitOrders', 'deliveredOrders',
+            'totalAgents', 'activeAgents', 'busyAgents', 'totalCustomers',
+            'recentOrders', 'pendingList', 'availableAgents', 'dailyStats'
         ));
     }
 
-    // --- CUSTOMERS ---
+    // ================================================================
+    // ORDERS
+    // ================================================================
 
-    public function customerOverview($id)
+    public function index(Request $request)
     {
-        $customerId = $id;
-        return view('admin.customers.overview', compact('customerId'));
+        $query = Courier::with(['customer', 'agent']);
+
+        if ($request->filled('status'))       $query->where('status', $request->status);
+        if ($request->filled('tracking_id'))  $query->where('tracking_id', 'LIKE', '%' . $request->tracking_id . '%');
+        if ($request->filled('receiver_name')) $query->where('receiver_name', 'LIKE', '%' . $request->receiver_name . '%');
+
+        $orders = $query->orderBy('created_at', 'desc')->get();
+        return view('admin.orders.index', compact('orders'));
     }
 
-    public function customerSecurity($id)
+    public function show($id)
     {
-        $customerId = $id;
-        return view('admin.customers.security', compact('customerId'));
+        $order = Courier::with(['customer', 'agent'])->findOrFail($id);
+        $freeAgents = Agent::where('Status', 'active')->get();
+        return view('admin.orders.show', compact('order', 'freeAgents'));
     }
 
-    public function customerBilling($id)
+    public function assignAgent(Request $request, $id)
     {
-        $customerId = $id;
-        return view('admin.customers.billing', compact('customerId'));
+        $request->validate(['agent_id' => 'required|exists:agents,ID']);
+
+        $order = Courier::findOrFail($id);
+        $agent = Agent::find($request->agent_id);
+
+        if ($order->agent_id) {
+            return back()->with('error', 'Đơn này đã được gán agent rồi.');
+        }
+
+        if (!$agent || $agent->Status !== 'active') {
+            return back()->with('error', 'Agent này không khả dụng.');
+        }
+
+        DB::transaction(function () use ($order, $agent) {
+            $order->update(['agent_id' => $agent->ID, 'status' => 'assigned']);
+            $agent->update(['Status' => 'busy']);
+        });
+
+        return redirect()->route('admin.orders.index')
+            ->with('success', 'Đã gán Agent thành công cho đơn ' . $order->tracking_id);
     }
 
-    public function customerNotifications($id)
+    // ================================================================
+    // USER ACCOUNT (Admin profile)
+    // ================================================================
+
+    public function account()
     {
-        $customerId = $id;
-        return view('admin.customers.notifications', compact('customerId'));
+        $admin = Auth::guard('admin')->user();
+        return view('admin.account.index', compact('admin'));
     }
 
-    public function fleet()
+    public function updateUsername(Request $request)
     {
-        return view('admin.fleet.index');
+        $admin = Auth::guard('admin')->user();
+
+        $request->validate([
+            'user_name'        => 'required|string|min:3|max:50|unique:admins,user_name,' . $admin->id,
+            'current_password' => 'required',
+        ]);
+
+        if (!Hash::check($request->current_password, $admin->password_hash)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.'])->withInput();
+        }
+
+        $admin->update(['user_name' => $request->user_name]);
+
+        return back()->with('success', 'Đã cập nhật tên đăng nhập thành công!');
     }
 
-    public function userAccount($id = 1)
+    public function updatePassword(Request $request)
     {
-        $userId = $id;
-        return view('admin.users.account', compact('userId'));
+        $admin = Auth::guard('admin')->user();
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password'     => 'required|min:6|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, $admin->password_hash)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
+        }
+
+        if (Hash::check($request->new_password, $admin->password_hash)) {
+            return back()->withErrors(['new_password' => 'Mật khẩu mới không được trùng mật khẩu cũ.']);
+        }
+
+        $admin->update(['password_hash' => Hash::make($request->new_password)]);
+
+        return back()->with('success', 'Đã cập nhật mật khẩu thành công!');
     }
 
-    // --- EMPLOYEES ---
+    // ================================================================
+    // AGENTS MANAGEMENT (CRUD thật từ DB)
+    // ================================================================
+
+    public function agentsIndex(Request $request)
+    {
+        $query = Agent::withCount([
+            'couriers as total_orders',
+            'couriers as delivered_orders' => fn($q) => $q->where('status', 'delivered'),
+            'couriers as active_orders'    => fn($q) => $q->whereIn('status', ['assigned', 'in_transit']),
+        ]);
+
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('FullName', 'like', "%{$s}%")
+                    ->orWhere('Email',    'like', "%{$s}%")
+                    ->orWhere('Phone',    'like', "%{$s}%")
+                    ->orWhere('Username', 'like', "%{$s}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('Status', $request->status);
+        }
+
+        $agents = $query->orderBy('created_at', 'desc')->get();
+
+        $totalAgents    = Agent::count();
+        $activeAgents   = Agent::where('Status', 'active')->count();
+        $busyAgents     = Agent::where('Status', 'busy')->count();
+        $totalDelivered = Courier::where('status', 'delivered')->count();
+
+        return view('admin.agents.index', compact(
+            'agents', 'totalAgents', 'activeAgents', 'busyAgents', 'totalDelivered'
+        ));
+    }
+
+    public function agentsStore(Request $request)
+    {
+        $request->validate([
+            'FullName'  => 'required|string|max:255',
+            'Email'     => 'required|email|unique:agents,Email',
+            'Phone'     => 'required|string|max:20',
+            'Username'  => 'required|string|min:3|max:50|unique:agents,Username',
+            'password'  => 'required|string|min:6|confirmed',
+        ]);
+
+        Agent::create([
+            'FullName'     => $request->FullName,
+            'Email'        => $request->Email,
+            'Phone'        => $request->Phone,
+            'Username'     => $request->Username,
+            'PasswordHash' => Hash::make($request->password),
+            'Status'       => 'active',
+        ]);
+
+        return redirect()->route('admin.agents.index')
+            ->with('success', 'Đã thêm agent ' . $request->FullName . ' thành công!');
+    }
+
+    public function agentsShow($id)
+    {
+        $agent = Agent::findOrFail($id);
+
+        $orders = Courier::where('agent_id', $id)
+            ->with('customer')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $totalOrders     = $orders->count();
+        $assignedOrders  = $orders->where('status', 'assigned')->count();
+        $inTransitOrders = $orders->where('status', 'in_transit')->count();
+        $deliveredOrders = $orders->where('status', 'delivered')->count();
+
+        return view('admin.agents.show', compact(
+            'agent', 'orders',
+            'totalOrders', 'assignedOrders', 'inTransitOrders', 'deliveredOrders'
+        ));
+    }
+
+    public function agentsUpdate(Request $request, $id)
+    {
+        $agent = Agent::findOrFail($id);
+
+        $request->validate([
+            'FullName' => 'required|string|max:255',
+            'Email'    => 'required|email|unique:agents,Email,' . $id . ',ID',
+            'Phone'    => 'required|string|max:20',
+            'Status'   => 'required|in:active,busy',
+        ]);
+
+        $data = [
+            'FullName' => $request->FullName,
+            'Email'    => $request->Email,
+            'Phone'    => $request->Phone,
+            'Status'   => $request->Status,
+        ];
+
+        if ($request->filled('new_password')) {
+            $data['PasswordHash'] = Hash::make($request->new_password);
+        }
+
+        $agent->update($data);
+
+        return redirect()->route('admin.agents.index')
+            ->with('success', 'Đã cập nhật thông tin agent ' . $agent->FullName);
+    }
+
+    public function agentsUpdateStatus(Request $request, $id)
+    {
+        $request->validate(['status' => 'required|in:active,busy']);
+        $agent = Agent::findOrFail($id);
+        $agent->update(['Status' => $request->status]);
+
+        $label = $request->status === 'active' ? 'Đang rảnh' : 'Đang bận';
+        return back()->with('success', "Đã chuyển trạng thái agent {$agent->FullName} → {$label}");
+    }
+
+    public function agentsDestroy($id)
+    {
+        $agent = Agent::findOrFail($id);
+        $name  = $agent->FullName;
+
+        // Bỏ gán đơn hàng của agent này (về null)
+        Courier::where('agent_id', $id)->update(['agent_id' => null, 'status' => 'pending']);
+
+        $agent->delete();
+
+        return redirect()->route('admin.agents.index')
+            ->with('success', "Đã xoá agent {$name}. Các đơn hàng của agent đã được chuyển về trạng thái chờ gán.");
+    }
+
+    // ================================================================
+    // CUSTOMERS
+    // ================================================================
+
+    public function customerOverview($id)   { return view('admin.customers.overview',      ['customerId' => $id]); }
+    public function customerSecurity($id)   { return view('admin.customers.security',      ['customerId' => $id]); }
+    public function customerBilling($id)    { return view('admin.customers.billing',       ['customerId' => $id]); }
+    public function customerNotifications($id) { return view('admin.customers.notifications', ['customerId' => $id]); }
+
+    // ================================================================
+    // EMPLOYEES (demo data)
+    // ================================================================
 
     private function demoEmployees()
     {
         return collect([
-            ['id' => 1, 'name' => 'Nguyễn Văn An', 'email' => 'an.nguyen@courierxpress.vn', 'phone' => '0981 234 567', 'role' => 'Quản trị viên', 'department' => 'Vận hành', 'status' => 'active', 'avatar' => '1.png', 'joined_at' => '12/03/2025'],
-            ['id' => 2, 'name' => 'Trần Minh Đức', 'email' => 'duc.tran@courierxpress.vn', 'phone' => '0972 111 222', 'role' => 'Nhân viên giao hàng', 'department' => 'Last Mile', 'status' => 'active', 'avatar' => '2.png', 'joined_at' => '22/04/2025'],
-            ['id' => 3, 'name' => 'Lê Thị Mai', 'email' => 'mai.le@courierxpress.vn', 'phone' => '0963 555 888', 'role' => 'Nhân viên kho', 'department' => 'Warehouse', 'status' => 'pending', 'avatar' => '3.png', 'joined_at' => '01/05/2025'],
-            ['id' => 4, 'name' => 'Phạm Quốc Huy', 'email' => 'huy.pham@courierxpress.vn', 'phone' => '0912 789 456', 'role' => 'Điều phối viên', 'department' => 'Dispatching', 'status' => 'inactive', 'avatar' => '4.png', 'joined_at' => '18/01/2025'],
+            ['id' => 1, 'name' => 'Nguyễn Văn An',   'email' => 'an.nguyen@courierxpress.vn',  'phone' => '0981 234 567', 'role' => 'Quản trị viên',       'department' => 'Vận hành',    'status' => 'active',   'avatar' => '1.png', 'joined_at' => '12/03/2025'],
+            ['id' => 2, 'name' => 'Trần Minh Đức',   'email' => 'duc.tran@courierxpress.vn',   'phone' => '0972 111 222', 'role' => 'Nhân viên giao hàng', 'department' => 'Last Mile',   'status' => 'active',   'avatar' => '2.png', 'joined_at' => '22/04/2025'],
+            ['id' => 3, 'name' => 'Lê Thị Mai',       'email' => 'mai.le@courierxpress.vn',     'phone' => '0963 555 888', 'role' => 'Nhân viên kho',       'department' => 'Warehouse',   'status' => 'pending',  'avatar' => '3.png', 'joined_at' => '01/05/2025'],
+            ['id' => 4, 'name' => 'Phạm Quốc Huy',   'email' => 'huy.pham@courierxpress.vn',   'phone' => '0912 789 456', 'role' => 'Điều phối viên',      'department' => 'Dispatching', 'status' => 'inactive', 'avatar' => '4.png', 'joined_at' => '18/01/2025'],
         ]);
     }
 
     public function employeesIndex()
     {
         $employees = $this->demoEmployees();
-
         if (request('keyword')) {
             $keyword = mb_strtolower(request('keyword'));
-            $employees = $employees->filter(function ($employee) use ($keyword) {
-                return str_contains(mb_strtolower($employee['name']), $keyword)
-                    || str_contains(mb_strtolower($employee['email']), $keyword)
-                    || str_contains(mb_strtolower($employee['role']), $keyword)
-                    || str_contains(mb_strtolower($employee['department']), $keyword);
-            });
+            $employees = $employees->filter(fn($e) =>
+                str_contains(mb_strtolower($e['name']), $keyword) ||
+                str_contains(mb_strtolower($e['email']), $keyword) ||
+                str_contains(mb_strtolower($e['role']), $keyword) ||
+                str_contains(mb_strtolower($e['department']), $keyword)
+            );
         }
-
         return view('admin.employees.index', compact('employees'));
     }
 
@@ -267,27 +383,17 @@ class AdminController extends Controller
 
     public function employeeStore(Request $request)
     {
-        $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|max:255',
-            'phone'      => 'required|string|max:30',
-            'department' => 'required|string|max:100',
-            'role'       => 'required|string|max:100',
-        ]);
-
-        return redirect()->route('admin.employees.index')
-            ->with('success', 'Đã nhận thông tin thêm nhân viên. Hiện tại đây là bản demo giao diện.');
+        $request->validate(['name' => 'required|string|max:255', 'email' => 'required|email', 'phone' => 'required', 'department' => 'required', 'role' => 'required']);
+        return redirect()->route('admin.employees.index')->with('success', 'Đã nhận thông tin nhân viên. Hiện tại là bản demo giao diện.');
     }
 
     public function employeeUpdate(Request $request, $id)
     {
-        return redirect()->route('admin.employees.index')
-            ->with('success', 'Đã nhận thông tin cập nhật nhân viên #' . $id . '.');
+        return redirect()->route('admin.employees.index')->with('success', 'Đã cập nhật nhân viên #' . $id . ' (demo).');
     }
 
     public function employeeDestroy($id)
     {
-        return redirect()->route('admin.employees.index')
-            ->with('success', 'Đã nhận yêu cầu xoá nhân viên #' . $id . '.');
+        return redirect()->route('admin.employees.index')->with('success', 'Đã xoá nhân viên #' . $id . ' (demo).');
     }
 }
