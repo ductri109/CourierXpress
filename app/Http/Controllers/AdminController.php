@@ -10,6 +10,8 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class AdminController extends Controller
 {
@@ -150,6 +152,33 @@ class AdminController extends Controller
             $order->update(['agent_id' => $agent->ID, 'status' => 'assigned']);
             $agent->update(['Status' => 'busy']);
         });
+
+        // 🔔 --- ĐOẠN CODE TÍCH HỢP FCM GỬI THÔNG BÁO CHO KHÁCH HÀNG ---
+        try {
+            // Tìm khách hàng sở hữu đơn hàng này thông qua mối quan hệ lưu ở bảng Courier
+            $customer = Customer::find($order->customer_id);
+
+            // Kiểm tra nếu khách hàng tồn tại và đã cấp quyền nhận thông báo (có fcm_token)
+            if ($customer && $customer->fcm_token) {
+                $messaging = app('firebase.messaging');
+
+                // Thiết lập nội dung thông báo kèm mã vận đơn của chính đơn hàng đó
+                $notification = Notification::create(
+                    'Đơn hàng của bạn đã được gán tài xế! 📦',
+                    'Vận đơn ' . $order->tracking_id . ' đang được chuẩn bị bởi shipper ' . $agent->FullName . '.'
+                );
+
+                $message = CloudMessage::withTarget('token', $customer->fcm_token)
+                    ->withNotification($notification);
+
+                // Thực hiện lệnh gửi qua Firebase API v1
+                $messaging->send($message);
+            }
+        } catch (\Exception $e) {
+            // Ghi log lại nếu lỗi hệ thống mạng/Firebase xảy ra để không làm gián đoạn tiến trình gán của Admin
+            \Log::error('Lỗi gửi thông báo FCM CourierXpress: ' . $e->getMessage());
+        }
+        // --- KẾT THÚC ĐOẠN CODE FCM ---
 
         return redirect()->route('admin.orders.index')
             ->with('success', 'Đã gán Agent thành công cho đơn ' . $order->tracking_id);

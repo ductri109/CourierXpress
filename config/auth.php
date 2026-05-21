@@ -74,26 +74,32 @@ return [
     */
 
     'providers' => [
+
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => App\Models\User::class,
         ],
+
         'customers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Customer::class,
         ],
+
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
         ],
+
         'agents' => [
             'driver' => 'eloquent',
             'model'  => App\Models\Agent::class,
         ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
     ],
 
     /*

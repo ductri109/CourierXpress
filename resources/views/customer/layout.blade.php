@@ -296,6 +296,7 @@
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-500 text-sm">© 2026 CourierXpress - Hệ thống quản lý vận đơn trực tuyến.</p>
             <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
+                <a href="{{ route('customer.faq') }}" class="text-secondary hover:text-primary transition-colors duration-200">FAQ</a>
                 <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
                 <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
             </div>
@@ -357,6 +358,60 @@
                 mobileMenu.classList.add('hidden');
             }
         });
+    });
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "{{ env('VITE_FIREBASE_API_KEY') }}",
+        authDomain: "{{ env('VITE_FIREBASE_AUTH_DOMAIN') }}",
+        projectId: "{{ env('VITE_FIREBASE_PROJECT_ID') }}",
+        storageBucket: "{{ env('VITE_FIREBASE_STORAGE_BUCKET') }}",
+        messagingSenderId: "{{ env('VITE_FIREBASE_MESSAGING_SENDER_ID') }}",
+        appId: "{{ env('VITE_FIREBASE_APP_ID') }}"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    // Chỉ kích hoạt xin quyền thông báo khi khách hàng đã đăng nhập vào hệ thống
+    @if(auth('customer')->check())
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+
+                // Giao diện trình duyệt sẽ tự động hiện thông báo hỏi "Cho phép nhận thông báo?"
+                Notification.requestPermission().then((permission) => {
+                    if (permission === 'granted') {
+
+                        // Nếu khách bấm cho phép, tiến hành lấy token mã hóa thiết bị
+                        messaging.getToken({ serviceWorkerRegistration: registration }).then((currentToken) => {
+                            if (currentToken) {
+                                // Đẩy token này lên backend Laravel qua Fetch API ngầm
+                                fetch("{{ route('customer.updateFcmToken') }}", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                    },
+                                    body: JSON.stringify({ token: currentToken })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => console.log('Đã đồng bộ Token thiết bị với DB:', data))
+                                    .catch(err => console.error('Lỗi đẩy token lên server:', err));
+                            }
+                        });
+                    }
+                });
+            });
+    }
+    @endif
+
+    // Bắt sự kiện hiển thị thông báo trực tiếp (dạng Alert nổi) nếu khách hàng đang mở tab web xem đơn hàng
+    messaging.onMessage((payload) => {
+        alert(`${payload.notification.title}\n\n${payload.notification.body}`);
     });
 </script>
 </body>

@@ -199,16 +199,17 @@
 
             // Danh sách Phường / Xã / Thị trấn
             const wardsData = [
-                "Hoàn Kiếm", "Cửa Nam", "Ba Đình", "Ngọc Hà", "Giảng Võ", "Hai Bà Trưng",
-                "Vĩnh Tuy", "Bạch Mai", "Đống Đa", "Kim Liên", "Văn Miếu - Quốc Tử Giám",
-                "Láng", "Ô Chợ Dừa", "Hồng Hà", "Lĩnh Nam", "Hoàng Mai", "Vĩnh Hưng",
+                "Hoàn Kiếm", "Cửa Nam", "Hồng Hà", "Ba Đình", "Ngọc Hà",
+                "Giảng Võ", "Hai Bà Trưng", "Vĩnh Tuy", "Bạch Mai", "Đống Đa", "Kim Liên",
+                "Văn Miếu - Quốc Tử Giám", "Láng", "Ô Chợ Dừa", "Hoàng Mai", "Lĩnh Nam", "Vĩnh Hưng",
                 "Tương Mai", "Định Công", "Hoàng Liệt", "Yên Sở", "Thanh Xuân", "Khương Đình",
                 "Phương Liệt", "Cầu Giấy", "Nghĩa Đô", "Yên Hòa", "Tây Hồ", "Phú Thượng",
-                "Tây Tựu", "Phú Diễn", "Xuân Đỉnh", "Đông Ngạc", "Thượng Cát", "Từ Liêm",
-                "Xuân Phương", "Tây Mỗ", "Đại Mỗ", "Long Biên", "Bồ Đề", "Việt Hưng",
-                "Phục Lợi", "Hà Đông", "Dương Nội", "Yên Nghĩa", "Phú Lương", "Kiến Hưng",
-                "Thanh Liệt", "Chương Mỹ", "Sơn Tây", "Tùng Thiện"
-            ];
+                "Tây Tựu", "Phú Diễn", "Xuân Đỉnh", "Đông Ngạc", "Thượng Cát",
+                "Từ Liêm", "Xuân Phương", "Tây Mỗ", "Đại Mỗ",
+                "Long Biên", "Bồ Đề", "Việt Hưng", "Phúc Lợi", "Hà Đông",
+                "Dương Nội", "Yên Nghĩa", "Phú Lương", "Kiến Hưng", "Thanh Liệt",
+                "Chương Mỹ", "Sơn Tây", "Tùng Thiện"
+            ]
 
             // Sắp xếp danh sách theo bảng chữ cái A-Z
             wardsData.sort((a, b) => a.localeCompare(b, 'vi'));

@@ -9,9 +9,6 @@
             <h2 class="text-3xl font-black text-gray-900 border-l-4 border-primary-600 pl-4 uppercase">Điều khoản sử dụng</h2>
             <p class="text-gray-500 text-sm pl-5 italic">Cập nhật lần cuối: Năm 2026</p>
         </div>
-        <div>
-            DEMO SUA CUA ANH TUAN ANH
-        </div>
 
         <div class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 text-gray-600 space-y-10 leading-relaxed text-justify">
 

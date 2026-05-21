@@ -1,15 +1,23 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 // ============================================================
 // CUSTOMER ROUTES
 // ============================================================
 Route::get('/', fn() => view('customer.landing'))->name('landing');
+Route::post('/update-fcm-token', [CustomerController::class, 'updateFcmToken'])->name('customer.updateFcmToken');
 
 Route::get('/register', [CustomerController::class, 'showRegister'])->name('register');
 Route::post('/register', [CustomerController::class, 'register'])->name('register.post');
@@ -116,3 +124,66 @@ Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function
     Route::get('/customers', [AgentController::class, 'customersIndex'])->name('customers.index');
     Route::get('/customers/{id}', [AgentController::class, 'customersShow'])->name('customers.show');
 });
+
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');
+
+Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/forgot-password', function (Request $request) {
+
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    Password::sendResetLink(
+        $request->only('email')
+    );
+})->name('password.email');
+
+Route::get('/custom-captcha', function () {
+
+    $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    $captcha = '';
+
+    for ($i = 0; $i < 5; $i++) {
+        $captcha .= $characters[rand(0, strlen($characters) - 1)];
+    }
+
+    session(['custom_captcha' => $captcha]);
+
+    $svg = '
+    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="44">
+        <rect width="100%" height="100%" fill="#ffffff"/>
+
+        <text
+            x="50%"
+            y="50%"
+            dominant-baseline="middle"
+            text-anchor="middle"
+            font-size="24"
+            font-family="Arial"
+            fill="#dc2626"
+            font-weight="bold"
+            letter-spacing="5"
+        >
+            ' . $captcha . '
+        </text>
+    </svg>';
+
+    return response($svg)
+        ->header('Content-Type', 'image/svg+xml');
+
+})->name('custom.captcha');
+
+Route::get('/faq', [CustomerController::class, 'showFaq'])->name('customer.faq');
+
+
