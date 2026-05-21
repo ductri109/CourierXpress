@@ -4,53 +4,80 @@
 
 @section('content')
 
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Quản lý /</span> Danh sách vận đơn</h4>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Quản lý /</span> Danh sách vận đơn</h4>
 
-    <!-- Search -->
-    <div class="card mb-4">
-        <h5 class="card-header">Bộ lọc nâng cao</h5>
-        <div class="card-body">
-            <form method="GET" action="{{ route('admin.orders.index') }}">
-                <div class="row g-3">
+        <!-- Search -->
+        <div class="card mb-4">
+            <h5 class="card-header">Bộ lọc nâng cao</h5>
+            <div class="card-body">
+                <form method="GET" action="{{ route('admin.orders.index') }}">
+                    <div class="row g-3">
 
-                    <div class="col-md-4">
-                        <input type="text" name="tracking_id" class="form-control"
-                               placeholder="Mã vận đơn"
-                               value="{{ request('tracking_id') }}">
+                        <div class="col-md-4">
+                            <input type="text" name="tracking_id" class="form-control"
+                                   placeholder="Mã vận đơn"
+                                   value="{{ request('tracking_id') }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="text" name="receiver_name" class="form-control"
+                                   placeholder="Người nhận"
+                                   value="{{ request('receiver_name') }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <select name="status" class="form-control">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="pending"    {{ request('status') == 'pending'    ? 'selected' : '' }}>Đang chờ</option>
+                                <option value="assigned"   {{ request('status') == 'assigned'   ? 'selected' : '' }}>Đã gán</option>
+                                <option value="in_transit" {{ request('status') == 'in_transit' ? 'selected' : '' }}>Đang giao</option>
+                                <option value="delivered"  {{ request('status') == 'delivered'  ? 'selected' : '' }}>Đã giao</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small mb-1">Từ ngày</label>
+                            <input type="date" name="date_from" class="form-control"
+                                   value="{{ request('date_from') }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small mb-1">Đến ngày</label>
+                            <input type="date" name="date_to" class="form-control"
+                                   value="{{ request('date_to') }}">
+                        </div>
+
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button class="btn btn-primary"><i class="ri-search-line me-1"></i>Tìm kiếm</button>
+                            <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">Reset</a>
+                        </div>
+
                     </div>
-
-                    <div class="col-md-4">
-                        <input type="text" name="receiver_name" class="form-control"
-                               placeholder="Người nhận"
-                               value="{{ request('receiver_name') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <select name="status" class="form-control">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Đang chờ</option>
-                            <option value="assigned" {{ request('status') == 'assigned' ? 'selected' : '' }}>Đã gán</option>
-                            <option value="in_transit" {{ request('status') == 'in_transit' ? 'selected' : '' }}>Đang giao</option>
-                            <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>Đã giao</option>
-                        </select>
-                    </div>
-
-                    <div class="col-12">
-                        <button class="btn btn-primary">Tìm kiếm</button>
-                        <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">Reset</a>
-                    </div>
-
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Table -->
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+        @if(request()->hasAny(['status','tracking_id','receiver_name','date_from','date_to']))
+            <div class="alert alert-info alert-dismissible mb-3 py-2" role="alert">
+                <i class="ri-filter-line me-1"></i>
+                Đang lọc &mdash;
+                @if(request('status'))
+                    Trạng thái: <strong>{{ ['pending'=>'Đang chờ','assigned'=>'Đã gán','in_transit'=>'Đang giao','delivered'=>'Đã giao'][request('status')] ?? request('status') }}</strong>
+                @endif
+                @if(request('date_from') || request('date_to'))
+                    &nbsp;Thời gian: <strong>{{ request('date_from') ?: '...' }}</strong> → <strong>{{ request('date_to') ?: '...' }}</strong>
+                @endif
+                &nbsp;— Kết quả: <strong>{{ $orders->count() }}</strong> vận đơn
+                <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <!-- Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
                     <tr>
                         <th>Mã</th>
                         <th>Khách hàng</th>
@@ -58,72 +85,78 @@
                         <th>Địa chỉ</th>
                         <th>Khối lượng</th>
                         <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
                         <th></th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody>
                     @forelse($orders as $order)
-                    <tr>
-                        <td class="text-primary fw-bold">{{ $order->tracking_id }}</td>
+                        <tr>
+                            <td class="text-primary fw-bold">{{ $order->tracking_id }}</td>
 
-                        <td>
-                            {{ optional($order->customer)->full_name ?? 'N/A' }}
-                        </td>
+                            <td>
+                                {{ optional($order->customer)->full_name ?? 'N/A' }}
+                            </td>
 
-                        <td>{{ $order->receiver_name }}</td>
+                            <td>{{ $order->receiver_name }}</td>
 
-                        <td>
-                            {{ \Illuminate\Support\Str::limit($order->receiver_address, 30) }}
-                        </td>
+                            <td>
+                                {{ \Illuminate\Support\Str::limit($order->receiver_address, 30) }}
+                            </td>
 
-                        <td>{{ $order->total_weight }} kg</td>
+                            <td>{{ $order->total_weight }} kg</td>
 
-                        <td>
-                            @switch($order->status)
+                            <td>
+                                @switch($order->status)
 
-                                @case('pending')
-                                    <span class="badge bg-warning">Đang chờ</span>
-                                    @break
+                                    @case('pending')
+                                        <span class="badge bg-warning">Đang chờ</span>
+                                        @break
 
-                                @case('assigned')
-                                    <span class="badge bg-info">Đã gán</span>
-                                    @break
+                                    @case('assigned')
+                                        <span class="badge bg-info">Đã gán</span>
+                                        @break
 
-                                @case('in_transit')
-                                    <span class="badge bg-primary">Đang giao</span>
-                                    @break
+                                    @case('in_transit')
+                                        <span class="badge bg-primary">Đang giao</span>
+                                        @break
 
-                                @case('delivered')
-                                    <span class="badge bg-success">Đã giao</span>
-                                    @break
+                                    @case('delivered')
+                                        <span class="badge bg-success">Đã giao</span>
+                                        @break
 
-                                @default
-                                    <span class="badge bg-secondary">Không xác định</span>
+                                    @default
+                                        <span class="badge bg-secondary">Không xác định</span>
 
-                            @endswitch
-                        </td>
+                                @endswitch
+                            </td>
 
-                        <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}"
-                               class="btn btn-sm btn-primary">
-                                Xem
-                            </a>
-                        </td>
-                    </tr>
+                            <td>
+                                <small class="text-muted">{{ $order->created_at->format('d/m/Y') }}</small><br>
+                                <small class="text-muted opacity-75">{{ $order->created_at->format('H:i') }}</small>
+                            </td>
+
+                            <td>
+                                <a href="{{ route('admin.orders.show', $order->id) }}"
+                                   class="btn btn-sm btn-primary">
+                                    Xem
+                                </a>
+                            </td>
+                        </tr>
 
                     @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">
-                            Không có dữ liệu
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">
+                                Không có dữ liệu
+                            </td>
+                        </tr>
                     @endforelse
-                </tbody>
+                    </tbody>
 
-            </table>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
 @endsection
