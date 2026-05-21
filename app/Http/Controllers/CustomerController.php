@@ -8,6 +8,9 @@ use App\Http\Requests\CustomerRegisterRequest;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use App\Models\Faq;
 
 class CustomerController extends Controller
 {
@@ -30,21 +33,68 @@ class CustomerController extends Controller
         return redirect()->route('login')->with('success', 'Đăng ký tài khoản thành công!');
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
+        // 1. Validate dữ liệu đầu vào và captcha trước
         $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required',
+            'captcha' => 'required|string',
         ]);
 
-        $customer = Customer::where('email', $request->email)->first();
-
-        if ($customer && Hash::check($request->password, $customer->password_hash)) {
-            Auth::guard('customer')->login($customer);
-            $request->session()->regenerate();
-            return redirect()->intended(route('landing'));
+        if (strtolower($request->captcha) !== strtolower(session('custom_captcha'))) {
+            return back()
+                ->withErrors([
+                    'captcha' => 'Mã captcha không đúng.'
+                ])
+                ->withInput($request->only('email'));
         }
 
-        return back()->withErrors(['email' => 'Thông tin đăng nhập không chính xác.'])->withInput();
+        $email = Str::lower($request->email);
+
+        // Key giới hạn đăng nhập theo email
+        $key = 'login-lock:' . $email;
+
+        // Nếu đang bị khóa (quá 5 lần)
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+
+            return back()
+                ->withErrors([
+                    'email' => 'Tài khoản đã bị khóa tạm thời do nhập sai mật khẩu quá 5 lần. Vui lòng thử lại sau ' . $minutes . ' phút.'
+                ])
+                ->withInput($request->only('email'));
+        }
+
+        // 2. Tìm customer theo email trong DB
+        $customer = Customer::where('email', $email)->first();
+
+        // 3. Kiểm tra nếu customer tồn tại và khớp trường password_hash custom
+        if ($customer && Hash::check($request->password, $customer->password_hash)) {
+
+            // Xóa bộ đếm sai mật khẩu của email này khi đăng nhập thành công
+            RateLimiter::clear($key);
+
+            // Đăng nhập customer vào hệ thống qua custom guard
+            Auth::guard('customer')->login($customer, $request->has('remember'));
+
+            $request->session()->regenerate();
+
+            // Chuyển hướng sang trang quản lý/trang chủ
+            return redirect()->intended('/');
+        }
+
+        // 4. Sai mật khẩu hoặc tài khoản không tồn tại -> tăng số lần thử lên 1
+        RateLimiter::hit($key, 300); // Khóa 5 phút (300 giây) nếu đạt tối đa
+
+        $remaining = 5 - RateLimiter::attempts($key);
+
+        return back()
+            ->withErrors([
+                'password' => 'Mật khẩu không đúng. Bạn còn ' . max($remaining, 0) . ' lần thử.'
+            ])
+            ->withInput($request->only('email'));
     }
 
     public function logout(Request $request) {
@@ -174,4 +224,31 @@ class CustomerController extends Controller
     public function showContact() { return view('customer.contact'); }
     public function showServiceTerms() { return view('customer.terms'); }
     public function showServicePolicy() { return view('customer.policy'); }
+
+    public function showFaq()
+    {
+        // Lấy tất cả câu hỏi đang hoạt động, sắp xếp theo thứ tự ưu tiên
+        $faqs = \App\Models\Faq::where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->get()
+            ->groupBy('category'); // Gom nhóm theo danh mục cho dễ nhìn
+
+        return view('customer.faq', compact('faqs'));
+    }
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        // Lưu hoặc cập nhật token của trình duyệt vào tài khoản khách hàng đang đăng nhập
+        if (auth('customer')->check()) {
+            auth('customer')->user()->update([
+                'fcm_token' => $request->token
+            ]);
+            return response()->json(['success' => true, 'message' => 'Đã đồng bộ token thiết bị thành công.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Chưa đăng nhập.'], 401);
+    }
 }
