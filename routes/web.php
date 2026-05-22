@@ -186,4 +186,10 @@ Route::get('/custom-captcha', function () {
 
 Route::get('/faq', [CustomerController::class, 'showFaq'])->name('customer.faq');
 
-
+// Đường dẫn tạm thời để dọn dẹp cache hệ thống trên Render
+Route::get('/clear-all-cache', function () {
+    \Artisan::call('config:clear');
+    \Artisan::call('route:clear');
+    \Artisan::call('view:clear');
+    return "Đã xóa toàn bộ bộ nhớ đệm cache thành công!";
+});
