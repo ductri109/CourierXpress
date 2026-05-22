@@ -191,5 +191,7 @@ Route::get('/clear-all-cache', function () {
     \Artisan::call('config:clear');
     \Artisan::call('route:clear');
     \Artisan::call('view:clear');
+    // Thêm lệnh này để tự động chạy migration tạo bảng dữ liệu online
+    \Artisan::call('migrate', ['--force' => true]);
     return "Đã xóa toàn bộ bộ nhớ đệm cache thành công!";
 });
