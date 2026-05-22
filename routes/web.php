@@ -203,3 +203,18 @@ Route::get('/clear-all-cache', function () {
         return "Lỗi khi chạy Migrate: " . $e->getMessage();
     }
 });
+
+// Đường dẫn bí mật để chạy Seeder dữ liệu Admin trên Render
+// Đường dẫn bí mật để nạp dữ liệu Admin và FAQs lên Render
+Route::get('/run-seeder', function () {
+    try {
+        // Gọi lệnh db:seed mặc định (nó sẽ chạy file DatabaseSeeder tổng)
+        Artisan::call('db:seed', [
+            '--force' => true // Bắt buộc phải có để chạy trên môi trường Production
+        ]);
+        
+        return "Chúc mừng! Đã nạp thành công tài khoản Admin và dữ liệu câu hỏi FAQs lên Database Online! 🎉";
+    } catch (\Exception $e) {
+        return "Lỗi khi chạy Seeder: " . $e->getMessage();
+    }
+});
