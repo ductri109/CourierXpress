@@ -106,10 +106,30 @@ class AgentController extends Controller
 
     // --- ORDERS ---
 
-    public function index()
+    public function index(Request $request)
     {
         $agentId = Auth::guard('agent')->id();
-        $orders = Courier::where('agent_id', $agentId)->with('customer')->orderBy('created_at', 'desc')->get();
+        $query = Courier::where('agent_id', $agentId)->with('customer');
+
+        // Tìm theo mã vận đơn
+        if ($request->filled('search')) {
+            $query->where('tracking_id', 'like', '%' . $request->search . '%');
+        }
+
+        // Lọc theo trạng thái
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Lọc theo khoảng ngày tạo
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->get();
         return view('agent.orders.index', compact('orders'));
     }
 
@@ -189,7 +209,13 @@ class AgentController extends Controller
         $customers = Customer::whereIn('id', $customerIds)
             ->withCount(['couriers as orders_count' => function($q) use ($agentId) {
                 $q->where('agent_id', $agentId);
-            }])->get();
+            }])
+            ->with(['couriers' => function($q) use ($agentId) {
+                $q->where('agent_id', $agentId)
+                    ->orderBy('created_at', 'desc')
+                    ->select('customer_id', 'sender_address');
+            }])
+            ->get();
 
         $customer = null;
         $customerOrders = collect();
