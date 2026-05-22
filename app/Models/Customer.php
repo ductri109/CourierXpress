@@ -25,4 +25,11 @@ class Customer extends Authenticatable
         'password',
         'remember_token',
     ];
+
+public function couriers()
+{
+    // Định nghĩa 1 Customer có nhiều Courier
+    return $this->hasMany(Courier::class, 'customer_id', 'id');
 }
+}
+
