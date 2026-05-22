@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     curl
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd pdo_pgsql
 
 # Kích hoạt mod_rewrite của Apache cho Laravel
 RUN a2enmod rewrite
