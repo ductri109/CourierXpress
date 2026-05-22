@@ -20,5 +20,9 @@ class DatabaseSeeder extends Seeder
             'user_name' => 'admin123',
             'password_hash' => \Illuminate\Support\Facades\Hash::make('admin123')
         ]);
+
+        $this->call([
+            FaqSeeder::class,
+        ]);
     }
 }
