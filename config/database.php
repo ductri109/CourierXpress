@@ -16,9 +16,7 @@ return [
     | is explicitly specified when you execute a query / statement.
     |
     */
-
     'default' => env('DATABASE_URL') ? 'pgsql' : env('DB_CONNECTION', 'mysql'),
-
     /*
     |--------------------------------------------------------------------------
     | Database Connections
