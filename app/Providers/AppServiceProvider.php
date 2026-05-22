@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers;
-
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Ép Laravel luôn sinh link HTTPS khi chạy trên máy chủ Render
+        if (config('app.env') === 'production' || env('DATABASE_URL')) {
+            URL::forceScheme('https');
+        }
     }
 }
