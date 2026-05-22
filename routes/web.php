@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 
 // ============================================================
 // CUSTOMER ROUTES
@@ -188,10 +189,17 @@ Route::get('/faq', [CustomerController::class, 'showFaq'])->name('customer.faq')
 
 // Đường dẫn tạm thời để dọn dẹp cache hệ thống trên Render
 Route::get('/clear-all-cache', function () {
-    \Artisan::call('config:clear');
-    \Artisan::call('route:clear');
-    \Artisan::call('view:clear');
-    // Thêm lệnh này để tự động chạy migration tạo bảng dữ liệu online
-    \Artisan::call('migrate', ['--force' => true]);
-    return "Đã xóa toàn bộ bộ nhớ đệm cache thành công!";
+    // 1. Ép hệ thống xóa sạch tận gốc các file cache cấu hình cũ
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    
+    try {
+        // 2. Chạy lệnh migrate tạo các bảng dữ liệu cho CourierXpress sang Postgres
+        Artisan::call('migrate', ['--force' => true]);
+        return "Đã dọn dẹp cache và chạy Migration tạo bảng thành công!";
+    } catch (\Exception $e) {
+        return "Lỗi khi chạy Migrate: " . $e->getMessage();
+    }
 });
