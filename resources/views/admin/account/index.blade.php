@@ -29,10 +29,15 @@
             <div class="card">
                 <div class="card-body text-center pt-6">
                     <div class="mb-4">
-                        <div class="avatar avatar-xl mx-auto mb-3">
-                            <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle w-px-100 h-auto" />
+                        <div class="d-flex justify-content-center mb-3">
+                            <div style="width: 100px; height: 100px;">
+                                <img src="{{ asset('assets/img/avatars/1.png') }}"
+                                     alt="Avatar"
+                                     class="rounded-circle w-100 h-100 object-fit-cover shadow-sm"
+                                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($admin->user_name) }}&background=666cff&color=fff&size=100';" />
+                            </div>
                         </div>
-                        <h5 class="mb-0">{{ $admin->user_name }}</h5>
+                        <h5 class="mt-3 mb-1 fw-bold text-dark">{{ $admin->user_name }}</h5>
                         <p class="text-muted mb-0 small">Quản trị viên hệ thống</p>
                     </div>
 
