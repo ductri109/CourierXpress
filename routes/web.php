@@ -41,11 +41,7 @@ Route::middleware(['auth:customer'])
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
         Route::get('/profile/edit', [ProfileController::class, 'editProfile'])->name('profile.edit');
         Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
-        Route::post('/booking', [ProfileController::class, 'postBooking'])->name('booking.post');
-
-        Route::get('/orders', function () {
-            return view('customer.orders.index');
-        })->name('orders.index');
+        Route::get('/orders', [ProfileController::class, 'showOrders'])->name('orders.index');
     });
 
 // ============================================================

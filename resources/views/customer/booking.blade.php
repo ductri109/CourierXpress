@@ -63,7 +63,7 @@
                 </div>
 
                 {{-- THÊM ID "bookingForm" VÀO ĐÂY ĐỂ XỬ LÝ JS --}}
-                <form action="{{ route('customer.booking.post') }}" method="POST" id="bookingForm" class="p-8 md:p-12 space-y-10 pt-4 md:pt-4">
+                <form action="{{ route('booking.post') }}" method="POST" id="bookingForm" class="p-8 md:p-12 space-y-10 pt-4 md:pt-4">
                     @csrf
 
                     {{-- Trường ẩn để gửi địa chỉ đã gộp lên Controller lưu cho User mới --}}

@@ -88,37 +88,38 @@ class ProfileController extends Controller
         return redirect()->route('customer.profile.index')->with('success', 'Cập nhật thông tin thành công!');
     }
 
-    /**
-     * Xử lý đặt vận đơn mới và tự động gộp chuỗi lưu địa chỉ mặc định bằng PHP
-     */
-    public function postBooking(Request $request)
+    public function showOrders(Request $request)
     {
-        $customer = Auth::guard('customer')->user();
+        $customer = auth('customer')->user();
 
-        if (!$customer) {
-            return back()->with('error', 'Bạn cần đăng nhập để đặt đơn hàng.');
+        $query = \App\Models\Courier::where('customer_id', $customer->id)->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
-        $request->validate([
-            'sender_name' => 'required|string|max:255',
-            'sender_ward' => 'required|string',
-            'sender_address_detail' => 'required|string',
-            'receiver_name' => 'required|string|max:255',
-            'receiver_ward' => 'required|string',
-            'receiver_address_detail' => 'required|string',
-            'weight_range' => 'required|string',
-        ]);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_id', 'like', "%{$search}%")
+                    ->orWhere('receiver_name', 'like', "%{$search}%")
+                    ->orWhere('sender_name', 'like', "%{$search}%");
+            });
+        }
 
-        $fullAddress = trim($request->sender_address_detail)
-            . ', Phường '
-            . trim($request->sender_ward)
-            . ', Thành phố Hà Nội';
+        if ($request->sort === 'oldest') {
+            $query->oldest();
+        }
 
-        $customer->forceFill([
-            'address' => $fullAddress,
-        ])->save();
+        $orders = $query->paginate(8)->withQueryString();
 
-        return redirect()->route('customer.profile.index')
-            ->with('success', 'Tạo vận đơn thành công! Địa chỉ đã được lưu làm mặc định.');
+        $statusCounts = \App\Models\Courier::where('customer_id', $customer->id)
+            ->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        return view('customer.orders.index', compact('orders', 'statusCounts'));
     }
+
 }
