@@ -42,9 +42,9 @@
                             <select name="status" id="status-select"
                                     class="pl-9 pr-8 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 appearance-none bg-white w-full transition-all">
                                 <option value="">Tất cả</option>
-                                <option value="assigned"   {{ request('status')=='assigned'   ?'selected':'' }}>⏳ Chờ nhận</option>
-                                <option value="in_transit" {{ request('status')=='in_transit' ?'selected':'' }}>🚚 Đang giao</option>
-                                <option value="delivered"  {{ request('status')=='delivered'  ?'selected':'' }}>✅ Đã giao</option>
+                                <option value="assigned"   {{ request('status')=='assigned'   ?'selected':'' }}> Chờ nhận</option>
+                                <option value="in_transit" {{ request('status')=='in_transit' ?'selected':'' }}> Đang giao</option>
+                                <option value="delivered"  {{ request('status')=='delivered'  ?'selected':'' }}>Đã giao</option>
                             </select>
                         </div>
                     </div>

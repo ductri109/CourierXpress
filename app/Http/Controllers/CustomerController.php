@@ -193,41 +193,6 @@ class CustomerController extends Controller
         return redirect()->route('booking')
             ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id . '. Vui lòng lưu lại mã này để tra cứu.');
     }
-
-    public function showOrders(Request $request)
-    {
-        $customer = auth('customer')->user();
-
-        $query = \App\Models\Courier::where('customer_id', $customer->id)->latest();
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('tracking_id', 'like', "%{$search}%")
-                    ->orWhere('receiver_name', 'like', "%{$search}%")
-                    ->orWhere('sender_name', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->sort === 'oldest') {
-            $query->oldest();
-        }
-
-        $orders = $query->paginate(8)->withQueryString();
-
-        $statusCounts = \App\Models\Courier::where('customer_id', $customer->id)
-            ->selectRaw('status, count(*) as count')
-            ->groupBy('status')
-            ->pluck('count', 'status')
-            ->toArray();
-
-        return view('customer.orders.index', compact('orders', 'statusCounts'));
-    }
-
     public function showTracking(Request $request)
     {
         $order = null;
