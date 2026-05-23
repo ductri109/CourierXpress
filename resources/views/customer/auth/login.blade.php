@@ -71,6 +71,7 @@
 
 <div class="min-h-screen flex">
 
+    {{-- SIDEBAR LEFT (DESKTOP ONLY) --}}
     <div class="hidden lg:flex lg:w-1/2 gradient-bg relative overflow-hidden items-center justify-center">
 
         <div class="absolute inset-0 opacity-10">
@@ -137,10 +138,12 @@
         </div>
     </div>
 
+    {{-- RIGHT CONTENT SECTION --}}
     <div class="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
 
         <div class="w-full max-w-md">
 
+            {{-- LOGO MOBILE ONLY --}}
             <div class="lg:hidden flex items-center justify-center space-x-3 mb-8">
 
                 <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center">
@@ -159,6 +162,7 @@
 
             </div>
 
+            {{-- ALERTS --}}
             @if(session('success'))
                 <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
                     {{ session('success') }}
@@ -171,62 +175,59 @@
                 </div>
             @endif
 
+            {{-- LOGIN SECTION --}}
             <div id="login-section" class="space-y-6">
 
                 <div class="text-center mb-8">
-
                     <h2 class="text-3xl font-bold text-gray-900">
                         Đăng nhập hệ thống
                     </h2>
-
                     <p class="text-gray-600 mt-2">
-                        Vui lòng nhập email và mật khẩu của bạn
+                        Vui lòng nhập số điện thoại và mật khẩu của bạn
                     </p>
-
                 </div>
 
                 <form class="space-y-5" action="{{ route('login.post') }}" method="POST">
-
                     @csrf
 
+                    {{-- SỐ ĐIỆN THOẠI --}}
                     <div>
-
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Email
+                            Số điện thoại
                         </label>
 
                         <div class="relative">
-
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i data-lucide="mail" class="w-5 h-5 text-gray-400"></i>
+                                <i data-lucide="phone" class="w-5 h-5 text-gray-400"></i>
                             </div>
 
                             <input
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
-                                placeholder="example@email.com"
-                                class="w-full pl-12 pr-4 py-3 bg-white border-2 @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl focus:border-primary-500 focus:outline-none input-focus transition-all"
+                                type="text"
+                                name="phone"
+                                value="{{ old('phone') }}"
+                                placeholder="Nhập số điện thoại"
+                                inputmode="numeric"
+                                maxlength="10"
+                                pattern="[0-9]{10}"
+                                class="w-full pl-12 pr-4 py-3 bg-white border-2 @error('phone') border-red-500 @else border-gray-200 @enderror rounded-xl focus:border-primary-500 focus:outline-none input-focus transition-all"
                                 required
                             >
                         </div>
 
-                        @error('email')
+                        @error('phone')
                         <p class="text-red-500 text-xs mt-1">
                             {{ $message }}
                         </p>
                         @enderror
-
                     </div>
 
+                    {{-- MẬT KHẨU --}}
                     <div>
-
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Mật khẩu
                         </label>
 
                         <div class="relative">
-
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
                             </div>
@@ -247,7 +248,6 @@
                             >
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </button>
-
                         </div>
 
                         @error('password')
@@ -255,13 +255,11 @@
                             {{ $message }}
                         </p>
                         @enderror
-
                     </div>
 
+                    {{-- CAPTCHA --}}
                     <div class="flex space-x-3">
-
                         <div class="relative flex-1">
-
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i data-lucide="shield-check" class="w-5 h-5 text-gray-400"></i>
                             </div>
@@ -277,7 +275,6 @@
                         </div>
 
                         <div class="flex items-center bg-gray-100 border-2 border-gray-200 rounded-xl px-2 h-[52px]">
-
                             <img
                                 id="captcha-img"
                                 src="{{ route('custom.captcha') }}"
@@ -292,26 +289,21 @@
                             >
                                 <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                             </button>
-
                         </div>
-
                     </div>
 
+                    {{-- REMEMBER & FORGOT --}}
                     <div class="flex items-center justify-between mt-4">
-
                         <div class="flex items-center space-x-2">
-
                             <input
                                 type="checkbox"
                                 id="remember"
                                 name="remember"
                                 class="w-4 h-4 rounded border-2 border-gray-300 text-primary-600 focus:ring-primary-500"
                             >
-
                             <label for="remember" class="text-sm text-gray-600 cursor-pointer">
                                 Ghi nhớ đăng nhập
                             </label>
-
                         </div>
 
                         <button
@@ -321,24 +313,22 @@
                         >
                             Quên mật khẩu?
                         </button>
-
                     </div>
 
+                    {{-- BUTTON SUBMIT --}}
                     <button
                         type="submit"
                         class="w-full bg-primary-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 mt-6"
                     >
                         <span>Đăng nhập</span>
-
                         <i data-lucide="log-in" class="w-5 h-5"></i>
                     </button>
-
                 </form>
 
+                {{-- REGISTER FOOTER --}}
                 <div class="mt-8 text-center">
                     <p class="text-gray-600">
                         Chưa có tài khoản?
-
                         <a href="{{ route('register') }}"
                            class="text-primary-600 font-semibold hover:text-primary-700">
                             Đăng ký ngay
@@ -348,32 +338,27 @@
 
             </div>
 
+            {{-- FORGOT SECTION --}}
             <div id="forgot-section" class="hidden space-y-6">
 
                 <div class="text-center mb-8">
-
                     <h2 class="text-3xl font-bold text-gray-900">
                         Khôi phục mật khẩu
                     </h2>
-
                     <p class="text-gray-600 mt-2">
                         Nhập email tài khoản của bạn để nhận liên kết đặt lại mật khẩu
                     </p>
-
                 </div>
 
                 <form class="space-y-5" action="{{ route('password.email') }}" method="POST">
-
                     @csrf
 
                     <div>
-
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Địa chỉ Email tài khoản
                         </label>
 
                         <div class="relative">
-
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i data-lucide="mail" class="w-5 h-5 text-gray-400"></i>
                             </div>
@@ -392,7 +377,6 @@
                             {{ $message }}
                         </p>
                         @enderror
-
                     </div>
 
                     <button
@@ -400,38 +384,30 @@
                         class="w-full bg-primary-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 mt-6"
                     >
                         <span>Gửi liên kết khôi phục</span>
-
                         <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
-
                 </form>
 
                 <div class="text-center mt-6">
-
                     <button
                         type="button"
                         onclick="showSection('login-section')"
                         class="inline-flex items-center space-x-2 text-sm font-medium text-gray-500 hover:text-primary-600 transition-colors"
                     >
                         <i data-lucide="arrow-left" class="w-4 h-4"></i>
-
                         <span>Quay lại Đăng nhập</span>
                     </button>
-
                 </div>
 
             </div>
 
+            {{-- BACK TO HOME --}}
             <div class="mt-6 text-center">
-
                 <a href="{{ route('landing') }}"
                    class="inline-flex items-center space-x-2 text-gray-500 hover:text-primary-600 transition-colors">
-
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
-
                     <span>Quay lại trang chủ</span>
                 </a>
-
             </div>
 
         </div>
@@ -441,53 +417,41 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <script>
-
+    // Khởi tạo Lucide Icons
     lucide.createIcons();
 
     function togglePassword(inputId, btn) {
-
         const input = document.getElementById(inputId);
         const icon = btn.querySelector('i');
 
         if (input.type === 'password') {
-
             input.type = 'text';
             icon.setAttribute('data-lucide', 'eye-off');
-
         } else {
-
             input.type = 'password';
             icon.setAttribute('data-lucide', 'eye');
         }
-
         lucide.createIcons();
     }
 
     function showSection(sectionId) {
-
         const loginSection = document.getElementById('login-section');
         const forgotSection = document.getElementById('forgot-section');
 
         if (sectionId === 'forgot-section') {
-
             loginSection.classList.add('hidden');
             forgotSection.classList.remove('hidden');
-
         } else {
-
             forgotSection.classList.add('hidden');
             loginSection.classList.remove('hidden');
         }
-
         lucide.createIcons();
     }
 
     function refreshCaptcha() {
-
         document.getElementById('captcha-img').src =
             "{{ route('custom.captcha') }}?" + Date.now();
     }
-
 </script>
 
 </body>
