@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Courier extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'tracking_id',
         'sender_name',
