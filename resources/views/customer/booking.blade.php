@@ -62,8 +62,12 @@
                     @endif
                 </div>
 
-                <form action="{{ route('booking.post') }}" method="POST" class="p-8 md:p-12 space-y-10 pt-4 md:pt-4">
+                {{-- THÊM ID "bookingForm" VÀO ĐÂY ĐỂ XỬ LÝ JS --}}
+                <form action="{{ route('booking.post') }}" method="POST" id="bookingForm" class="p-8 md:p-12 space-y-10 pt-4 md:pt-4">
                     @csrf
+
+                    {{-- Trường ẩn để gửi địa chỉ đã gộp lên Controller lưu cho User mới --}}
+                    <input type="hidden" name="sender_full_address" id="sender_full_address">
 
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
@@ -98,7 +102,15 @@
 
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-gray-700">Số nhà, ngõ ngách, tên đường người gửi <span class="text-primary-500">*</span></label>
-                            <input type="text" name="sender_address_detail" value="{{ old('sender_address_detail') }}" placeholder="Ví dụ: Số 5, ngách 12/2 Đội Cấn" required
+                            @php
+                                $userAddress = auth('customer')->user()?->address;
+                                $senderDetail = '';
+                                if (!empty($userAddress)) {
+                                    $addressParts = explode(',', $userAddress);
+                                    $senderDetail = trim($addressParts[0]);
+                                }
+                            @endphp
+                            <input type="text" id="sender_address_detail" name="sender_address_detail" value="{{ old('sender_address_detail', $senderDetail) }}" placeholder="Ví dụ: Số 5, ngách 12/2 Đội Cấn" required
                                    class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-50 transition-all">
                         </div>
                     </div>
@@ -196,6 +208,8 @@
         document.addEventListener('DOMContentLoaded', function () {
             const senderWardSelect = document.getElementById('sender_ward');
             const receiverWardSelect = document.getElementById('receiver_ward');
+            const bookingForm = document.getElementById('bookingForm');
+            const senderAddressDetail = document.getElementById('sender_address_detail');
 
             // Danh sách Phường / Xã / Thị trấn
             const wardsData = [
@@ -209,12 +223,23 @@
                 "Long Biên", "Bồ Đề", "Việt Hưng", "Phúc Lợi", "Hà Đông",
                 "Dương Nội", "Yên Nghĩa", "Phú Lương", "Kiến Hưng", "Thanh Liệt",
                 "Chương Mỹ", "Sơn Tây", "Tùng Thiện"
-            ]
+            ];
 
             // Sắp xếp danh sách theo bảng chữ cái A-Z
             wardsData.sort((a, b) => a.localeCompare(b, 'vi'));
 
-            const oldSenderWard = "{{ old('sender_ward') }}";
+            // Sửa lỗi bóc tách địa chỉ bằng cách check điều kiện chuỗi rỗng an toàn
+            const userAddress = "{{ auth('customer')->user()?->address }}";
+            let dbSenderWard = "";
+
+            if (userAddress && userAddress.trim() !== "") {
+                const parts = userAddress.split(',');
+                if (parts.length >= 2) {
+                    dbSenderWard = parts[1].replace('Phường', '').replace('Xã', '').replace('Thị trấn', '').trim();
+                }
+            }
+
+            const oldSenderWard = "{{ old('sender_ward') }}" || dbSenderWard;
             const oldReceiverWard = "{{ old('receiver_ward') }}";
 
             // Đổ dữ liệu đồng thời vào cả dropdown người gửi và người nhận
@@ -227,6 +252,18 @@
 
                 senderWardSelect.add(optionSender);
                 receiverWardSelect.add(optionReceiver);
+            });
+
+            // LOGIC TỰ ĐỘNG GỘP CHUỖI GỬI LÊN LƯU ĐỊA CHỈ MẶC ĐỊNH
+            bookingForm.addEventListener('submit', function (e) {
+                const detail = senderAddressDetail.value.trim();
+                const ward = senderWardSelect.value;
+                const province = "Thành phố Hà Nội";
+
+                if (detail && ward) {
+                    // Gộp chuỗi lại theo đúng định dạng phân tách bằng dấu phẩy
+                    document.getElementById('sender_full_address').value = `${detail}, Phường ${ward}, ${province}`;
+                }
             });
 
             // Re-render lucide icons if needed

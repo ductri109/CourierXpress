@@ -34,12 +34,15 @@ Route::get('/booking', [CustomerController::class, 'showBooking'])->name('bookin
 Route::post('/booking', [CustomerController::class, 'storeBooking'])->name('booking.post');
 Route::get('/tracking', [CustomerController::class, 'showTracking'])->name('tracking');
 
-Route::middleware(['auth:customer'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('customer.profile.index');
-    Route::get('/profile/update', [ProfileController::class, 'editProfile'])->name('customer.profile.edit');
-    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('customer.profile.update');
-    Route::get('/my-orders', [CustomerController::class, 'showOrders'])->name('customer.orders.index');
-});
+Route::middleware(['auth:customer'])
+    ->prefix('customer')
+    ->name('customer.')
+    ->group(function () {
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::get('/profile/edit', [ProfileController::class, 'editProfile'])->name('profile.edit');
+        Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+        Route::get('/orders', [ProfileController::class, 'showOrders'])->name('orders.index');
+    });
 
 // ============================================================
 // ADMIN ROUTES
@@ -194,7 +197,7 @@ Route::get('/clear-all-cache', function () {
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
     Artisan::call('view:clear');
-    
+
     try {
         // 2. Chạy lệnh migrate tạo các bảng dữ liệu cho CourierXpress sang Postgres
         Artisan::call('migrate', ['--force' => true]);
@@ -212,7 +215,7 @@ Route::get('/run-seeder', function () {
         Artisan::call('db:seed', [
             '--force' => true // Bắt buộc phải có để chạy trên môi trường Production
         ]);
-        
+
         return "Chúc mừng! Đã nạp thành công tài khoản Admin và dữ liệu câu hỏi FAQs lên Database Online! 🎉";
     } catch (\Exception $e) {
         return "Lỗi khi chạy Seeder: " . $e->getMessage();

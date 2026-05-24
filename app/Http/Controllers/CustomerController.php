@@ -33,47 +33,59 @@ class CustomerController extends Controller
         return redirect()->route('login')->with('success', 'Đăng ký tài khoản thành công!');
     }
 
+    /**
+     * 🔥 ĐÃ CẬP NHẬT: Đăng nhập bằng SỐ ĐIỆN THOẠI và MẬT KHẨU
+     */
+    /**
+     * Xử lý đăng nhập bằng SỐ ĐIỆN THOẠI và MẬT KHẨU
+     * Tự động khóa tài khoản ngay lập tức khi gõ sai quá 5 lần
+     */
     public function login(Request $request)
     {
         // 1. Validate dữ liệu đầu vào và captcha trước
         $request->validate([
-            'email' => 'required|email',
+            'phone'    => 'required|regex:/^[0-9]{10}$/',
             'password' => 'required',
-            'captcha' => 'required|string',
+            'captcha'  => 'required|string',
+        ], [
+            'phone.required' => 'Vui lòng không để trống số điện thoại.',
+            'phone.regex'    => 'Số điện thoại phải bao gồm đúng 10 chữ số.',
+            'password.required' => 'Vui lòng không để trống mật khẩu.',
         ]);
 
+        // Kiểm tra Captcha
         if (strtolower($request->captcha) !== strtolower(session('custom_captcha'))) {
             return back()
                 ->withErrors([
                     'captcha' => 'Mã captcha không đúng.'
                 ])
-                ->withInput($request->only('email'));
+                ->withInput($request->only('phone'));
         }
 
-        $email = Str::lower($request->email);
+        $phone = trim($request->phone);
 
-        // Key giới hạn đăng nhập theo email
-        $key = 'login-lock:' . $email;
+        // Key giới hạn đăng nhập theo số điện thoại để phòng thủ Brute Force
+        $key = 'login-lock:' . $phone;
 
-        // Nếu đang bị khóa (quá 5 lần)
+        // 🔥 KHỐI LỆNH KIỂM TRA: Nếu đã nhập sai quá 5 lần, chặn đứng và báo Khóa luôn
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             $minutes = ceil($seconds / 60);
 
             return back()
                 ->withErrors([
-                    'email' => 'Tài khoản đã bị khóa tạm thời do nhập sai mật khẩu quá 5 lần. Vui lòng thử lại sau ' . $minutes . ' phút.'
+                    'phone' => 'Tài khoản của bạn đã bị tạm khóa do nhập sai thông tin quá 5 lần. Vui lòng thử lại sau ' . $minutes . ' phút.'
                 ])
-                ->withInput($request->only('email'));
+                ->withInput($request->only('phone'));
         }
 
-        // 2. Tìm customer theo email trong DB
-        $customer = Customer::where('email', $email)->first();
+        // 2. Tìm customer theo SỐ ĐIỆN THOẠI trong DB
+        $customer = Customer::where('phone', $phone)->first();
 
         // 3. Kiểm tra nếu customer tồn tại và khớp trường password_hash custom
         if ($customer && Hash::check($request->password, $customer->password_hash)) {
 
-            // Xóa bộ đếm sai mật khẩu của email này khi đăng nhập thành công
+            // Xóa bộ đếm sai mật khẩu của số điện thoại này khi đăng nhập thành công
             RateLimiter::clear($key);
 
             // Đăng nhập customer vào hệ thống qua custom guard
@@ -85,18 +97,31 @@ class CustomerController extends Controller
             return redirect()->intended('/');
         }
 
-        // 4. Sai mật khẩu hoặc tài khoản không tồn tại -> tăng số lần thử lên 1
-        RateLimiter::hit($key, 300); // Khóa 5 phút (300 giây) nếu đạt tối đa
+        // 🔥 HÀNH ĐỘNG KHI SAI THÔNG TIN (Sai mật khẩu hoặc số điện thoại không tồn tại)
+        // Tăng số lần thử lên 1 (Lưu giữ trong 5 phút = 300 giây)
+        RateLimiter::hit($key, 300);
 
+        // Kiểm tra xem sau lần bấm sai này hệ thống đã chính thức đạt ngưỡng khóa chưa
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+
+            return back()
+                ->withErrors([
+                    'phone' => 'Tài khoản của bạn đã bị tạm khóa do nhập sai thông tin quá 5 lần. Vui lòng thử lại sau ' . $minutes . ' phút.'
+                ])
+                ->withInput($request->only('phone'));
+        }
+
+        // Tính số lần còn lại để cảnh báo khách hàng
         $remaining = 5 - RateLimiter::attempts($key);
 
         return back()
             ->withErrors([
-                'password' => 'Mật khẩu không đúng. Bạn còn ' . max($remaining, 0) . ' lần thử.'
+                'password' => 'Số điện thoại hoặc mật khẩu không đúng. Bạn còn ' . max($remaining, 0) . ' lần thử.'
             ])
-            ->withInput($request->only('email'));
+            ->withInput($request->only('phone'));
     }
-
     public function logout(Request $request) {
         Auth::guard('customer')->logout();
         $request->session()->invalidate();
@@ -129,6 +154,16 @@ class CustomerController extends Controller
         $sender_address = $request->sender_address_detail . ', ' . $request->sender_ward . ', ' . $request->sender_province;
         $receiver_address = $request->receiver_address_detail . ', ' . $request->receiver_ward . ', ' . $request->receiver_province;
 
+        // LOGIC FIX: TỰ ĐỘNG CẬP NHẬT ĐỊA CHỈ MẶC ĐỊNH CHO KHÁCH HÀNG MỚI ĐĂNG KÝ
+        if (auth('customer')->check()) {
+            $customer = auth('customer')->user();
+            if (is_null($customer->address) || trim($customer->address) === '') {
+                $customer->update([
+                    'address' => $sender_address
+                ]);
+            }
+        }
+
         $weight_map = [
             'under_0.5' => 0.5,
             '0.5-1'     => 1.0,
@@ -150,65 +185,21 @@ class CustomerController extends Controller
             'customer_id'      => auth('customer')->check() ? auth('customer')->id() : null,
         ]);
 
-        // Đã dọn dẹp các khối lệnh trùng lặp và đoạn code chết (dead code) ở phía cuối hàm cũ
         if (auth('customer')->check()) {
             return redirect()->route('customer.orders.index')
                 ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id);
         }
 
-        // NẾU KHÁCH CHƯA ĐĂNG NHẬP -> Chuyển về trang đặt đơn (hoặc trang chủ)
         return redirect()->route('booking')
             ->with('success', 'Đặt đơn thành công! Mã vận đơn của bạn là: ' . $tracking_id . '. Vui lòng lưu lại mã này để tra cứu.');
     }
-
-    public function showOrders(Request $request)
-    {
-        $customer = auth('customer')->user();
-
-        $query = \App\Models\Courier::where('customer_id', $customer->id)->latest();
-
-        // Lọc theo trạng thái
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Tìm kiếm theo tracking_id, tên người nhận hoặc người gửi
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('tracking_id', 'like', "%{$search}%")
-                    ->orWhere('receiver_name', 'like', "%{$search}%")
-                    ->orWhere('sender_name', 'like', "%{$search}%");
-            });
-        }
-
-        // Sắp xếp
-        if ($request->sort === 'oldest') {
-            $query->oldest();
-        }
-
-        $orders = $query->paginate(8)->withQueryString();
-
-        // Đếm số lượng theo từng trạng thái đơn hàng của khách hàng này
-        $statusCounts = \App\Models\Courier::where('customer_id', $customer->id)
-            ->selectRaw('status, count(*) as count')
-            ->groupBy('status')
-            ->pluck('count', 'status')
-            ->toArray();
-
-        return view('customer.orders.index', compact('orders', 'statusCounts'));
-    }
-
     public function showTracking(Request $request)
     {
         $order = null;
         $tracking_id = $request->input('tracking_id');
 
         if ($tracking_id) {
-            // Xóa khoảng trắng 2 đầu nếu khách vô tình copy thừa
             $tracking_id = trim($tracking_id);
-
-            // Truy vấn đơn hàng trong DB
             $order = \App\Models\Courier::where('tracking_id', $tracking_id)->first();
 
             if (!$order) {
@@ -227,21 +218,20 @@ class CustomerController extends Controller
 
     public function showFaq()
     {
-        // Lấy tất cả câu hỏi đang hoạt động, sắp xếp theo thứ tự ưu tiên
         $faqs = \App\Models\Faq::where('is_active', true)
             ->orderBy('sort_order', 'asc')
             ->get()
-            ->groupBy('category'); // Gom nhóm theo danh mục cho dễ nhìn
+            ->groupBy('category');
 
         return view('customer.faq', compact('faqs'));
     }
+
     public function updateFcmToken(Request $request)
     {
         $request->validate([
             'token' => 'required|string',
         ]);
 
-        // Lưu hoặc cập nhật token của trình duyệt vào tài khoản khách hàng đang đăng nhập
         if (auth('customer')->check()) {
             auth('customer')->user()->update([
                 'fcm_token' => $request->token
