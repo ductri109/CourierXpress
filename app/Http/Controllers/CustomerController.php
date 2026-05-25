@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use App\Models\Faq;
+use App\Models\Courier;
 
 class CustomerController extends Controller
 {
@@ -153,6 +154,13 @@ class CustomerController extends Controller
 
         $sender_address = $request->sender_address_detail . ', ' . $request->sender_ward . ', ' . $request->sender_province;
         $receiver_address = $request->receiver_address_detail . ', ' . $request->receiver_ward . ', ' . $request->receiver_province;
+        $weight = $request->total_weight;
+
+        $baseFee = 30000; // phí cơ bản
+        $feePerKg = 10000; // mỗi kg thêm 10.000đ
+
+        $shippingFee = $baseFee + ($weight * $feePerKg);
+        $codAmount = $shippingFee;
 
         // LOGIC FIX: TỰ ĐỘNG CẬP NHẬT ĐỊA CHỈ MẶC ĐỊNH CHO KHÁCH HÀNG MỚI ĐĂNG KÝ
         if (auth('customer')->check()) {
@@ -173,8 +181,16 @@ class CustomerController extends Controller
         ];
         $total_weight = $weight_map[$request->weight_range] ?? 1.0;
 
+        $weight = (float) $total_weight;
+
+        $baseFee = 30000;
+        $feePerKg = 10000;
+
+        $shippingFee = $baseFee + ($weight * $feePerKg);
+        $codAmount = $shippingFee;
+
         // Lưu dữ liệu vào Database
-        \App\Models\Courier::create([
+        \DB::table('couriers')->insert([
             'tracking_id'      => $tracking_id,
             'sender_name'      => $request->sender_name,
             'sender_address'   => $sender_address,
@@ -183,6 +199,14 @@ class CustomerController extends Controller
             'total_weight'     => $total_weight,
             'status'           => 'pending',
             'customer_id'      => auth('customer')->check() ? auth('customer')->id() : null,
+
+            'shipping_fee'     => $shippingFee,
+            'cod_amount'       => $codAmount,
+            'payment_method'   => 'cod',
+            'payment_status'   => 'unpaid',
+
+            'created_at'       => now(),
+            'updated_at'       => now(),
         ]);
 
         if (auth('customer')->check()) {
@@ -240,5 +264,44 @@ class CustomerController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Chưa đăng nhập.'], 401);
+    }
+
+    public function payment(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:couriers,id',
+            'payment_method' => 'required|in:cod,paypal',
+        ], [
+            'order_id.required' => 'Không tìm thấy đơn hàng.',
+            'order_id.exists' => 'Đơn hàng không tồn tại.',
+            'payment_method.required' => 'Vui lòng chọn phương thức thanh toán.',
+            'payment_method.in' => 'Phương thức thanh toán không hợp lệ.',
+        ]);
+
+        $order = Courier::where('id', $request->order_id)
+            ->where('customer_id', auth('customer')->id())
+            ->firstOrFail();
+
+        if ($request->payment_method === 'cod') {
+            $order->payment_method = 'cod';
+            $order->payment_status = 'unpaid';
+            $order->save();
+
+            return redirect()
+                ->route('customer.orders.index')
+                ->with('success', 'Bạn đã chọn thanh toán khi nhận hàng COD.');
+        }
+
+        if ($request->payment_method === 'paypal') {
+            $order->payment_method = 'paypal';
+            $order->payment_status = 'unpaid';
+            $order->save();
+
+            return redirect()
+                ->route('customer.orders.index')
+                ->with('success', 'Bạn đã chọn thanh toán PayPal. Cần tích hợp PayPal API để thanh toán online thật.');
+        }
+
+        return back()->with('error', 'Phương thức thanh toán không hợp lệ.');
     }
 }

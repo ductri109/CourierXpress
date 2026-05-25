@@ -114,6 +114,12 @@ Route::post('/reset-password', function (Request $request) {
     ])->onlyInput('email');
 })->middleware('guest')->name('password.update');
 
+Route::post('/orders/payment', [CustomerController::class, 'payment'])
+    ->name('customer.orders.payment');
+
+Route::post('/customer/orders/payment', [CustomerController::class, 'payment'])
+    ->name('customer.orders.payment');
+
 // ============================================================
 // ADMIN ROUTES
 // ============================================================
