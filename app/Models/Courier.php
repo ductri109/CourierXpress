@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Courier extends Model
 {
     use HasFactory;
@@ -17,6 +18,11 @@ class Courier extends Model
         'status',
         'customer_id',
         'agent_id',
+
+        'shipping_fee',
+        'cod_amount',
+        'payment_method',
+        'payment_status',
     ];
 
     public function customer()
