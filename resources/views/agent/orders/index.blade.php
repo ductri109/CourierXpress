@@ -8,7 +8,7 @@
         {{-- Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-950">Đơn hàng của tôi</h2>
+                <h2 class="text-2xl font-bold text-gray-950">Quản Lý Đơn Hàng</h2>
                 <p class="text-gray-400 text-sm mt-0.5">Quản lý và xử lý vận đơn được bàn giao từ tổng kho.</p>
             </div>
             <span id="live-clock" class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-white border border-gray-200 px-3 py-2 rounded-xl shadow-sm">
