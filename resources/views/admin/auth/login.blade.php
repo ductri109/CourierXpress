@@ -130,13 +130,13 @@
                     </svg>
                   </span>
                 </span>
-                <span class="app-brand-text demo text-heading fw-semibold">Materio</span>
+                <span class="app-brand-text demo text-heading fw-semibold">CourierXpress</span>
               </a>
             </div>
             <!-- /Logo -->
 
             <div class="card-body mt-1">
-              <h4 class="mb-1">Welcome to Materio! 👋🏻</h4>
+              <h4 class="mb-1">Welcome to CourierXpress! 👋🏻</h4>
               <p class="mb-5">Please sign-in to your account and start the adventure</p>
 
               {{-- Kiểm tra và hiển thị thông báo lỗi tổng quát --}}
@@ -152,7 +152,7 @@
 
                 <form id="formAuthentication" class="mb-5" action="{{ route('admin.login.post') }}" method="POST">
                     @csrf
-                    
+
                     {{-- Username Field --}}
                     <div class="form-floating form-floating-outline mb-5">
                         <input
