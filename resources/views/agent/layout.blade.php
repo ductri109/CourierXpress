@@ -64,21 +64,14 @@
                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all
                                   {{ request()->is('agent/orders*') ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                             <i data-lucide="file-text" class="w-4 h-4"></i>
-                            <span>Đơn hàng của tôi</span>
+                            <span>Quản Lý Đơn Hàng </span>
                         </a>
-
-                        <a href="{{ route('agent.couriers.index') }}"
-                           class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all
-                                  {{ request()->routeIs('agent.couriers.index') ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                            <i data-lucide="truck" class="w-4 h-4"></i>
-                            <span>Tra cứu Courier</span>
-                        </a>
-
+                        {{-- Khách Hàng --}}
                         <a href="{{ route('agent.customers.index') }}"
                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all
                                   {{ request()->is('agent/customers*') ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                             <i data-lucide="users" class="w-4 h-4"></i>
-                            <span>Khách hàng</span>
+                            <span>Quản Lý Khách Hàng</span>
                         </a>
                     </div>
                 </div>

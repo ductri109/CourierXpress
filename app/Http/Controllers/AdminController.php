@@ -375,8 +375,8 @@ class AdminController extends Controller
     // CUSTOMERS
     // ================================================================
 
-    public function customerOverview($id)   { return view('admin.customers.overview',      ['customerId' => $id]); }
-    public function customerSecurity($id)   { return view('admin.customers.security',      ['customerId' => $id]); }
+//    public function customerOverview($id)   { return view('admin.customers.overview',      ['customerId' => $id]); }
+    public function customerSecurity($id)   { return view('admin.customers.index',      ['customerId' => $id]); }
     public function customerBilling($id)    { return view('admin.customers.billing',       ['customerId' => $id]); }
     public function customerNotifications($id) { return view('admin.customers.notifications', ['customerId' => $id]); }
 
@@ -430,5 +430,74 @@ class AdminController extends Controller
     public function employeeDestroy($id)
     {
         return redirect()->route('admin.employees.index')->with('success', 'Đã xoá nhân viên #' . $id . ' (demo).');
+    }
+
+    public function customersIndex(Request $request)
+    {
+        $query = \App\Models\Customer::query();
+
+        // 1. Tìm kiếm theo full_name, email, phone
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('full_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+        }
+
+        $customers = $query->orderBy('created_at', 'desc')->get();
+
+        // 2. XỬ LÝ LỖI Ở ĐÂY: Tạm thời gán số đơn hàng = 0 để web chạy được
+        foreach ($customers as $customer) {
+            $customer->total_orders = 0;
+
+            // Khi nào bảng Order của bạn hoàn thiện, hãy mở comment dòng dưới đây:
+            // $customer->total_orders = \App\Models\Order::where('customer_id', $customer->id)->count();
+        }
+
+        // 3. Thống kê thẻ KPI
+        $totalCustomers = \App\Models\Customer::count();
+        $newCustomers = \App\Models\Customer::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->count();
+
+        $activeCustomers = $totalCustomers;
+
+        // Tạm gán tổng đơn = 0
+        $totalOrders = 0;
+        // $totalOrders = \App\Models\Order::count();
+
+        return view('admin.customers.index', compact(
+            'customers',
+            'totalCustomers',
+            'newCustomers',
+            'activeCustomers',
+            'totalOrders'
+        ));
+    }
+    public function customerOverview($id)
+    {
+        // 1. Lấy thông tin khách hàng (Cái này vẫn giữ nguyên vì bạn đã có bảng Customer)
+        $customer = \App\Models\Customer::findOrFail($id);
+
+        // 2. TẠM ẨN: Dòng gây lỗi vì chưa có Model Order
+        // $orders = \App\Models\Order::where('customer_id', $id)->orderBy('created_at', 'desc')->get();
+
+        // Thay bằng một danh sách rỗng (Collection trống) để giao diện không bị sập
+        $orders = collect([]);
+
+        // 3. Tạm gán các thống kê = 0
+        $totalOrders = 0;
+        $pendingOrders = 0;
+        $inTransitOrders = 0;
+        $deliveredOrders = 0;
+
+        return view('admin.customers.overview', compact(
+            'customer',
+            'orders',
+            'totalOrders',
+            'pendingOrders',
+            'inTransitOrders',
+            'deliveredOrders'
+        ));
     }
 }

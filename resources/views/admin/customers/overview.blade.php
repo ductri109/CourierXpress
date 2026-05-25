@@ -1,492 +1,151 @@
 @extends('admin.layout')
 
+@section('title', 'Chi tiết Khách hàng — ' . $customer->full_name)
+
 @section('content')
-<div class="container-xxl flex-grow-1 container-p-y">
-              <div
-                class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-6 text-center text-sm-start gap-2">
-                <div class="mb-2 mb-sm-0">
-                  <h4 class="mb-1">Customer ID #634759</h4>
-                  <p class="mb-0">Aug 17, 2020, 5:48 (ET)</p>
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">
+            <a href="{{ route('admin.customers.index') }}" class="text-muted">Quản lý Khách hàng</a> /
+        </span>
+            {{ $customer->full_name }}
+        </h4>
+
+        <div class="row g-4">
+
+            {{-- ===== CUSTOMER INFO ===== --}}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center pt-5">
+                        <div class="avatar avatar-xl mb-3 mx-auto">
+                            <div class="avatar-initial rounded-circle bg-label-primary" style="font-size:2rem; width:80px; height:80px; line-height:80px;">
+                                {{ strtoupper(substr($customer->full_name, 0, 1)) }}
+                            </div>
+                        </div>
+                        <h5 class="mb-0">{{ $customer->full_name }}</h5>
+                        <p class="text-muted small mb-3">Customer ID #{{ str_pad($customer->id, 4, '0', STR_PAD_LEFT) }}</p>
+
+                        <span class="badge bg-label-success rounded-pill px-3 py-2">
+                        <i class="ri-checkbox-circle-line me-1" style="font-size:12px"></i> Đang hoạt động
+                    </span>
+                    </div>
+                    <div class="card-body border-top pt-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ri-mail-line me-2 text-muted"></i>
+                            <span class="small">{{ $customer->email }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ri-phone-line me-2 text-muted"></i>
+                            <span class="small">{{ $customer->phone }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="ri-map-pin-line me-2 text-muted"></i>
+                            <span class="small">{{ $customer->address ?? 'Chưa cập nhật địa chỉ' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="ri-calendar-line me-2 text-muted"></i>
+                            <span class="small">Tham gia ngày {{ $customer->created_at ? $customer->created_at->format('d/m/Y') : 'N/A' }}</span>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-outline-danger delete-customer">Delete Customer</button>
-              </div>
 
-              <div class="row">
-                <!-- Customer-detail Sidebar -->
-                <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
-                  <!-- Customer-detail Card -->
-                  <div class="card mb-6">
-                    <div class="card-body pt-12">
-                      <div class="customer-avatar-section">
-                        <div class="d-flex align-items-center flex-column">
-                          <img
-                            class="img-fluid rounded mb-4"
-                            src="{{ asset('assets') }}/img/avatars/1.png"
-                            height="120"
-                            width="120"
-                            alt="User avatar" />
-                          <div class="customer-info text-center mb-6">
-                            <h5 class="mb-0">Lorine Hischke</h5>
-                            <span>Customer ID #634759</span>
-                          </div>
+                {{-- Thống kê nhanh --}}
+                <div class="card">
+                    <div class="card-header"><h6 class="mb-0">Thống kê đơn hàng (Mua)</h6></div>
+                    <div class="card-body p-0">
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+                            <span class="small text-muted">Tổng đơn đã đặt</span>
+                            <span class="fw-bold">{{ $totalOrders ?? 0 }}</span>
                         </div>
-                      </div>
-                      <div class="d-flex justify-content-around flex-wrap mb-6 gap-0 gap-md-3 gap-lg-4">
-                        <div class="d-flex align-items-center gap-4 me-5">
-                          <div class="avatar">
-                            <div class="avatar-initial rounded bg-label-primary">
-                              <i class="ri-shopping-cart-line ri-24px"></i>
-                            </div>
-                          </div>
-                          <div>
-                            <h5 class="mb-0">184</h5>
-                            <span>Orders</span>
-                          </div>
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+                            <span class="small text-muted">Chờ xử lý</span>
+                            <span class="fw-bold text-warning">{{ $pendingOrders ?? 0 }}</span>
                         </div>
-                        <div class="d-flex align-items-center gap-4">
-                          <div class="avatar">
-                            <div class="avatar-initial rounded bg-label-primary">
-                              <i class="ri-money-dollar-circle-line ri-24px"></i>
-                            </div>
-                          </div>
-                          <div>
-                            <h5 class="mb-0">$12,378</h5>
-                            <span>Spent</span>
-                          </div>
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+                            <span class="small text-muted">Đang giao</span>
+                            <span class="fw-bold text-primary">{{ $inTransitOrders ?? 0 }}</span>
                         </div>
-                      </div>
-
-                      <div class="info-container">
-                        <h5 class="border-bottom text-capitalize pb-4 mt-6 mb-4">Details</h5>
-                        <ul class="list-unstyled mb-6">
-                          <li class="mb-2">
-                            <span class="h6 me-1">Username:</span>
-                            <span>lorine.hischke</span>
-                          </li>
-                          <li class="mb-2">
-                            <span class="h6 me-1">Email:</span>
-                            <span>vafgot@vultukir.org</span>
-                          </li>
-                          <li class="mb-2">
-                            <span class="h6 me-1">Status:</span>
-                            <span class="badge bg-label-success rounded-pill">Active</span>
-                          </li>
-                          <li class="mb-2">
-                            <span class="h6 me-1">Contact:</span>
-                            <span>(123) 456-7890</span>
-                          </li>
-
-                          <li class="mb-2">
-                            <span class="h6 me-1">Country:</span>
-                            <span>USA</span>
-                          </li>
-                        </ul>
-                        <div class="d-flex justify-content-center">
-                          <a
-                            href="javascript:;"
-                            class="btn btn-primary w-100"
-                            data-bs-target="#editUser"
-                            data-bs-toggle="modal"
-                            >Edit Details</a
-                          >
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3">
+                            <span class="small text-muted">Giao thành công</span>
+                            <span class="fw-bold text-success">{{ $deliveredOrders ?? 0 }}</span>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                  <!-- /Customer-detail Card -->
-                  <!-- Plan Card -->
-
-                  <div class="card mb-4 bg-primary">
-                    <div class="card-body">
-                      <div class="row justify-content-between mb-4">
-                        <div
-                          class="col-md-12 col-lg-7 col-xl-12 col-xxl-7 text-center text-lg-start text-xl-center text-xxl-start order-1 order-lg-0 order-xl-1 order-xxl-0">
-                          <h5 class="card-title text-white text-nowrap mb-4">Upgrade to premium</h5>
-                          <p class="card-text text-white">
-                            Upgrade customer to premium membership to access pro features.
-                          </p>
-                        </div>
-                        <span class="col-md-12 col-lg-5 col-xl-12 col-xxl-5 text-center mx-auto mx-md-0 mb-2"
-                          ><img src="{{ asset('assets') }}/img/illustrations/rocket.png" class="w-px-75 m-2" alt="3dRocket"
-                        /></span>
-                      </div>
-                      <button
-                        class="btn btn-white text-primary w-100 fw-medium shadow-sm"
-                        data-bs-target="#upgradePlanModal"
-                        data-bs-toggle="modal">
-                        Upgrade to premium
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- /Plan Card -->
                 </div>
-                <!--/ Customer Sidebar -->
-
-                <!-- Customer Content -->
-                <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
-                  <!-- Customer Pills -->
-                  <div class="nav-align-top">
-                    <ul class="nav nav-pills flex-column flex-md-row mb-6 row-gap-2">
-                      <li class="nav-item">
-                        <a class="nav-link active" href="javascript:void(0);"
-                          ><i class="ri-group-line me-1_5"></i>Overview</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.customers.security', $customerId ?? 1) }}"
-                          ><i class="ri-lock-2-line me-1_5"></i>Security</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.customers.billing', $customerId ?? 1) }}"
-                          ><i class="ri-map-pin-line me-1_5"></i>Address & Billing</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.customers.notifications', $customerId ?? 1) }}"
-                          ><i class="ri-notification-4-line me-1_5"></i>Notifications</a
-                        >
-                      </li>
-                    </ul>
-                  </div>
-                  <!--/ Customer Pills -->
-
-                  <!--  Customer cards -->
-                  <div class="row text-nowrap">
-                    <div class="col-md-6 mb-6">
-                      <div class="card h-100">
-                        <div class="card-body">
-                          <div class="card-icon mb-2">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-primary">
-                                <i class="ri-money-dollar-circle-line ri-24px"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h5 class="card-title mb-2">Account Balance</h5>
-                            <div class="d-flex align-items-baseline gap-1">
-                              <h5 class="text-primary mb-0">$2345</h5>
-                              <p class="mb-0">Credit Left</p>
-                            </div>
-                            <p class="mb-0 text-truncate">Account balance for next purchase</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-6">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="card-icon mb-2">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-success">
-                                <i class="ri-gift-line ri-24px"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h5 class="card-title mb-2">Loyalty Program</h5>
-                            <span class="badge bg-label-success mb-2 rounded-pill">Platinum member</span>
-                            <p class="mb-0">3000 points to next tier</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-6">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="card-icon mb-2">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-warning">
-                                <i class="ri-star-smile-line ri-24px"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h5 class="card-title mb-2">Wishlist</h5>
-                            <div class="d-flex align-items-baseline gap-1">
-                              <h5 class="text-warning mb-0">15</h5>
-                              <p class="mb-0">Items in wishlist</p>
-                            </div>
-                            <p class="mb-0 text-truncate">Receive notification when items go on sale</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-6">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="card-icon mb-2">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-info">
-                                <i class="ri-vip-crown-line ri-24px"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h5 class="card-title mb-2">Coupons</h5>
-                            <div class="d-flex align-items-baseline gap-1">
-                              <h5 class="text-info mb-0">21</h5>
-                              <p class="mb-0">Coupons you win</p>
-                            </div>
-
-                            <p class="mb-0 text-truncate">Use coupon on next purchase</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!--/ customer cards -->
-
-                  <!-- Invoice table -->
-                  <div class="card mb-6">
-                    <div class="table-responsive mb-4">
-                      <table class="table datatables-customer-order">
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th></th>
-                            <th>Order</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Spent</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                      </table>
-                    </div>
-                  </div>
-                  <!-- /Invoice table -->
-                </div>
-                <!--/ Customer Content -->
-              </div>
-
-              <!-- Modal -->
-              <!-- Edit User Modal -->
-              <div class="modal fade" id="editUser" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-                  <div class="modal-content">
-                    <div class="modal-body p-0">
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      <div class="text-center mb-6">
-                        <h4 class="mb-2">Edit User Information</h4>
-                        <p class="mb-6">Updating user details will receive a privacy audit.</p>
-                      </div>
-                      <form id="editUserForm" class="row g-5" onsubmit="return false">
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              type="text"
-                              id="modalEditUserFirstName"
-                              name="modalEditUserFirstName"
-                              class="form-control"
-                              value="Oliver"
-                              placeholder="Oliver" />
-                            <label for="modalEditUserFirstName">First Name</label>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              type="text"
-                              id="modalEditUserLastName"
-                              name="modalEditUserLastName"
-                              class="form-control"
-                              value="Queen"
-                              placeholder="Queen" />
-                            <label for="modalEditUserLastName">Last Name</label>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              type="text"
-                              id="modalEditUserName"
-                              name="modalEditUserName"
-                              class="form-control"
-                              value="oliver.queen"
-                              placeholder="oliver.queen" />
-                            <label for="modalEditUserName">Username</label>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              type="text"
-                              id="modalEditUserEmail"
-                              name="modalEditUserEmail"
-                              class="form-control"
-                              value="oliverqueen@gmail.com"
-                              placeholder="oliverqueen@gmail.com" />
-                            <label for="modalEditUserEmail">Email</label>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <select
-                              id="modalEditUserStatus"
-                              name="modalEditUserStatus"
-                              class="form-select"
-                              aria-label="Default select example">
-                              <option value="1" selected>Active</option>
-                              <option value="2">Inactive</option>
-                              <option value="3">Suspended</option>
-                            </select>
-                            <label for="modalEditUserStatus">Status</label>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              type="text"
-                              id="modalEditTaxID"
-                              name="modalEditTaxID"
-                              class="form-control modal-edit-tax-id"
-                              placeholder="123 456 7890" />
-                            <label for="modalEditTaxID">Tax ID</label>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="input-group input-group-merge">
-                            <span class="input-group-text">US (+1)</span>
-                            <div class="form-floating form-floating-outline">
-                              <input
-                                type="text"
-                                id="modalEditUserPhone"
-                                name="modalEditUserPhone"
-                                class="form-control phone-number-mask"
-                                value="+1 609 933 4422"
-                                placeholder="+1 609 933 4422" />
-                              <label for="modalEditUserPhone">Phone Number</label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <select
-                              id="modalEditUserLanguage"
-                              name="modalEditUserLanguage"
-                              class="select2 form-select"
-                              multiple>
-                              <option value="">Select</option>
-                              <option value="english" selected>English</option>
-                              <option value="spanish">Spanish</option>
-                              <option value="french">French</option>
-                              <option value="german">German</option>
-                              <option value="dutch">Dutch</option>
-                              <option value="hebrew">Hebrew</option>
-                              <option value="sanskrit">Sanskrit</option>
-                              <option value="hindi">Hindi</option>
-                            </select>
-                            <label for="modalEditUserLanguage">Language</label>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <div class="form-floating form-floating-outline">
-                            <select
-                              id="modalEditUserCountry"
-                              name="modalEditUserCountry"
-                              class="select2 form-select"
-                              data-allow-clear="true">
-                              <option value="">Select</option>
-                              <option value="Australia">Australia</option>
-                              <option value="Bangladesh">Bangladesh</option>
-                              <option value="Belarus">Belarus</option>
-                              <option value="Brazil">Brazil</option>
-                              <option value="Canada">Canada</option>
-                              <option value="China">China</option>
-                              <option value="France">France</option>
-                              <option value="Germany">Germany</option>
-                              <option value="India" selected>India</option>
-                              <option value="Indonesia">Indonesia</option>
-                              <option value="Israel">Israel</option>
-                              <option value="Italy">Italy</option>
-                              <option value="Japan">Japan</option>
-                              <option value="Korea">Korea, Republic of</option>
-                              <option value="Mexico">Mexico</option>
-                              <option value="Philippines">Philippines</option>
-                              <option value="Russia">Russian Federation</option>
-                              <option value="South Africa">South Africa</option>
-                              <option value="Thailand">Thailand</option>
-                              <option value="Turkey">Turkey</option>
-                              <option value="Ukraine">Ukraine</option>
-                              <option value="United Arab Emirates">United Arab Emirates</option>
-                              <option value="United Kingdom">United Kingdom</option>
-                              <option value="United States">United States</option>
-                            </select>
-                            <label for="modalEditUserCountry">Country</label>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="form-check form-switch">
-                            <input type="checkbox" class="form-check-input" id="editBillingAddress" />
-                            <label for="editBillingAddress" class="text-heading">Use as a billing address?</label>
-                          </div>
-                        </div>
-                        <div class="col-12 text-center">
-                          <button type="submit" class="btn btn-primary me-3">Submit</button>
-                          <button
-                            type="reset"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            aria-label="Close">
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--/ Edit User Modal -->
-
-              <!-- Add New Credit Card Modal -->
-              <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-simple modal-upgrade-plan">
-                  <div class="modal-content">
-                    <div class="modal-body pt-md-0 px-0">
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      <div class="text-center mb-6">
-                        <h4 class="mb-2">Upgrade Plan</h4>
-                        <p>Choose the best plan for user.</p>
-                      </div>
-                      <form id="upgradePlanForm" class="row g-5 d-flex align-items-center" onsubmit="return false">
-                        <div class="col-sm-9">
-                          <select
-                            id="choosePlan"
-                            name="choosePlan"
-                            class="form-select form-select-sm"
-                            aria-label="Choose Plan">
-                            <option selected>Choose Plan</option>
-                            <option value="standard">Standard - $99/month</option>
-                            <option value="exclusive">Exclusive - $249/month</option>
-                            <option value="Enterprise">Enterprise - $499/month</option>
-                          </select>
-                        </div>
-                        <div class="col-sm-3 d-flex align-items-end">
-                          <button type="submit" class="btn btn-primary">Upgrade</button>
-                        </div>
-                      </form>
-                    </div>
-                    <hr class="mx-md-n5 mx-n3" />
-                    <div class="modal-body pb-md-0 px-0">
-                      <p class="mb-0">User current plan is standard plan</p>
-                      <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <div class="d-flex justify-content-center me-2 mt-3">
-                          <sup class="h5 pricing-currency pt-1 mt-2 mb-0 me-1 text-primary">$</sup>
-                          <h1 class="display-3 mb-0 text-primary">99</h1>
-                          <sub class="h6 pricing-duration mt-auto mb-2 pb-1 text-body">/month</sub>
-                        </div>
-                        <button class="btn btn-outline-danger cancel-subscription mt-4">Cancel Subscription</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--/ Add New Credit Card Modal -->
-
-              <!-- /Modal -->
             </div>
-@endsection
 
+            {{-- ===== ORDERS TABLE ===== --}}
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Lịch sử đơn hàng của khách</h5>
+                        <span class="badge bg-label-primary">{{ isset($orders) ? $orders->count() : 0 }} đơn</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Mã vận đơn</th>
+                                <th>Người nhận</th>
+                                <th>Khối lượng</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if(isset($orders) && $orders->count() > 0)
+                                @foreach($orders as $order)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('admin.orders.show', $order->id) }}" class="text-primary fw-bold text-decoration-none">
+                                                {{ $order->tracking_id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">{{ $order->receiver_name }}</div>
+                                            <small class="text-muted">{{ \Str::limit($order->receiver_address, 30) }}</small>
+                                        </td>
+                                        <td>{{ $order->total_weight }} kg</td>
+                                        <td>
+                                            @switch($order->status)
+                                                @case('pending')
+                                                    <span class="badge bg-label-warning">Chờ xử lý</span>
+                                                    @break
+                                                @case('assigned')
+                                                    <span class="badge bg-label-info">Đã nhận đơn</span>
+                                                    @break
+                                                @case('in_transit')
+                                                    <span class="badge bg-label-primary">Đang giao</span>
+                                                    @break
+                                                @case('delivered')
+                                                    <span class="badge bg-label-success">Đã giao</span>
+                                                    @break
+                                                @default
+                                                    <span class="badge bg-label-secondary">{{ $order->status }}</span>
+                                            @endswitch
+                                        </td>
+                                        <td class="text-muted small">{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        Khách hàng này chưa đặt đơn hàng nào.
+                                    </td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <a href="{{ route('admin.customers.index') }}" class="btn btn-outline-secondary">
+                        <i class="ri-arrow-left-line me-1"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+@endsection

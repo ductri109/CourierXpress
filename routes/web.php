@@ -149,6 +149,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/agents/{id}', [AdminController::class, 'agentsDestroy'])->name('agents.destroy');
 
         // Customers
+        Route::get('/customers', [AdminController::class, 'customersIndex'])->name('customers.index');
+
         Route::get('/customers/{id}/overview', [AdminController::class, 'customerOverview'])->name('customers.overview');
         Route::get('/customers/{id}/security', [AdminController::class, 'customerSecurity'])->name('customers.security');
         Route::get('/customers/{id}/billing', [AdminController::class, 'customerBilling'])->name('customers.billing');
