@@ -62,13 +62,13 @@
                     @endif
                 </div>
 
-                {{-- THÊM ID "bookingForm" VÀO ĐÂY ĐỂ XỬ LÝ JS --}}
                 <form action="{{ route('booking.post') }}" method="POST" id="bookingForm" class="p-8 md:p-12 space-y-10 pt-4 md:pt-4">
                     @csrf
 
                     {{-- Trường ẩn để gửi địa chỉ đã gộp lên Controller lưu cho User mới --}}
                     <input type="hidden" name="sender_full_address" id="sender_full_address">
 
+                    {{-- THÔNG TIN NGƯỜI GỬI --}}
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
                             <h3 class="text-xl font-bold text-gray-900">Thông tin người gửi</h3>
@@ -76,14 +76,20 @@
                         </div>
 
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="space-y-2 md:col-span-2">
-                                <label class="block text-sm font-semibold text-gray-700">Họ tên người gửi</label>
-                                <input type="text" name="sender_name" value="{{ old('sender_name', auth('customer')->user()?->full_name) }}"
-                                       class="w-full pl-4 pr-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none bg-gray-50 font-medium text-gray-600">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">Họ tên người gửi <span class="text-primary-500">*</span></label>
+                                <input type="text" name="sender_name" value="{{ old('sender_name', auth('customer')->user()?->full_name) }}" required
+                                       class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none bg-white font-medium text-gray-700 focus:ring-4 focus:ring-primary-50 transition-all">
+                            </div>
+                            {{-- BỔ SUNG: Số điện thoại người gửi --}}
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">Số điện thoại người gửi <span class="text-primary-500">*</span></label>
+                                <input type="tel" name="sender_phone" value="{{ old('sender_phone', auth('customer')->user()?->phone) }}" placeholder="Nhập số điện thoại người gửi" required
+                                       class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none bg-white font-medium text-gray-700 focus:ring-4 focus:ring-primary-50 transition-all">
                             </div>
                         </div>
 
-                        {{-- Địa chỉ người gửi (Cố định Hà Nội & Thả danh sách Phường chỉ định) --}}
+                        {{-- Địa chỉ người gửi --}}
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
                             <div class="space-y-2">
                                 <label class="block text-sm font-semibold text-gray-700">Thành phố người gửi</label>
@@ -115,6 +121,7 @@
                         </div>
                     </div>
 
+                    {{-- THÔNG TIN NGƯỜI NHẬN --}}
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
                             <h3 class="text-xl font-bold text-gray-900">Thông tin người nhận</h3>
@@ -122,14 +129,20 @@
                         </div>
 
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="space-y-2 md:col-span-2">
+                            <div class="space-y-2">
                                 <label class="block text-sm font-semibold text-gray-700">Họ tên người nhận <span class="text-primary-500">*</span></label>
                                 <input type="text" name="receiver_name" value="{{ old('receiver_name') }}" placeholder="Nhập tên người nhận" required
                                        class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-50 transition-all">
                             </div>
+                            {{-- BỔ SUNG: Số điện thoại người nhận --}}
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">Số điện thoại người nhận <span class="text-primary-500">*</span></label>
+                                <input type="tel" name="receiver_phone" value="{{ old('receiver_phone') }}" placeholder="Nhập số điện thoại người nhận" required
+                                       class="w-full px-4 py-3.5 border-2 border-gray-100 rounded-xl focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-50 transition-all">
+                            </div>
                         </div>
 
-                        {{-- Địa chỉ người nhận (Cố định Hà Nội & Thả danh sách Phường chỉ định) --}}
+                        {{-- Địa chỉ người nhận --}}
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
                             <div class="space-y-2">
                                 <label class="block text-sm font-semibold text-gray-700">Thành phố người nhận</label>
@@ -153,6 +166,7 @@
                         </div>
                     </div>
 
+                    {{-- CHI TIẾT HÀNG HÓA --}}
                     <div class="relative">
                         <div class="flex items-center space-x-3 mb-6">
                             <h3 class="text-xl font-bold text-gray-900">Chi tiết hàng hóa</h3>
@@ -161,7 +175,6 @@
 
                         <div class="bg-primary-50/30 p-6 rounded-2xl border border-primary-100 space-y-6">
                             <div class="grid md:grid-cols-3 gap-6 items-start">
-                                {{-- Dropdown phân loại Khối lượng --}}
                                 <div class="space-y-2 md:col-span-1">
                                     <label class="block text-sm font-semibold text-gray-700">Khối lượng ước tính <span class="text-primary-500">*</span></label>
                                     <select name="weight_range" required
@@ -175,7 +188,6 @@
                                     </select>
                                 </div>
 
-                                {{-- Ô nhập Textarea ghi chú cho người giao hàng --}}
                                 <div class="md:col-span-2 space-y-2">
                                     <label class="block text-sm font-semibold text-gray-700">Ghi chú cho người giao hàng</label>
                                     <textarea name="shipping_notes" rows="2" placeholder="Ví dụ: Hàng dễ vỡ, liên hệ trước khi giao, hàng chất lỏng..."
@@ -254,7 +266,7 @@
                 receiverWardSelect.add(optionReceiver);
             });
 
-            // LOGIC TỰ ĐỘNG GỘP CHUỖI GỬI LÊN LƯU ĐỊA CHỈ MẶC ĐỊNH
+            // LOGIC TỰ ĐỘNG GỘP CHUỒI GỬI LÊN LƯU ĐỊA CHỈ MẶC ĐỊNH
             bookingForm.addEventListener('submit', function (e) {
                 const detail = senderAddressDetail.value.trim();
                 const ward = senderWardSelect.value;
