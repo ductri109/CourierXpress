@@ -82,11 +82,18 @@
                         <tbody class="divide-y divide-gray-50 font-medium text-gray-700">
                         @forelse($orders as $order)
                             @php
+                                // Ép trạng thái về chữ thường để luôn khớp màu dù DB lưu chữ HOA hay thường
+                                $statusKey = strtolower($order->status);
+
                                 $sm = [
+                                    'pending'    => ['label'=>'Chờ xử lý', 'bg'=>'bg-yellow-100',  'text'=>'text-yellow-700',  'dot'=>'bg-yellow-500',  'pulse'=>true],
                                     'assigned'   => ['label'=>'Chờ nhận',  'bg'=>'bg-amber-100',   'text'=>'text-amber-700',   'dot'=>'bg-amber-500',   'pulse'=>true],
+                                    'picked_up'  => ['label'=>'Đã lấy hàng','bg'=>'bg-indigo-100', 'text'=>'text-indigo-700',  'dot'=>'bg-indigo-500',  'pulse'=>false],
                                     'in_transit' => ['label'=>'Đang giao', 'bg'=>'bg-blue-100',    'text'=>'text-blue-700',    'dot'=>'bg-blue-500',    'pulse'=>true],
                                     'delivered'  => ['label'=>'Đã giao',   'bg'=>'bg-emerald-100', 'text'=>'text-emerald-700', 'dot'=>'bg-emerald-500', 'pulse'=>false],
-                                ][$order->status] ?? ['label'=>$order->status,'bg'=>'bg-gray-100','text'=>'text-gray-600','dot'=>'bg-gray-400','pulse'=>false];
+                                    'canceled'   => ['label'=>'Đã hủy',    'bg'=>'bg-red-100',     'text'=>'text-red-700',     'dot'=>'bg-red-500',     'pulse'=>false],
+                                    'cancelled'  => ['label'=>'Đã hủy',    'bg'=>'bg-red-100',     'text'=>'text-red-700',     'dot'=>'bg-red-500',     'pulse'=>false],
+                                ][$statusKey] ?? ['label'=> strtoupper($order->status), 'bg'=>'bg-gray-100', 'text'=>'text-gray-600', 'dot'=>'bg-gray-400', 'pulse'=>false];
                             @endphp
                             <tr class="hover:bg-gray-50/60 transition-colors">
                                 <td class="px-5 py-3.5">
