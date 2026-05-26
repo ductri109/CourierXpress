@@ -180,11 +180,15 @@ Route::get('/admin', function () {
 // ============================================================
 // AGENT ROUTES
 // ============================================================
+Route::get('/agent', function () {
+    return auth()->guard('agent')->check()
+        ? redirect()->route('agent.dashboard')
+        : redirect()->route('agent.login');
+});
+
 Route::prefix('agent')->name('agent.')->group(function () {
     Route::get('/login',     [AgentController::class, 'showLogin'])->name('login');
     Route::post('/login',    [AgentController::class, 'login'])->name('login.post');
-    Route::get('/register',  [AgentController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AgentController::class, 'register'])->name('register.post');
     Route::post('/logout',   [AgentController::class, 'logout'])->name('logout');
 });
 

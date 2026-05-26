@@ -3,6 +3,28 @@
 @section('title', 'Quản lý Khách hàng')
 
 @section('content')
+
+    {{-- Xử lý phân trang trực tiếp trên View (Không cần sửa Controller) --}}
+    @php
+        use Illuminate\Pagination\LengthAwarePaginator;
+        use Illuminate\Pagination\Paginator;
+
+        $perPage = 10;
+        $page = Paginator::resolveCurrentPage('page') ?: 1;
+        $pageData = $customers->slice(($page - 1) * $perPage, $perPage)->all();
+
+        $customers = new LengthAwarePaginator(
+            $pageData,
+            $customers->count(),
+            $perPage,
+            $page,
+            [
+                'path' => Paginator::resolveCurrentPath(),
+                'query' => request()->query()
+            ]
+        );
+    @endphp
+
     <div class="flex flex-col h-full space-y-5">
 
         {{-- Header --}}
@@ -22,7 +44,7 @@
             <form method="GET" action="{{ route('agent.customers.index') }}" id="filter-form">
                 <div class="flex flex-wrap gap-3 items-end">
 
-                    {{-- Tìm kiếm Tên/SĐT/Email (realtime) --}}
+                    {{-- Tìm kiếm Tên/SĐT/Email --}}
                     <div class="flex-1 min-w-[180px] relative">
                         <label class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Khách hàng</label>
                         <div class="relative">
@@ -34,7 +56,7 @@
                         </div>
                     </div>
 
-                    {{-- Lọc Địa chỉ (realtime) --}}
+                    {{-- Lọc Địa chỉ --}}
                     <div class="flex-1 min-w-[180px] relative">
                         <label class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Địa chỉ</label>
                         <div class="relative">
@@ -46,7 +68,7 @@
                         </div>
                     </div>
 
-                    {{-- Lọc theo ngày tham gia (Server-side) --}}
+                    {{-- Lọc theo ngày --}}
                     <div>
                         <label class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Từ ngày</label>
                         <div class="relative">
@@ -82,19 +104,15 @@
                 {{-- Shortcut ngày nhanh --}}
                 <div class="flex items-center gap-2 mt-3 flex-wrap">
                     <span class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Ngày tham gia:</span>
-                    <button type="button" onclick="setDateRange('today')"
-                            class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">Hôm nay</button>
-                    <button type="button" onclick="setDateRange('yesterday')"
-                            class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">Hôm qua</button>
-                    <button type="button" onclick="setDateRange('week')"
-                            class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">7 ngày qua</button>
-                    <button type="button" onclick="setDateRange('month')"
-                            class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">Tháng này</button>
+                    <button type="button" onclick="setDateRange('today')" class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">Hôm nay</button>
+                    <button type="button" onclick="setDateRange('yesterday')" class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">Hôm qua</button>
+                    <button type="button" onclick="setDateRange('week')" class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">7 ngày qua</button>
+                    <button type="button" onclick="setDateRange('month')" class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-all font-medium">Tháng này</button>
                 </div>
             </form>
         </div>
 
-        {{-- No result banner (Client-side) --}}
+        {{-- No result banner --}}
         <div id="no-result-banner" class="hidden items-center gap-3 bg-amber-50 border border-amber-200 text-amber-800 px-5 py-4 rounded-2xl">
             <i data-lucide="search-x" class="w-5 h-5 text-amber-500 flex-shrink-0"></i>
             <p class="text-sm font-semibold">Không có khách hàng nào khớp với bộ lọc hiện tại.</p>
@@ -113,7 +131,7 @@
                     <span class="flex items-center gap-1 text-[0.65rem] font-bold text-emerald-600">
                         <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Realtime Filter
                     </span>
-                    <span class="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full" id="customer-count">{{ $customers->count() }} khách</span>
+                    <span class="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full" id="customer-count">{{ method_exists($customers, 'total') ? $customers->total() : $customers->count() }} khách</span>
                 </div>
             </div>
 
@@ -131,7 +149,6 @@
                     <tbody class="divide-y divide-gray-50 text-sm text-gray-700" id="customers-tbody">
                     @forelse($customers as $user)
                         @php
-                            // Lấy địa chỉ của khách hàng
                             $addr = $user->address ?: ($user->couriers->first()->sender_address ?? '');
                         @endphp
                         <tr class="customer-row hover:bg-gray-50/60 transition-colors"
@@ -186,11 +203,18 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Thanh Phân Trang --}}
+            @if(method_exists($customers, 'hasPages') && $customers->hasPages())
+                <div class="px-5 py-4 border-t border-gray-100 bg-gray-50/50">
+                    {{ $customers->appends(request()->query())->links() }}
+                </div>
+            @endif
         </div>
     </div>
 
     <script>
-        // ── Đồng hồ realtime ──────────────────────────────────────────
+        // Đồng hồ realtime
         function updateClock() {
             const now = new Date();
             const h = String(now.getHours()).padStart(2,'0');
@@ -202,16 +226,14 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ── Realtime filter cho Ô tìm kiếm & Địa chỉ ──────────────────
+        // Filter JS
         const searchInput = document.getElementById('search-input');
         const addressInput = document.getElementById('address-input');
         const rows = document.querySelectorAll('.customer-row');
         const noBanner = document.getElementById('no-result-banner');
         const cntEl = document.getElementById('customer-count');
-        const emptyRow = document.getElementById('empty-row');
 
         function clientFilter() {
-            // Lấy giá trị ô tìm kiếm chung và ô địa chỉ
             const q = (searchInput.value || '').toLowerCase().trim();
             const addr = (addressInput.value || '').toLowerCase().trim();
 
@@ -219,20 +241,21 @@
             let totalRows = rows.length;
 
             rows.forEach(row => {
-                // Kiểm tra xem text nhập vào có nằm trong thuộc tính data không
                 const matchSearch = !q || row.dataset.search.includes(q);
                 const matchAddress = !addr || row.dataset.address.includes(addr);
-
-                // Phải thoả mãn cả 2 điều kiện (nếu người dùng nhập cả 2 ô)
                 const show = matchSearch && matchAddress;
                 row.style.display = show ? '' : 'none';
                 if (show) visible++;
             });
 
-            // Cập nhật số lượng
-            if (cntEl) cntEl.textContent = visible + ' khách';
+            if (cntEl) {
+                if (q !== '' || addr !== '') {
+                    cntEl.textContent = visible + ' khách (trang này)';
+                } else {
+                    cntEl.textContent = '{{ method_exists($customers, "total") ? $customers->total() : $customers->count() }} khách';
+                }
+            }
 
-            // Xử lý hiển thị banner "Không có kết quả"
             if (totalRows > 0) {
                 const isNoResult = visible === 0;
                 noBanner.classList.toggle('hidden', !isNoResult);
@@ -240,17 +263,12 @@
             }
         }
 
-        // Bắt sự kiện 'input' để lọc ngay khi người dùng đang gõ phím
         if (searchInput) searchInput.addEventListener('input', clientFilter);
         if (addressInput) addressInput.addEventListener('input', clientFilter);
-
-        // Chạy filter 1 lần khi load trang để khớp dữ liệu (phòng trường hợp trình duyệt giữ lại text đã gõ)
         clientFilter();
 
-        // ── Shortcut lọc ngày (Gửi form lên server) ───────────────────
-        function fmt(d) {
-            return d.toISOString().split('T')[0];
-        }
+        // Shortcut lọc ngày
+        function fmt(d) { return d.toISOString().split('T')[0]; }
         function setDateRange(range) {
             const now = new Date();
             const from = document.querySelector('[name="date_from"]');
@@ -268,7 +286,6 @@
                 from.value = fmt(new Date(now.getFullYear(), now.getMonth(), 1));
                 to.value   = fmt(now);
             }
-
             document.getElementById('filter-form').submit();
         }
     </script>
