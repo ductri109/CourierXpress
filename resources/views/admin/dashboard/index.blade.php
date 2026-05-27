@@ -117,11 +117,16 @@
             <div class="col-xxl-4">
                 <div class="card h-100">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                        <h5 class="m-0">Agent đang rảnh</h5>
-                        <span class="badge bg-label-success">{{ $activeAgents }} người</span>
+                        <div>
+                            <h5 class="m-0 d-inline-block">Agent đang rảnh</h5>
+                            <span class="badge bg-label-success ms-1">{{ $activeAgents }} người</span>
+                        </div>
+                        {{-- Thêm nút Xem tất cả dẫn tới route quản lý Agent --}}
+                        <a href="{{ route('admin.agents.index') }}" class="btn btn-sm btn-outline-success">Xem tất cả</a>
                     </div>
                     <div class="card-body p-0">
-                        @forelse($availableAgents as $agent)
+                        {{-- Thêm ->take(5) để giới hạn danh sách hiển thị tối đa 5 người --}}
+                        @forelse($availableAgents->take(5) as $agent)
                             <div class="d-flex align-items-center px-4 py-3 border-bottom">
                                 <div class="avatar avatar-sm me-3">
                             <span class="avatar-initial rounded-circle bg-label-primary">
@@ -132,7 +137,7 @@
                                     <p class="mb-0 fw-semibold small">{{ $agent->FullName }}</p>
                                     <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ $agent->Phone }}</p>
                                 </div>
-                                <span class="badge bg-label-info small">{{ $agent->total_orders }} đơn tổng</span>
+                                <span class="badge bg-label-info small">{{ $agent->total_orders ?? 0 }} đơn tổng</span>
                             </div>
                         @empty
                             <div class="p-4 text-center text-muted small">
@@ -230,7 +235,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @switch($order->status)
+                                        @switch(strtolower($order->status))
                                             @case('pending')
                                                 <span class="badge bg-label-warning" style="font-size:0.7rem">Chờ gán</span>
                                                 @break
@@ -243,6 +248,12 @@
                                             @case('delivered')
                                                 <span class="badge bg-label-success" style="font-size:0.7rem">Hoàn thành</span>
                                                 @break
+                                            @case('canceled')
+                                            @case('cancelled')
+                                                <span class="badge bg-label-danger" style="font-size:0.7rem">Đã hủy</span>
+                                                @break
+                                            @default
+                                                <span class="badge bg-label-secondary" style="font-size:0.7rem">{{ $order->status }}</span>
                                         @endswitch
                                     </td>
                                     <td class="small text-muted">{{ $order->created_at->diffForHumans() }}</td>

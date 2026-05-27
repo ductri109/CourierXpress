@@ -3,6 +3,30 @@
 @section('title', 'Quản lý Khách hàng')
 
 @section('content')
+
+    {{-- Xử lý phân trang trực tiếp trên View (Không cần sửa Controller) --}}
+    @php
+        use Illuminate\Pagination\LengthAwarePaginator;
+        use Illuminate\Pagination\Paginator;
+
+        if(isset($customers) && $customers->count() > 0) {
+            $perPage = 10;
+            $page = Paginator::resolveCurrentPage('page') ?: 1;
+            $pageData = $customers->slice(($page - 1) * $perPage, $perPage)->all();
+
+            $customers = new LengthAwarePaginator(
+                $pageData,
+                $customers->count(),
+                $perPage,
+                $page,
+                [
+                    'path' => Paginator::resolveCurrentPath(),
+                    'query' => request()->query()
+                ]
+            );
+        }
+    @endphp
+
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <div class="d-flex justify-content-between align-items-center mb-6">
@@ -121,7 +145,7 @@
             <div class="card-header border-bottom d-flex justify-content-between align-items-center gap-3 flex-wrap">
                 <div>
                     <h5 class="card-title mb-1">Danh sách Khách hàng</h5>
-                    <small class="text-muted">Tổng: {{ isset($customers) ? $customers->count() : 0 }} khách hàng</small>
+                    <small class="text-muted">Tổng: {{ isset($customers) && method_exists($customers, 'total') ? $customers->total() : (isset($customers) ? $customers->count() : 0) }} khách hàng</small>
                 </div>
                 <form method="GET" action="{{ route('admin.customers.index') }}" class="d-flex gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Tìm tên, email, SĐT..." value="{{ request('search') }}" style="min-width:220px">
@@ -171,7 +195,10 @@
                                 <td>
                                     <span class="badge bg-label-success rounded-pill">Hoạt động</span>
                                 </td>
-                                <td class="fw-semibold">{{ $customer->total_orders ?? 0 }} đơn</td>
+                                <td class="fw-semibold">
+                                    {{-- Lấy tổng đơn hàng: Ưu tiên orders_count (nếu controller dùng withCount), sau đó đến total_orders, cuối cùng đếm trực tiếp qua relationship --}}
+                                    {{ $customer->orders_count ?? $customer->total_orders ?? (isset($customer->couriers) ? $customer->couriers->count() : 0) }} đơn
+                                </td>
                                 <td class="text-end">
                                     <div class="dropdown">
                                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -247,6 +274,13 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Thanh Phân Trang --}}
+            @if(isset($customers) && method_exists($customers, 'hasPages') && $customers->hasPages())
+                <div class="card-footer border-top px-4 py-3">
+                    {{ $customers->appends(request()->query())->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </div>
 
     </div>
