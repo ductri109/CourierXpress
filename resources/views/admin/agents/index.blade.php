@@ -3,6 +3,28 @@
 @section('title', 'Quản lý Agent')
 
 @section('content')
+
+    {{-- Xử lý phân trang trực tiếp trên View (Không cần sửa Controller) --}}
+    @php
+        use Illuminate\Pagination\LengthAwarePaginator;
+        use Illuminate\Pagination\Paginator;
+
+        $perPage = 10;
+        $page = Paginator::resolveCurrentPage('page') ?: 1;
+        $pageData = $agents->slice(($page - 1) * $perPage, $perPage)->all();
+
+        $agents = new LengthAwarePaginator(
+            $pageData,
+            $agents->count(),
+            $perPage,
+            $page,
+            [
+                'path' => Paginator::resolveCurrentPath(),
+                'query' => request()->query()
+            ]
+        );
+    @endphp
+
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <div class="d-flex justify-content-between align-items-center mb-6">
@@ -149,7 +171,7 @@
             <div class="card-header border-bottom d-flex justify-content-between align-items-center gap-3 flex-wrap">
                 <div>
                     <h5 class="card-title mb-1">Danh sách Agent</h5>
-                    <small class="text-muted">Tổng: {{ $agents->count() }} agent</small>
+                    <small class="text-muted">Tổng: {{ method_exists($agents, 'total') ? $agents->total() : $agents->count() }} agent</small>
                 </div>
                 <form method="GET" action="{{ route('admin.agents.index') }}" class="d-flex gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Tìm tên, email, SĐT..." value="{{ request('search') }}" style="min-width:220px">
@@ -157,6 +179,7 @@
                         <option value="">Tất cả</option>
                         <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Đang rảnh</option>
                         <option value="busy" {{ request('status') === 'busy' ? 'selected' : '' }}>Đang bận</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Ngưng hoạt động</option>
                     </select>
                     <button class="btn btn-outline-primary" type="submit"><i class="ri-search-line"></i></button>
                     @if(request()->hasAny(['search', 'status']))
@@ -203,17 +226,26 @@
                                 <code class="text-body">{{ $agent->Username }}</code>
                             </td>
                             <td>
-                                @if($agent->Status === 'active')
-                                    <span class="badge bg-label-success rounded-pill">Đang rảnh</span>
-                                @elseif($agent->Status === 'busy')
-                                    <span class="badge bg-label-warning rounded-pill">Đang bận</span>
+                                @php $st = strtolower($agent->Status); @endphp
+                                @if($st === 'active')
+                                    <span class="badge bg-label-success rounded-pill d-inline-flex align-items-center gap-1">
+                                        <span class="spinner-grow spinner-grow-sm bg-success" style="width: 8px; height: 8px;" role="status" aria-hidden="true"></span> Đang rảnh
+                                    </span>
+                                @elseif($st === 'busy')
+                                    <span class="badge bg-label-warning rounded-pill d-inline-flex align-items-center gap-1">
+                                        <span class="spinner-grow spinner-grow-sm bg-warning" style="width: 8px; height: 8px;" role="status" aria-hidden="true"></span> Đang bận
+                                    </span>
+                                @elseif($st === 'inactive')
+                                    <span class="badge bg-label-danger rounded-pill d-inline-flex align-items-center gap-1">
+                                        <i class="ri-forbid-circle-line" style="font-size: 14px;"></i> Ngưng hoạt động
+                                    </span>
                                 @else
                                     <span class="badge bg-label-secondary rounded-pill">{{ $agent->Status }}</span>
                                 @endif
                             </td>
-                            <td class="fw-semibold">{{ $agent->total_orders }}</td>
-                            <td class="text-success fw-semibold">{{ $agent->delivered_orders }}</td>
-                            <td class="text-primary fw-semibold">{{ $agent->active_orders }}</td>
+                            <td class="fw-semibold">{{ $agent->total_orders ?? 0 }}</td>
+                            <td class="text-success fw-semibold">{{ $agent->delivered_orders ?? 0 }}</td>
+                            <td class="text-primary fw-semibold">{{ $agent->active_orders ?? 0 }}</td>
                             <td class="text-end">
                                 <div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -230,7 +262,7 @@
                                         </button>
 
                                         {{-- Đổi trạng thái nhanh --}}
-                                        @if($agent->Status !== 'active')
+                                        @if($st !== 'active')
                                             <form action="{{ route('admin.agents.status', $agent->ID) }}" method="POST">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="active">
@@ -239,12 +271,21 @@
                                                 </button>
                                             </form>
                                         @endif
-                                        @if($agent->Status !== 'busy')
+                                        @if($st !== 'busy')
                                             <form action="{{ route('admin.agents.status', $agent->ID) }}" method="POST">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="busy">
                                                 <button type="submit" class="dropdown-item text-warning">
                                                     <i class="ri-truck-line me-2"></i> Đặt thành Bận
+                                                </button>
+                                            </form>
+                                        @endif
+                                        @if($st !== 'inactive')
+                                            <form action="{{ route('admin.agents.status', $agent->ID) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="inactive">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="ri-forbid-line me-2"></i> Ngưng hoạt động
                                                 </button>
                                             </form>
                                         @endif
@@ -287,8 +328,9 @@
                                             </div>
                                             <div class="form-floating form-floating-outline mb-4">
                                                 <select name="Status" class="form-select">
-                                                    <option value="active" {{ $agent->Status === 'active' ? 'selected' : '' }}>Đang rảnh (active)</option>
-                                                    <option value="busy" {{ $agent->Status === 'busy' ? 'selected' : '' }}>Đang bận (busy)</option>
+                                                    <option value="active" {{ strtolower($agent->Status) === 'active' ? 'selected' : '' }}>Đang rảnh</option>
+                                                    <option value="busy" {{ strtolower($agent->Status) === 'busy' ? 'selected' : '' }}>Đang bận</option>
+                                                    <option value="inactive" {{ strtolower($agent->Status) === 'inactive' ? 'selected' : '' }}>Ngưng hoạt động</option>
                                                 </select>
                                                 <label>Trạng thái</label>
                                             </div>
@@ -317,6 +359,13 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Thanh Phân Trang --}}
+            @if(method_exists($agents, 'hasPages') && $agents->hasPages())
+                <div class="card-footer border-top px-4 py-3">
+                    {{ $agents->appends(request()->query())->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </div>
 
     </div>
