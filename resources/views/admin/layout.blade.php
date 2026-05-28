@@ -73,43 +73,19 @@
                     </a>
                 </li>
 
-                <!-- Customer Details -->
-                <li class="menu-item {{ request()->routeIs('admin.customers.*') ? 'active open' : '' }}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <!-- Quản Lý Khách Hàng -->
+                <li class="menu-item {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ri-user-3-line"></i>
-                        <div>Customer Details</div>
+                        <div>Quản Lý Khách Hàng</div>
                     </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item {{ request()->routeIs('admin.customers.overview') ? 'active' : '' }}">
-                            <a href="{{ route('admin.customers.overview', 1) }}" class="menu-link"><div>Overview</div></a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('admin.customers.security') ? 'active' : '' }}">
-                            <a href="{{ route('admin.customers.security', 1) }}" class="menu-link"><div>Security</div></a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('admin.customers.billing') ? 'active' : '' }}">
-                            <a href="{{ route('admin.customers.billing', 1) }}" class="menu-link"><div>Address & Billing</div></a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('admin.customers.notifications') ? 'active' : '' }}">
-                            <a href="{{ route('admin.customers.notifications', 1) }}" class="menu-link"><div>Notifications</div></a>
-                        </li>
-                    </ul>
                 </li>
-
-                <!-- ❌ Fleet đã xóa -->
 
                 <!-- Quản lý Agent (MỚI) -->
                 <li class="menu-item {{ request()->routeIs('admin.agents.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.agents.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ri-shield-user-line"></i>
                         <div>Quản lý Agent</div>
-                    </a>
-                </li>
-
-                <!-- Quản lý nhân viên -->
-                <li class="menu-item {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.employees.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ri-team-line"></i>
-                        <div>Quản lý nhân viên</div>
                     </a>
                 </li>
 

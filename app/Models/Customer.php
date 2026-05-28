@@ -12,7 +12,6 @@ class Customer extends Authenticatable
 
     protected $table = 'customers';
 
-    // Mảng cho phép chèn dữ liệu hàng loạt (đã tích hợp fcm_token)
     protected $fillable = [
         'full_name',
         'email',
@@ -27,10 +26,29 @@ class Customer extends Authenticatable
         'remember_token',
     ];
 
-public function couriers()
-{
-    // Định nghĩa 1 Customer có nhiều Courier
-    return $this->hasMany(Courier::class, 'customer_id', 'id');
-}
-}
+    public function couriers()
+    {
+        // Định nghĩa 1 Customer có nhiều Courier
+        return $this->hasMany(Courier::class, 'customer_id', 'id');
+    }
 
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    public function getRememberToken()
+    {
+        return null;
+    }
+
+    public function setRememberToken($value)
+    {
+        // Không dùng remember_token cho customer
+    }
+
+    public function getRememberTokenName()
+    {
+        return null;
+    }
+}

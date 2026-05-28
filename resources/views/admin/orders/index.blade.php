@@ -4,10 +4,32 @@
 
 @section('content')
 
+    {{-- Xử lý phân trang trực tiếp trên View (Không cần sửa Controller) --}}
+    @php
+        use Illuminate\Pagination\LengthAwarePaginator;
+        use Illuminate\Pagination\Paginator;
+
+        if(isset($orders) && $orders->count() > 0) {
+            $perPage = 10;
+            $page = Paginator::resolveCurrentPage('page') ?: 1;
+            $pageData = $orders->slice(($page - 1) * $perPage, $perPage)->all();
+
+            $orders = new LengthAwarePaginator(
+                $pageData,
+                $orders->count(),
+                $perPage,
+                $page,
+                [
+                    'path' => Paginator::resolveCurrentPath(),
+                    'query' => request()->query()
+                ]
+            );
+        }
+    @endphp
+
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Quản lý /</span> Danh sách vận đơn</h4>
 
-        <!-- Search -->
         <div class="card mb-4">
             <h5 class="card-header">Bộ lọc nâng cao</h5>
             <div class="card-body">
@@ -29,10 +51,12 @@
                         <div class="col-md-4">
                             <select name="status" class="form-control">
                                 <option value="">Tất cả trạng thái</option>
-                                <option value="pending"    {{ request('status') == 'pending'    ? 'selected' : '' }}>Đang chờ</option>
-                                <option value="assigned"   {{ request('status') == 'assigned'   ? 'selected' : '' }}>Đã gán</option>
-                                <option value="in_transit" {{ request('status') == 'in_transit' ? 'selected' : '' }}>Đang giao</option>
-                                <option value="delivered"  {{ request('status') == 'delivered'  ? 'selected' : '' }}>Đã giao</option>
+                                <option value="pending"    {{ strtolower(request('status')) == 'pending'    ? 'selected' : '' }}>Chờ xử lý</option>
+                                <option value="assigned"   {{ strtolower(request('status')) == 'assigned'   ? 'selected' : '' }}>Đã gán</option>
+                                <option value="picked_up"  {{ strtolower(request('status')) == 'picked_up'  ? 'selected' : '' }}>Đã lấy hàng</option>
+                                <option value="in_transit" {{ strtolower(request('status')) == 'in_transit' ? 'selected' : '' }}>Đang giao</option>
+                                <option value="delivered"  {{ strtolower(request('status')) == 'delivered'  ? 'selected' : '' }}>Đã giao</option>
+                                <option value="cancelled"  {{ in_array(strtolower(request('status')), ['canceled', 'cancelled']) ? 'selected' : '' }}>Đã hủy</option>
                             </select>
                         </div>
 
@@ -63,17 +87,16 @@
                 <i class="ri-filter-line me-1"></i>
                 Đang lọc &mdash;
                 @if(request('status'))
-                    Trạng thái: <strong>{{ ['pending'=>'Đang chờ','assigned'=>'Đã gán','in_transit'=>'Đang giao','delivered'=>'Đã giao'][request('status')] ?? request('status') }}</strong>
+                    Trạng thái: <strong>{{ ['pending'=>'Chờ xử lý','assigned'=>'Đã gán','picked_up'=>'Đã lấy hàng','in_transit'=>'Đang giao','delivered'=>'Đã giao','canceled'=>'Đã hủy','cancelled'=>'Đã hủy'][strtolower(request('status'))] ?? request('status') }}</strong>
                 @endif
                 @if(request('date_from') || request('date_to'))
                     &nbsp;Thời gian: <strong>{{ request('date_from') ?: '...' }}</strong> → <strong>{{ request('date_to') ?: '...' }}</strong>
                 @endif
-                &nbsp;— Kết quả: <strong>{{ $orders->count() }}</strong> vận đơn
+                &nbsp;— Kết quả: <strong>{{ method_exists($orders, 'total') ? $orders->total() : (isset($orders) ? $orders->count() : 0) }}</strong> vận đơn
                 <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
-        <!-- Table -->
         <div class="card">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -108,14 +131,21 @@
                             <td>{{ $order->total_weight }} kg</td>
 
                             <td>
-                                @switch($order->status)
+                                @php
+                                    $st = strtolower($order->status);
+                                @endphp
 
+                                @switch($st)
                                     @case('pending')
-                                        <span class="badge bg-warning">Đang chờ</span>
+                                        <span class="badge bg-warning">Chờ xử lý</span>
                                         @break
 
                                     @case('assigned')
                                         <span class="badge bg-info">Đã gán</span>
+                                        @break
+
+                                    @case('picked_up')
+                                        <span class="badge bg-dark">Đã lấy hàng</span>
                                         @break
 
                                     @case('in_transit')
@@ -126,9 +156,13 @@
                                         <span class="badge bg-success">Đã giao</span>
                                         @break
 
-                                    @default
-                                        <span class="badge bg-secondary">Không xác định</span>
+                                    @case('canceled')
+                                    @case('cancelled')
+                                        <span class="badge bg-danger">Đã hủy</span>
+                                        @break
 
+                                    @default
+                                        <span class="badge bg-secondary">{{ $order->status }}</span>
                                 @endswitch
                             </td>
 
@@ -147,15 +181,21 @@
 
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted">
+                            <td colspan="8" class="text-center text-muted py-5">
                                 Không có dữ liệu
                             </td>
                         </tr>
                     @endforelse
                     </tbody>
-
                 </table>
             </div>
+
+            {{-- Thanh Phân Trang --}}
+            @if(isset($orders) && method_exists($orders, 'hasPages') && $orders->hasPages())
+                <div class="card-footer border-top px-4 py-3">
+                    {{ $orders->appends(request()->query())->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </div>
     </div>
 

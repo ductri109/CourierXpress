@@ -72,6 +72,35 @@
                             'green'  => ['bg' => 'bg-green-50',  'text' => 'text-green-600',  'icon' => 'text-green-400'],
                             'red'    => ['bg' => 'bg-red-50',    'text' => 'text-red-600',    'icon' => 'text-red-400'],
                         ];
+                        $paymentConfig = [
+                             'cod' => [
+                              'label' => 'COD',
+                            'name' => 'Thanh toán khi nhận hàng',
+                            'badge' => 'bg-orange-100 text-orange-700 border-orange-200',
+                            'icon' => 'banknote',
+                        ],
+                            'paypal' => [
+                            'label' => 'PayPal',
+                            'name' => 'Thanh toán PayPal',
+                            'badge' => 'bg-blue-100 text-blue-700 border-blue-200',
+                            'icon' => 'credit-card',
+                        ],
+                        ];
+
+                        $paymentStatusConfig = [
+                        'unpaid' => [
+                        'label' => 'Chưa thanh toán',
+                        'badge' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                        ],
+                        'paid' => [
+                        'label' => 'Đã thanh toán',
+                        'badge' => 'bg-green-100 text-green-700 border-green-200',
+                        ],
+                        'failed' => [
+                        'label' => 'Thanh toán lỗi',
+                        'badge' => 'bg-red-100 text-red-700 border-red-200',
+                        ],
+                        ];
                     @endphp
 
                     @foreach(['pending', 'in_transit', 'delivered', 'failed'] as $s)
@@ -142,6 +171,12 @@
                                 'delivered'  => 'bg-green-100 text-green-700 border-green-200',
                                 'failed'     => 'bg-red-100 text-red-700 border-red-200',
                             ][$s] ?? 'bg-gray-100 text-gray-700 border-gray-200';
+
+                            $paymentMethod = $order->payment_method ?? 'cod';
+                            $paymentStatus = $order->payment_status ?? 'unpaid';
+
+                            $payCfg = $paymentConfig[$paymentMethod] ?? $paymentConfig['cod'];
+                            $payStatusCfg = $paymentStatusConfig[$paymentStatus] ?? $paymentStatusConfig['unpaid'];
                         @endphp
 
                         <div class="p-6 hover:bg-primary-50/30 transition-all group">
@@ -163,6 +198,26 @@
                                             <i data-lucide="calendar" class="inline w-3.5 h-3.5 mr-1"></i>
                                             Tạo lúc {{ $order->created_at->format('H:i - d/m/Y') }}
                                         </p>
+                                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-green-100 text-green-700 border-green-200">
+                                                  <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
+                                                    COD
+                                            </span>
+
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-orange-100 text-orange-700 border-orange-200">
+                                                Cần thanh toán: {{ number_format($order->cod_amount ?? 0, 0, ',', '.') }} VNĐ
+                                                </span>
+                                        </div>
+                                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payCfg['badge'] }}">
+                                                  <i data-lucide="{{ $payCfg['icon'] }}" class="w-3.5 h-3.5"></i>
+                                                    {{ $payCfg['label'] }}
+                                            </span>
+
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payStatusCfg['badge'] }}">
+                                                {{ $payStatusCfg['label'] }}
+                                             </span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -196,6 +251,15 @@
                                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                         <span>Sao chép</span>
                                     </button>
+
+                                    @if(($order->payment_status ?? 'unpaid') !== 'paid')
+                                        <button onclick="openPaymentModal({{ $order->id }})"
+                                                class="flex items-center space-x-1.5 px-3 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-sm">
+                                            <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+                                            <span>Thanh toán</span>
+                                        </button>
+                                    @endif
+
                                     <button onclick="openDetail({{ $order->id }})"
                                             class="flex items-center space-x-1.5 px-3 py-2 gradient-bg text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
@@ -356,6 +420,117 @@
         </div>
     </div>
 
+    {{-- Modal Thanh toán đơn hàng --}}
+    <div id="paymentModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closePaymentModal()"></div>
+
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+
+                <div class="gradient-bg p-6 text-white relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-extrabold">Thanh Toán Đơn Hàng</h3>
+                            <p id="paymentTrackingId" class="font-mono font-bold text-white/90 mt-1 text-lg"></p>
+                        </div>
+
+                        <button onclick="closePaymentModal()" class="p-2 bg-white/20 rounded-xl hover:bg-white/30 transition-all">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                </div>
+
+                <form method="POST" action="{{ route('customer.orders.payment') }}" class="p-6 space-y-4">
+                    @csrf
+
+                    <input type="hidden" name="order_id" id="paymentOrderId">
+
+                    <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Thông tin đơn hàng</p>
+
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-sm text-gray-500">Mã vận đơn</span>
+                            <span id="paymentTrackingText" class="font-mono font-extrabold text-gray-900"></span>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-sm text-gray-500">Người nhận</span>
+                            <span id="paymentReceiverName" class="font-bold text-gray-800 text-sm"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-500">Số tiền COD</span>
+                        <span id="paymentCodAmount" class="font-extrabold text-green-700 text-base"></span>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-extrabold text-gray-900 mb-3">Chọn phương thức thanh toán</p>
+
+                        <label class="block cursor-pointer mb-3">
+                            <input type="radio" name="payment_method" value="cod" class="peer hidden" checked>
+
+                            <div class="p-4 rounded-2xl border-2 border-gray-100 peer-checked:border-green-500 peer-checked:bg-green-50 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-11 h-11 bg-green-100 rounded-xl flex items-center justify-center">
+                                            <i data-lucide="banknote" class="w-6 h-6 text-green-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-extrabold text-gray-900">Thanh toán khi nhận hàng</p>
+                                            <p class="text-xs text-gray-500 mt-0.5">Trả tiền mặt cho shipper khi nhận hàng</p>
+                                        </div>
+                                    </div>
+
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                    COD
+                                </span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="block cursor-pointer">
+                            <input type="radio" name="payment_method" value="paypal" class="peer hidden">
+
+                            <div class="p-4 rounded-2xl border-2 border-gray-100 peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center">
+                                            <i data-lucide="credit-card" class="w-6 h-6 text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-extrabold text-gray-900">Thanh toán PayPal</p>
+                                            <p class="text-xs text-gray-500 mt-0.5">Thanh toán trực tuyến qua PayPal</p>
+                                        </div>
+                                    </div>
+
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                                    PayPal
+                                </span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button type="button"
+                                onclick="closePaymentModal()"
+                                class="py-3 border-2 border-gray-200 text-gray-600 rounded-2xl font-semibold hover:bg-gray-50 transition-all">
+                            Hủy
+                        </button>
+
+                        <button type="submit"
+                                class="py-3 bg-green-600 text-white rounded-2xl font-bold hover:bg-green-700 transition-all shadow-lg">
+                            Xác nhận
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {{-- Toast copy --}}
     <div id="copyToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden">
         <div class="flex items-center space-x-2 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-semibold">
@@ -385,6 +560,16 @@
             const dateStr = created.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
             document.getElementById('modalTrackingId').textContent = order.tracking_id;
+
+            const weight = Number(order.total_weight || 0);
+            const shippingFee = Number(order.cod_amount || order.shipping_fee || 0);
+
+            let codAmount = shippingFee;
+
+            if (codAmount <= 0) {
+                codAmount = 30000 + (weight * 10000);
+            }
+
             document.getElementById('modalContent').innerHTML = `
             <div class="space-y-4">
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
@@ -421,7 +606,26 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="p-4 bg-green-50 rounded-2xl border border-green-100">
+    <div class="flex items-center justify-between">
+        <div>
+            <p class="text-xs text-green-600 font-bold uppercase tracking-wider mb-1">
+                Thanh toán COD
+            </p>
+            <p class="text-sm text-gray-500">
+                Số tiền cần thanh toán khi nhận hàng
+            </p>
+        </div>
+        <div class="text-right">
+            <p class="text-2xl font-extrabold text-green-700">
+                ${codAmount.toLocaleString('vi-VN')} VNĐ
+            </p>
+            <p class="text-xs text-gray-400 mt-1">
+                Thanh toán bằng tiền mặt
+            </p>
+        </div>
+    </div>
+</div>
                 <div class="p-4 bg-gray-50 rounded-2xl flex items-center justify-between">
                     <span class="text-sm text-gray-500 font-medium">Mã vận đơn</span>
                     <div class="flex items-center space-x-2">
@@ -444,6 +648,29 @@
             document.body.style.overflow = '';
         }
 
+        function openPaymentModal(id) {
+            const order = ordersData.find(o => o.id === id);
+            if (!order) return;
+
+            document.getElementById('paymentOrderId').value = order.id;
+            document.getElementById('paymentTrackingId').textContent = order.tracking_id;
+            document.getElementById('paymentTrackingText').textContent = order.tracking_id;
+            document.getElementById('paymentReceiverName').textContent = order.receiver_name;
+
+            document.getElementById('paymentModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            document.getElementById('paymentCodAmount').textContent =
+                Number(order.cod_amount || 0).toLocaleString('vi-VN') + ' VNĐ';
+
+            lucide.createIcons();
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
         function copyTracking(trackingId) {
             navigator.clipboard.writeText(trackingId).then(() => {
                 const toast = document.getElementById('copyToast');
@@ -452,6 +679,11 @@
             });
         }
 
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closeDetail();
+                closePaymentModal();
+            }
+        });
     </script>
 @endsection

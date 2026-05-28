@@ -13,6 +13,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Password;
 
 // ============================================================
 // CUSTOMER ROUTES
@@ -43,6 +44,81 @@ Route::middleware(['auth:customer'])
         Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
         Route::get('/orders', [ProfileController::class, 'showOrders'])->name('orders.index');
     });
+
+Route::get('/forgot-password', function () {
+    return view('customer.auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+    ], [
+        'email.required' => 'Vui lòng nhập địa chỉ email.',
+        'email.email' => 'Định dạng email không hợp lệ.',
+    ]);
+
+    try {
+        $status = Password::broker('customers')->sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('status', 'Liên kết khôi phục mật khẩu đã được gửi vào Email của bạn!');
+        }
+
+        return back()->withErrors([
+            'email' => 'Địa chỉ Email này không tồn tại trong hệ thống khách hàng.',
+        ])->onlyInput('email');
+
+    } catch (\Throwable $e) {
+        dd([
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
+    }
+})->middleware('guest')->name('password.email');
+
+Route::get('/reset-password/{token}', function ($token) {
+    return view('customer.auth.reset-password', [
+        'token' => $token,
+        'email' => request()->query('email'),
+    ]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ], [
+        'password.required' => 'Vui lòng điền mật khẩu mới.',
+        'password.min' => 'Mật khẩu phải dài tối thiểu 8 ký tự.',
+        'password.confirmed' => 'Mật khẩu xác nhận nhập lại không trùng khớp.',
+    ]);
+
+    $status = Password::broker('customers')->reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($customer, $password) {
+            $customer->password_hash = Hash::make($password);
+            $customer->save();
+        }
+    );
+
+    if ($status === Password::PASSWORD_RESET) {
+        return redirect('/login')->with('status', 'Cập nhật mật khẩu mới thành công! Vui lòng đăng nhập lại.');
+    }
+
+    return back()->withErrors([
+        'email' => 'Không thể đặt lại mật khẩu. Link có thể đã hết hạn hoặc email không đúng.',
+    ])->onlyInput('email');
+})->middleware('guest')->name('password.update');
+
+Route::post('/orders/payment', [CustomerController::class, 'payment'])
+    ->name('customer.orders.payment');
+
+Route::post('/customer/orders/payment', [CustomerController::class, 'payment'])
+    ->name('customer.orders.payment');
 
 // ============================================================
 // ADMIN ROUTES
@@ -79,6 +155,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/agents/{id}', [AdminController::class, 'agentsDestroy'])->name('agents.destroy');
 
         // Customers
+        Route::get('/customers', [AdminController::class, 'customersIndex'])->name('customers.index');
+
         Route::get('/customers/{id}/overview', [AdminController::class, 'customerOverview'])->name('customers.overview');
         Route::get('/customers/{id}/security', [AdminController::class, 'customerSecurity'])->name('customers.security');
         Route::get('/customers/{id}/billing', [AdminController::class, 'customerBilling'])->name('customers.billing');
@@ -102,11 +180,15 @@ Route::get('/admin', function () {
 // ============================================================
 // AGENT ROUTES
 // ============================================================
+Route::get('/agent', function () {
+    return auth()->guard('agent')->check()
+        ? redirect()->route('agent.dashboard')
+        : redirect()->route('agent.login');
+});
+
 Route::prefix('agent')->name('agent.')->group(function () {
     Route::get('/login',     [AgentController::class, 'showLogin'])->name('login');
     Route::post('/login',    [AgentController::class, 'login'])->name('login.post');
-    Route::get('/register',  [AgentController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AgentController::class, 'register'])->name('register.post');
     Route::post('/logout',   [AgentController::class, 'logout'])->name('logout');
 });
 
@@ -129,28 +211,13 @@ Route::prefix('agent')->name('agent.')->middleware('auth:agent')->group(function
     Route::get('/customers/{id}', [AgentController::class, 'customersShow'])->name('customers.show');
 });
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
+Route::get('/agent/forgot-password', function () {
+    return view('agent.auth.forgot-password');
+})->middleware('guest')->name('agent.password.request');
 
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-    ->middleware('guest')
-    ->name('password.email');
-
-Route::get('/reset-password/{token}', function ($token) {
-    return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
-
-Route::post('/forgot-password', function (Request $request) {
-
-    $request->validate([
-        'email' => 'required|email'
-    ]);
-
-    Password::sendResetLink(
-        $request->only('email')
-    );
-})->name('password.email');
+Route::post('/agent/forgot-password', function (Request $request) {
+    // xử lý quên mật khẩu agent nếu có
+})->middleware('guest')->name('agent.password.email');
 
 Route::get('/custom-captcha', function () {
 

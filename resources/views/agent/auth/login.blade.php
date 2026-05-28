@@ -98,19 +98,11 @@
                 <a href="#" class="text-sm font-semibold text-primary-600 hover:text-primary-800 transition-colors">Quên mật khẩu?</a>
             </div>
 
-            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-2.5 px-4 rounded-md font-semibold text-sm transition-colors flex items-center justify-center space-x-2 mt-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 shadow-sm">
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-2.5 px-4 rounded-md font-semibold text-sm transition-colors flex items-center justify-center space-x-2 mt-6 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 shadow-sm">
                 <span>Đăng nhập hệ thống</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
         </form>
-
-        <!-- Footer area -->
-        <div class="mt-8 pt-6 border-t border-gray-100 text-center">
-            <p class="text-sm text-gray-600">
-                Đối tác mới?
-                <a href="{{ route('agent.register') }}" class="font-semibold text-primary-600 hover:text-primary-800 transition-colors ml-1">Đăng ký Đại lý</a>
-            </p>
-        </div>
     </div>
 
     <!-- Bottom Links -->

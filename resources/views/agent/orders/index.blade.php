@@ -8,7 +8,7 @@
         {{-- Header --}}
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-950">Đơn hàng của tôi</h2>
+                <h2 class="text-2xl font-bold text-gray-950">Quản Lý Đơn Hàng</h2>
                 <p class="text-gray-400 text-sm mt-0.5">Quản lý và xử lý vận đơn được bàn giao từ tổng kho.</p>
             </div>
             <span id="live-clock" class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-white border border-gray-200 px-3 py-2 rounded-xl shadow-sm">
@@ -42,9 +42,11 @@
                             <select name="status" id="status-select"
                                     class="pl-9 pr-8 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 appearance-none bg-white w-full transition-all">
                                 <option value="">Tất cả</option>
+                                <option value="pending"    {{ request('status')=='pending'    ?'selected':'' }}> Chờ xử lý</option>
                                 <option value="assigned"   {{ request('status')=='assigned'   ?'selected':'' }}> Chờ nhận</option>
                                 <option value="in_transit" {{ request('status')=='in_transit' ?'selected':'' }}> Đang giao</option>
-                                <option value="delivered"  {{ request('status')=='delivered'  ?'selected':'' }}>Đã giao</option>
+                                <option value="delivered"  {{ request('status')=='delivered'  ?'selected':'' }}> Đã giao</option>
+                                <option value="cancelled"  {{ request('status')=='cancelled'  ?'selected':'' }}> Đã hủy</option>
                             </select>
                         </div>
                     </div>
@@ -110,7 +112,8 @@
                 <span id="realtime-badge" class="flex items-center gap-1 text-[0.65rem] font-bold text-emerald-600">
                     <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Realtime
                 </span>
-                    <span class="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full" id="order-count">{{ $orders->count() }} đơn</span>
+                    {{-- Đã lấy lại hàm total() chuẩn từ Controller --}}
+                    <span class="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full" id="order-count">{{ $orders->total() }} đơn</span>
                 </div>
             </div>
 
@@ -130,7 +133,7 @@
                     @forelse($orders as $order)
                         <tr class="hover:bg-gray-50/60 transition-colors order-row"
                             data-tracking="{{ strtolower($order->tracking_id) }}"
-                            data-status="{{ $order->status }}">
+                            data-status="{{ strtolower($order->status) }}">
                             <td class="px-5 py-4">
                                 <span class="font-bold text-gray-900 text-sm font-mono tracking-wide">{{ $order->tracking_id }}</span>
                                 <div class="text-[0.65rem] text-gray-400 mt-0.5 font-medium">ID #{{ $order->id }}</div>
@@ -158,16 +161,32 @@
                                 <p class="text-xs text-gray-400 mt-0.5">{{ $order->created_at->format('H:i') }}</p>
                             </td>
                             <td class="px-5 py-4">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-wide
-                                @if($order->status=='assigned')   bg-amber-50  text-amber-700  border border-amber-200
-                                @elseif($order->status=='in_transit') bg-blue-50   text-blue-700   border border-blue-200
-                                @elseif($order->status=='delivered')  bg-emerald-50 text-emerald-700 border border-emerald-200
-                                @else bg-gray-50 text-gray-500 border border-gray-200 @endif">
-                                @if($order->status=='assigned')   <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Chờ nhận
-                                @elseif($order->status=='in_transit') <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> Đang giao
-                                @elseif($order->status=='delivered')  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Đã giao
-                                @else {{ $order->status }} @endif
-                            </span>
+                                @php
+                                    $st = strtolower($order->status);
+                                @endphp
+
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-wide
+                                    @if($st == 'pending') bg-yellow-50 text-yellow-700 border border-yellow-200
+                                    @elseif($st == 'assigned') bg-amber-50 text-amber-700 border border-amber-200
+                                    @elseif($st == 'in_transit') bg-blue-50 text-blue-700 border border-blue-200
+                                    @elseif($st == 'delivered') bg-emerald-50 text-emerald-700 border border-emerald-200
+                                    @elseif($st == 'canceled' || $st == 'cancelled') bg-red-50 text-red-700 border border-red-200
+                                    @else bg-gray-50 text-gray-500 border border-gray-200 @endif">
+
+                                    @if($st == 'pending')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"></span> Chờ xử lý
+                                    @elseif($st == 'assigned')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Chờ nhận
+                                    @elseif($st == 'in_transit')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> Đang giao
+                                    @elseif($st == 'delivered')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Đã giao
+                                    @elseif($st == 'canceled' || $st == 'cancelled')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Đã hủy
+                                    @else
+                                        {{ $order->status }}
+                                    @endif
+                                </span>
                             </td>
                             <td class="px-5 py-4">
                                 <div class="flex items-center justify-center gap-1.5">
@@ -175,14 +194,14 @@
                                        class="inline-flex items-center gap-1 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 px-2.5 py-1.5 rounded-lg transition-all">
                                         <i data-lucide="eye" class="w-3 h-3"></i> Chi tiết
                                     </a>
-                                    @if($order->status=='assigned')
+                                    @if($st == 'assigned')
                                         <form action="{{ route('agent.orders.accept', $order->id) }}" method="POST">
                                             @csrf
                                             <button class="inline-flex items-center gap-1 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 px-2.5 py-1.5 rounded-lg transition-all shadow-sm">
                                                 <i data-lucide="check" class="w-3 h-3"></i> Nhận
                                             </button>
                                         </form>
-                                    @elseif($order->status=='in_transit')
+                                    @elseif($st == 'in_transit')
                                         <form action="{{ route('agent.orders.complete', $order->id) }}" method="POST">
                                             @csrf
                                             <button class="inline-flex items-center gap-1 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1.5 rounded-lg transition-all shadow-sm">
@@ -204,6 +223,14 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Thanh Phân Trang --}}
+            @if(method_exists($orders, 'hasPages') && $orders->hasPages())
+                <div class="px-5 py-4 border-t border-gray-100 bg-gray-50/50">
+                    {{ $orders->appends(request()->query())->links() }}
+                </div>
+            @endif
+
         </div>
     </div>
 
@@ -236,8 +263,15 @@
                 row.style.display = show ? '' : 'none';
                 if (show) visible++;
             });
+            // Update the count based on filtered rows
             const cnt = document.getElementById('order-count');
-            if (cnt) cnt.textContent = visible + ' đơn';
+            if (cnt) {
+                if (q !== '' || st !== '') {
+                    cnt.textContent = visible + ' đơn (trang này)';
+                } else {
+                    cnt.textContent = '{{ $orders->total() }} đơn';
+                }
+            }
         }
 
         if (searchInput) searchInput.addEventListener('input', clientFilter);
