@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Chi tiết đơn hàng #{{ $order->tracking_id }}')
+@section('title', 'Chi tiết đơn hàng #' . $order->tracking_id . ' | CourierXpress')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
