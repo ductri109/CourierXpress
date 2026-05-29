@@ -79,12 +79,6 @@
                             'badge' => 'bg-orange-100 text-orange-700 border-orange-200',
                             'icon' => 'banknote',
                         ],
-                            'paypal' => [
-                            'label' => 'PayPal',
-                            'name' => 'Thanh toán PayPal',
-                            'badge' => 'bg-blue-100 text-blue-700 border-blue-200',
-                            'icon' => 'credit-card',
-                        ],
                         ];
 
                         $paymentStatusConfig = [
@@ -180,10 +174,10 @@
                         @endphp
 
                         <div class="p-6 hover:bg-primary-50/30 transition-all group">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="grid grid-cols-1 xl:grid-cols-[260px_1fr_360px] gap-6 items-center">
 
                                 {{-- Left: Tracking ID + Status --}}
-                                <div class="flex items-start space-x-4">
+                                <div class="flex items-start gap-4 min-w-0">
                                     <div class="p-3 {{ $col['bg'] }} rounded-2xl shrink-0 group-hover:scale-105 transition-transform">
                                         <i data-lucide="{{ $cfg['icon'] }}" class="w-6 h-6 {{ $col['icon'] }}"></i>
                                     </div>
@@ -204,9 +198,9 @@
                                                     COD
                                             </span>
 
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-orange-100 text-orange-700 border-orange-200">
-                                                Cần thanh toán: {{ number_format($order->cod_amount ?? 0, 0, ',', '.') }} VNĐ
-                                                </span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-orange-100 text-orange-700 border-orange-200 whitespace-nowrap">
+                                                {{ number_format($order->cod_amount ?? 0, 0, ',', '.') }} VNĐ
+                                            </span>
                                         </div>
                                         <div class="flex flex-wrap items-center gap-2 mt-2">
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payCfg['badge'] }}">
@@ -222,58 +216,68 @@
                                 </div>
 
                                 {{-- Center: Sender → Receiver --}}
-                                <div class="flex items-center gap-3 flex-1 md:justify-center">
-                                    <div class="text-right max-w-[140px]">
+                                <div class="grid grid-cols-[1fr_80px_1fr] items-center gap-4 min-w-0">
+                                    <div class="text-right min-w-0">
                                         <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Người gửi</p>
                                         <p class="font-semibold text-gray-800 text-sm truncate">{{ $order->sender_name }}</p>
-                                        <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->sender_address, 25) }}</p>
+                                        <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->sender_address, 28) }}</p>
                                     </div>
-                                    <div class="flex flex-col items-center px-2">
-                                        <div class="w-16 h-px bg-gray-200 relative">
+
+                                    <div class="flex flex-col items-center justify-center">
+                                        <div class="w-full h-px bg-gray-200 relative">
                                             <div class="absolute -top-1 right-0">
                                                 <i data-lucide="chevron-right" class="w-3 h-3 text-primary-400"></i>
                                             </div>
                                         </div>
-                                        <span class="text-xs text-gray-400 mt-1">{{ $order->total_weight }}kg</span>
+                                        <span class="text-xs text-gray-400 mt-1 whitespace-nowrap">{{ $order->total_weight }}kg</span>
                                     </div>
-                                    <div class="max-w-[140px]">
+
+                                    <div class="min-w-0">
                                         <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Người nhận</p>
                                         <p class="font-semibold text-gray-800 text-sm truncate">{{ $order->receiver_name }}</p>
-                                        <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->receiver_address, 25) }}</p>
+                                        <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->receiver_address, 28) }}</p>
                                     </div>
                                 </div>
 
                                 {{-- Right: Copy Tracking + Actions --}}
-                                <div class="flex items-center gap-2 shrink-0">
+                                <div class="flex flex-wrap xl:flex-nowrap items-center justify-end gap-2 shrink-0">
                                     <button onclick="copyTracking('{{ $order->tracking_id }}')"
-                                            class="flex items-center space-x-1.5 px-3 py-2 border border-gray-200 text-gray-500 rounded-xl text-xs font-semibold hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50 transition-all"
+                                            class="h-9 inline-flex items-center space-x-1.5 px-3 border border-gray-200 text-gray-500 rounded-xl text-xs font-semibold hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50 transition-all whitespace-nowrap"
                                             title="Sao chép mã vận đơn">
                                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                         <span>Sao chép</span>
                                     </button>
 
+                                    <a href="{{ route('customer.booking.bill', $order->id) }}"
+                                       target="_blank"
+                                       class="h-9 inline-flex items-center space-x-1.5 px-3 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-sm whitespace-nowrap">
+                                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                        <span>In bill</span>
+                                    </a>
+
                                     @if(($order->payment_status ?? 'unpaid') !== 'paid')
                                         <button onclick="openPaymentModal({{ $order->id }})"
-                                                class="flex items-center space-x-1.5 px-3 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-sm">
+                                                class="h-9 inline-flex items-center space-x-1.5 px-3 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-sm whitespace-nowrap">
                                             <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
                                             <span>Thanh toán</span>
                                         </button>
                                     @endif
 
                                     <button onclick="openDetail({{ $order->id }})"
-                                            class="flex items-center space-x-1.5 px-3 py-2 gradient-bg text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm">
+                                            class="h-9 inline-flex items-center space-x-1.5 px-3 gradient-bg text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm whitespace-nowrap">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                         <span>Chi tiết</span>
                                     </button>
                                 </div>
-                            </div>
+
+                                </div>
 
                             {{-- Progress Bar (chỉ cho đơn đang tiến hành) --}}
                             @if(in_array($s, ['pending', 'assigned', 'in_transit']))
                                 @php
                                     $progress = ['pending' => 25, 'assigned' => 55, 'in_transit' => 80][$s];
                                 @endphp
-                                <div class="mt-4 ml-14">
+                                <div class="mt-5 w-full">
                                     <div class="flex justify-between text-xs text-gray-400 mb-1">
                                         <span>Tiến độ</span>
                                         <span>{{ $progress }}%</span>
@@ -490,31 +494,8 @@
                                 </div>
                             </div>
                         </label>
-
-                        <label class="block cursor-pointer">
-                            <input type="radio" name="payment_method" value="paypal" class="peer hidden">
-
-                            <div class="p-4 rounded-2xl border-2 border-gray-100 peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center">
-                                            <i data-lucide="credit-card" class="w-6 h-6 text-blue-600"></i>
-                                        </div>
-                                        <div>
-                                            <p class="font-extrabold text-gray-900">Thanh toán PayPal</p>
-                                            <p class="text-xs text-gray-500 mt-0.5">Thanh toán trực tuyến qua PayPal</p>
-                                        </div>
-                                    </div>
-
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-                                    PayPal
-                                </span>
-                                </div>
-                            </div>
-                        </label>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 pt-2">
                         <button type="button"
                                 onclick="closePaymentModal()"
                                 class="py-3 border-2 border-gray-200 text-gray-600 rounded-2xl font-semibold hover:bg-gray-50 transition-all">

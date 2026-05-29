@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('tracking_id')->unique(); // IDTracking
             $table->string('sender_name');
             $table->string('sender_address');
+            $table->string('sender_phone');
             $table->string('receiver_name');
             $table->string('receiver_address');
+            $table->string('receiver_phone');
             $table->float('total_weight');
             $table->string('status')->default('pending');
             $table->foreignId('customer_id')->nullable()->constrained('customers');

@@ -194,8 +194,12 @@ class CustomerController extends Controller
             'tracking_id'      => $tracking_id,
             'sender_name'      => $request->sender_name,
             'sender_address'   => $sender_address,
+            'sender_phone'     => $request->sender_phone,
+
             'receiver_name'    => $request->receiver_name,
             'receiver_address' => $receiver_address,
+            'receiver_phone'    => $request->receiver_phone,
+
             'total_weight'     => $total_weight,
             'status'           => 'pending',
             'customer_id'      => auth('customer')->check() ? auth('customer')->id() : null,
@@ -270,7 +274,7 @@ class CustomerController extends Controller
     {
         $request->validate([
             'order_id' => 'required|exists:couriers,id',
-            'payment_method' => 'required|in:cod,paypal',
+            'payment_method' => 'required|in:cod',
         ], [
             'order_id.required' => 'Không tìm thấy đơn hàng.',
             'order_id.exists' => 'Đơn hàng không tồn tại.',
@@ -292,16 +296,11 @@ class CustomerController extends Controller
                 ->with('success', 'Bạn đã chọn thanh toán khi nhận hàng COD.');
         }
 
-        if ($request->payment_method === 'paypal') {
-            $order->payment_method = 'paypal';
-            $order->payment_status = 'unpaid';
-            $order->save();
-
-            return redirect()
-                ->route('customer.orders.index')
-                ->with('success', 'Bạn đã chọn thanh toán PayPal. Cần tích hợp PayPal API để thanh toán online thật.');
-        }
-
         return back()->with('error', 'Phương thức thanh toán không hợp lệ.');
+    }
+
+    public function bookingBill(Courier $courier)
+    {
+        return view('customer.booking-bill', compact('courier'));
     }
 }
