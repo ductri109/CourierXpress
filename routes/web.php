@@ -120,6 +120,10 @@ Route::post('/orders/payment', [CustomerController::class, 'payment'])
 Route::post('/customer/orders/payment', [CustomerController::class, 'payment'])
     ->name('customer.orders.payment');
 
+Route::get('/customer/booking/{courier}/bill',
+    [CustomerController::class, 'bookingBill'])
+    ->name('customer.booking.bill');
+
 // ============================================================
 // ADMIN ROUTES
 // ============================================================

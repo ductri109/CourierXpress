@@ -70,20 +70,15 @@
                     </div>
                     <div class="p-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
                         <div>
-                            <p class="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Họ tên</p>
-                            <p class="font-bold text-gray-900">{{ $order->sender_name }}</p>
-                        </div>
-                        <div>
-                            <p class="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Điện thoại</p>
-                            <p class="font-semibold text-gray-700 flex items-center gap-1.5">
-                                <i data-lucide="phone" class="w-3.5 h-3.5 text-gray-400"></i>
-                                {{ $order->sender_phone ?? '—' }}
+                            <p class="font-semibold text-gray-900">{{ $order->sender_name }}</p>
+
+                            <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                <i data-lucide="phone" class="w-3 h-3 text-green-500"></i>
+                                {{ $order->sender_phone ?? 'Chưa có SĐT' }}
                             </p>
-                        </div>
-                        <div>
-                            <p class="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Địa chỉ</p>
-                            <p class="text-gray-600 text-sm leading-snug flex items-start gap-1.5">
-                                <i data-lucide="map-pin" class="w-3.5 h-3.5 flex-shrink-0 text-gray-400 mt-0.5"></i>
+
+                            <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                                <i data-lucide="map-pin" class="w-3 h-3"></i>
                                 {{ $order->sender_address }}
                             </p>
                         </div>
@@ -112,23 +107,15 @@
                     </div>
                     <div class="p-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
                         <div>
-                            <p class="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Họ tên</p>
-                            <p class="font-bold text-gray-900 text-base">{{ $order->receiver_name }}</p>
-                        </div>
-                        <div>
-                            <p class="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Điện thoại</p>
-                            <a href="tel:{{ $order->receiver_phone }}"
-                               class="font-bold text-primary-600 flex items-center gap-1.5 hover:underline group">
-                            <span class="w-6 h-6 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-                                <i data-lucide="phone-call" class="w-3 h-3 text-primary-600"></i>
-                            </span>
-                                {{ $order->receiver_phone ?? '—' }}
-                            </a>
-                        </div>
-                        <div>
-                            <p class="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Địa chỉ</p>
-                            <p class="text-gray-700 text-sm leading-snug font-medium flex items-start gap-1.5">
-                                <i data-lucide="map-pin" class="w-3.5 h-3.5 flex-shrink-0 text-primary-500 mt-0.5"></i>
+                            <p class="font-semibold text-gray-900">{{ $order->receiver_name }}</p>
+
+                            <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                <i data-lucide="phone" class="w-3 h-3 text-red-500"></i>
+                                {{ $order->receiver_phone ?? 'Chưa có SĐT' }}
+                            </p>
+
+                            <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                                <i data-lucide="map-pin" class="w-3 h-3"></i>
                                 {{ $order->receiver_address }}
                             </p>
                         </div>
