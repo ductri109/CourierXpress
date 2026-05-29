@@ -39,19 +39,25 @@
                             <div class="col-sm-6">
                                 <label class="form-label text-muted small fw-semibold">TRẠNG THÁI</label>
                                 <div>
-                                    @switch($order->status)
+                                    @switch(strtolower($order->status))
                                         @case('pending')
-                                            <span class="badge bg-warning">Chờ gán agent</span>
+                                            <span class="badge bg-label-warning rounded-pill">Chờ gán agent</span>
                                             @break
                                         @case('assigned')
-                                            <span class="badge bg-info">Đã gán agent</span>
+                                            <span class="badge bg-label-primary rounded-pill">Đã gán agent</span>
                                             @break
                                         @case('in_transit')
-                                            <span class="badge bg-primary">Đang giao hàng</span>
+                                            <span class="badge bg-label-info rounded-pill">Đang giao hàng</span>
                                             @break
                                         @case('delivered')
-                                            <span class="badge bg-success">Đã giao thành công</span>
+                                            <span class="badge bg-label-success rounded-pill">Đã giao thành công</span>
                                             @break
+                                        @case('cancelled')
+                                        @case('canceled')
+                                            <span class="badge bg-label-danger rounded-pill">Đã hủy</span>
+                                            @break
+                                        @default
+                                            <span class="badge bg-label-secondary rounded-pill">{{ ucfirst($order->status) }}</span>
                                     @endswitch
                                 </div>
                             </div>
@@ -103,9 +109,9 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="avatar avatar-lg">
-                            <span class="avatar-initial rounded-circle bg-label-success fs-4">
-                                {{ strtoupper(substr($order->agent->FullName, 0, 1)) }}
-                            </span>
+                                    <span class="avatar-initial rounded-circle bg-label-success fs-4">
+                                        {{ strtoupper(substr($order->agent->FullName, 0, 1)) }}
+                                    </span>
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold">{{ $order->agent->FullName }}</h6>
@@ -113,7 +119,16 @@
                                     <p class="mb-0 text-muted small"><i class="ri-phone-line me-1"></i>{{ $order->agent->Phone }}</p>
                                 </div>
                                 <div class="ms-auto">
-                                    <span class="badge bg-label-warning">{{ ucfirst($order->agent->Status) }}</span>
+                                    @php $agentStatus = strtolower($order->agent->Status); @endphp
+                                    @if($agentStatus === 'active')
+                                        <span class="badge bg-label-success rounded-pill">Đang rảnh</span>
+                                    @elseif($agentStatus === 'busy')
+                                        <span class="badge bg-label-warning rounded-pill">Đang bận</span>
+                                    @elseif($agentStatus === 'inactive')
+                                        <span class="badge bg-label-danger rounded-pill">Ngưng hoạt động</span>
+                                    @else
+                                        <span class="badge bg-label-secondary rounded-pill">{{ ucfirst($order->agent->Status) }}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

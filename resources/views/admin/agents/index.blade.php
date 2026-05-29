@@ -195,10 +195,10 @@
                         <th>Agent</th>
                         <th>Liên hệ</th>
                         <th>Tên đăng nhập</th>
-                        <th>Trạng thái</th>
-                        <th>Đơn tổng</th>
-                        <th>Đã giao</th>
-                        <th>Đang giao</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center">Đơn tổng</th>
+                        <th class="text-center">Đã giao</th>
+                        <th class="text-center">Đang giao</th>
                         <th class="text-end">Thao tác</th>
                     </tr>
                     </thead>
@@ -225,27 +225,21 @@
                             <td>
                                 <code class="text-body">{{ $agent->Username }}</code>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 @php $st = strtolower($agent->Status); @endphp
                                 @if($st === 'active')
-                                    <span class="badge bg-label-success rounded-pill d-inline-flex align-items-center gap-1">
-                                        <span class="spinner-grow spinner-grow-sm bg-success" style="width: 8px; height: 8px;" role="status" aria-hidden="true"></span> Đang rảnh
-                                    </span>
+                                    <span class="badge bg-label-success rounded-pill">Đang rảnh</span>
                                 @elseif($st === 'busy')
-                                    <span class="badge bg-label-warning rounded-pill d-inline-flex align-items-center gap-1">
-                                        <span class="spinner-grow spinner-grow-sm bg-warning" style="width: 8px; height: 8px;" role="status" aria-hidden="true"></span> Đang bận
-                                    </span>
+                                    <span class="badge bg-label-warning rounded-pill">Đang bận</span>
                                 @elseif($st === 'inactive')
-                                    <span class="badge bg-label-danger rounded-pill d-inline-flex align-items-center gap-1">
-                                        <i class="ri-forbid-circle-line" style="font-size: 14px;"></i> Ngưng hoạt động
-                                    </span>
+                                    <span class="badge bg-label-danger rounded-pill">Ngưng hoạt động</span>
                                 @else
                                     <span class="badge bg-label-secondary rounded-pill">{{ $agent->Status }}</span>
                                 @endif
                             </td>
-                            <td class="fw-semibold">{{ $agent->total_orders ?? 0 }}</td>
-                            <td class="text-success fw-semibold">{{ $agent->delivered_orders ?? 0 }}</td>
-                            <td class="text-primary fw-semibold">{{ $agent->active_orders ?? 0 }}</td>
+                            <td class="text-center fw-semibold">{{ $agent->total_orders ?? 0 }}</td>
+                            <td class="text-center text-success fw-semibold">{{ $agent->delivered_orders ?? 0 }}</td>
+                            <td class="text-center text-primary fw-semibold">{{ $agent->active_orders ?? 0 }}</td>
                             <td class="text-end">
                                 <div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

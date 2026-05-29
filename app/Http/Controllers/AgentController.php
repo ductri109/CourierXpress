@@ -10,6 +10,8 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+// ✅ THÊM MỚI: Import Job gửi email giao hàng thành công
+use App\Jobs\SendOrderDeliveredEmailJob;
 
 class AgentController extends Controller
 {
@@ -36,7 +38,6 @@ class AgentController extends Controller
         Auth::guard('agent')->login($agent);
         $request->session()->regenerate();
 
-        // Redirect về dashboard (không phải orders.index như cũ)
         return redirect()->route('agent.dashboard');
     }
 
@@ -68,26 +69,23 @@ class AgentController extends Controller
         return redirect()->route('agent.login');
     }
 
-    // --- DASHBOARD (mới — dữ liệu thật) ---
+    // --- DASHBOARD ---
 
     public function dashboard()
     {
         $agentId = Auth::guard('agent')->id();
 
-        // Thống kê theo trạng thái
         $totalOrders     = Courier::where('agent_id', $agentId)->count();
         $assignedOrders  = Courier::where('agent_id', $agentId)->where('status', 'assigned')->count();
         $inTransitOrders = Courier::where('agent_id', $agentId)->where('status', 'in_transit')->count();
         $deliveredOrders = Courier::where('agent_id', $agentId)->where('status', 'delivered')->count();
 
-        // Đơn cần xử lý ngay (trạng thái assigned — agent chưa nhận)
         $urgentOrders = Courier::where('agent_id', $agentId)
             ->where('status', 'assigned')
             ->with('customer')
             ->orderBy('created_at', 'asc')
             ->get();
 
-        // 10 đơn gần nhất
         $recentOrders = Courier::where('agent_id', $agentId)
             ->with('customer')
             ->orderBy('created_at', 'desc')
@@ -111,17 +109,14 @@ class AgentController extends Controller
         $agentId = Auth::guard('agent')->id();
         $query = Courier::where('agent_id', $agentId)->with('customer');
 
-        // Tìm theo mã vận đơn
         if ($request->filled('search')) {
             $query->where('tracking_id', 'like', '%' . $request->search . '%');
         }
 
-        // Lọc theo trạng thái
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Lọc theo khoảng ngày tạo
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -129,7 +124,6 @@ class AgentController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        // --- ĐÃ SỬA: Đổi get() thành paginate(10) ---
         $orders = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('agent.orders.index', compact('orders'));
@@ -158,7 +152,12 @@ class AgentController extends Controller
     public function complete($id)
     {
         $agentId = Auth::guard('agent')->id();
-        $order = Courier::where('id', $id)->where('agent_id', $agentId)->firstOrFail();
+
+        // ✅ Load kèm customer để Job có thể dùng ngay (tránh lazy load trong queue)
+        $order = Courier::where('id', $id)
+            ->where('agent_id', $agentId)
+            ->with('customer')
+            ->firstOrFail();
 
         if ($order->status !== 'in_transit') {
             return back()->with('error', 'Đơn chưa ở trạng thái giao.');
@@ -166,6 +165,8 @@ class AgentController extends Controller
 
         DB::transaction(function () use ($order) {
             $agent = Agent::find($order->agent_id);
+
+            // Cập nhật trạng thái thành delivered
             $order->update(['status' => 'delivered']);
 
             // Trả agent về trạng thái rảnh sau khi hoàn thành
@@ -174,7 +175,12 @@ class AgentController extends Controller
             }
         });
 
-        return back()->with('success', 'Đã giao hàng thành công!');
+        // ✅ TÍCH HỢP QUEUE: Dispatch Job gửi email thông báo giao hàng thành công
+        // Fresh lại order để có updated_at chính xác sau transaction
+        $order->refresh();
+        SendOrderDeliveredEmailJob::dispatch($order);
+
+        return back()->with('success', 'Đã giao hàng thành công! Email thông báo đã được gửi cho khách hàng.');
     }
 
     // --- COURIERS ---
