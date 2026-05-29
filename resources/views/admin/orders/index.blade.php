@@ -106,10 +106,10 @@
                         <th>Khách hàng</th>
                         <th>Người nhận</th>
                         <th>Địa chỉ</th>
-                        <th>Khối lượng</th>
-                        <th>Trạng thái</th>
-                        <th>Ngày tạo</th>
-                        <th></th>
+                        <th class="text-center">Khối lượng</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center">Ngày tạo</th>
+                        <th class="text-end">Thao tác</th>
                     </tr>
                     </thead>
 
@@ -128,50 +128,50 @@
                                 {{ \Illuminate\Support\Str::limit($order->receiver_address, 30) }}
                             </td>
 
-                            <td>{{ $order->total_weight }} kg</td>
+                            <td class="text-center">{{ $order->total_weight }} kg</td>
 
-                            <td>
+                            <td class="text-center">
                                 @php
                                     $st = strtolower($order->status);
                                 @endphp
 
                                 @switch($st)
                                     @case('pending')
-                                        <span class="badge bg-warning">Chờ xử lý</span>
+                                        <span class="badge bg-label-warning rounded-pill">Chờ xử lý</span>
                                         @break
 
                                     @case('assigned')
-                                        <span class="badge bg-info">Đã gán</span>
+                                        <span class="badge bg-label-primary rounded-pill">Đã gán</span>
                                         @break
 
                                     @case('picked_up')
-                                        <span class="badge bg-dark">Đã lấy hàng</span>
+                                        <span class="badge bg-label-secondary rounded-pill">Đã lấy hàng</span>
                                         @break
 
                                     @case('in_transit')
-                                        <span class="badge bg-primary">Đang giao</span>
+                                        <span class="badge bg-label-info rounded-pill">Đang giao</span>
                                         @break
 
                                     @case('delivered')
-                                        <span class="badge bg-success">Đã giao</span>
+                                        <span class="badge bg-label-success rounded-pill">Đã giao</span>
                                         @break
 
                                     @case('canceled')
                                     @case('cancelled')
-                                        <span class="badge bg-danger">Đã hủy</span>
+                                        <span class="badge bg-label-danger rounded-pill">Đã hủy</span>
                                         @break
 
                                     @default
-                                        <span class="badge bg-secondary">{{ $order->status }}</span>
+                                        <span class="badge bg-label-secondary rounded-pill">{{ $order->status }}</span>
                                 @endswitch
                             </td>
 
-                            <td>
+                            <td class="text-center">
                                 <small class="text-muted">{{ $order->created_at->format('d/m/Y') }}</small><br>
                                 <small class="text-muted opacity-75">{{ $order->created_at->format('H:i') }}</small>
                             </td>
 
-                            <td>
+                            <td class="text-end">
                                 <a href="{{ route('admin.orders.show', $order->id) }}"
                                    class="btn btn-sm btn-primary">
                                     Xem

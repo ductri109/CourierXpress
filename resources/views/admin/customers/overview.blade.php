@@ -26,9 +26,7 @@
                         <h5 class="mb-0">{{ $customer->full_name }}</h5>
                         <p class="text-muted small mb-3">Customer ID #{{ str_pad($customer->id, 4, '0', STR_PAD_LEFT) }}</p>
 
-                        <span class="badge bg-label-success rounded-pill px-3 py-2">
-                        <i class="ri-checkbox-circle-line me-1" style="font-size:12px"></i> Đang hoạt động
-                    </span>
+                        <span class="badge bg-label-success rounded-pill px-3 py-2">Đang hoạt động</span>
                     </div>
                     <div class="card-body border-top pt-4">
                         <div class="d-flex align-items-center mb-3">
@@ -87,9 +85,9 @@
                             <tr>
                                 <th>Mã vận đơn</th>
                                 <th>Người nhận</th>
-                                <th>Khối lượng</th>
-                                <th>Trạng thái</th>
-                                <th>Ngày tạo</th>
+                                <th class="text-center">Khối lượng</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Ngày tạo</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -105,26 +103,30 @@
                                             <div class="fw-semibold">{{ $order->receiver_name }}</div>
                                             <small class="text-muted">{{ \Str::limit($order->receiver_address, 30) }}</small>
                                         </td>
-                                        <td>{{ $order->total_weight }} kg</td>
-                                        <td>
-                                            @switch($order->status)
+                                        <td class="text-center">{{ $order->total_weight }} kg</td>
+                                        <td class="text-center">
+                                            @switch(strtolower($order->status))
                                                 @case('pending')
-                                                    <span class="badge bg-label-warning">Chờ xử lý</span>
+                                                    <span class="badge bg-label-warning rounded-pill">Chờ xử lý</span>
                                                     @break
                                                 @case('assigned')
-                                                    <span class="badge bg-label-info">Đã nhận đơn</span>
+                                                    <span class="badge bg-label-primary rounded-pill">Đã gán</span>
                                                     @break
                                                 @case('in_transit')
-                                                    <span class="badge bg-label-primary">Đang giao</span>
+                                                    <span class="badge bg-label-info rounded-pill">Đang giao</span>
                                                     @break
                                                 @case('delivered')
-                                                    <span class="badge bg-label-success">Đã giao</span>
+                                                    <span class="badge bg-label-success rounded-pill">Đã giao</span>
+                                                    @break
+                                                @case('cancelled')
+                                                @case('canceled')
+                                                    <span class="badge bg-label-danger rounded-pill">Đã hủy</span>
                                                     @break
                                                 @default
-                                                    <span class="badge bg-label-secondary">{{ $order->status }}</span>
+                                                    <span class="badge bg-label-secondary rounded-pill">{{ ucfirst($order->status) }}</span>
                                             @endswitch
                                         </td>
-                                        <td class="text-muted small">{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                        <td class="text-center text-muted small">{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                     </tr>
                                 @endforeach
                             @else

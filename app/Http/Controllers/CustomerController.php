@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use App\Models\Faq;
 use App\Models\Courier;
+use App\Jobs\SendOrderCreatedEmailJob;
+use App\Jobs\SendOrderDeliveredEmailJob;
 
 class CustomerController extends Controller
 {
@@ -106,6 +108,7 @@ class CustomerController extends Controller
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             $minutes = ceil($seconds / 60);
+
 
             return back()
                 ->withErrors([
@@ -212,6 +215,12 @@ class CustomerController extends Controller
             'created_at'       => now(),
             'updated_at'       => now(),
         ]);
+    //Email
+        if (auth('customer')->check()) {
+            $newOrder         = Courier::where('tracking_id', $tracking_id)->first();
+            $loggedInCustomer = auth('customer')->user();
+            SendOrderCreatedEmailJob::dispatch($newOrder, $loggedInCustomer);
+        }
 
         if (auth('customer')->check()) {
             return redirect()->route('customer.orders.index')

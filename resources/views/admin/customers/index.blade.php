@@ -162,9 +162,9 @@
                     <tr>
                         <th>Khách hàng</th>
                         <th>Liên hệ</th>
-                        <th>Ngày tham gia</th>
-                        <th>Trạng thái</th>
-                        <th>Tổng số đơn</th>
+                        <th class="text-center">Ngày tham gia</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center">Tổng số đơn</th>
                         <th class="text-end">Thao tác</th>
                     </tr>
                     </thead>
@@ -189,13 +189,13 @@
                                     <div>{{ $customer->email }}</div>
                                     <small class="text-muted">{{ $customer->phone }}</small>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ $customer->created_at ? $customer->created_at->format('d/m/Y') : 'N/A' }}
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <span class="badge bg-label-success rounded-pill">Hoạt động</span>
                                 </td>
-                                <td class="fw-semibold">
+                                <td class="text-center fw-semibold">
                                     {{-- Lấy tổng đơn hàng: Ưu tiên orders_count (nếu controller dùng withCount), sau đó đến total_orders, cuối cùng đếm trực tiếp qua relationship --}}
                                     {{ $customer->orders_count ?? $customer->total_orders ?? (isset($customer->couriers) ? $customer->couriers->count() : 0) }} đơn
                                 </td>
