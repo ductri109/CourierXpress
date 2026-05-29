@@ -11,8 +11,10 @@ class Courier extends Model
     protected $fillable = [
         'tracking_id',
         'sender_name',
+        'sender_phone',
         'sender_address',
         'receiver_name',
+        'receiver_phone',
         'receiver_address',
         'total_weight',
         'status',

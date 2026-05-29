@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Chi tiết đơn hàng #{{ $order->tracking_id }}')
+@section('title', 'Chi tiết đơn hàng #' . $order->tracking_id . ' | CourierXpress')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -59,11 +59,19 @@
                                 <label class="form-label text-muted small fw-semibold">NGƯỜI GỬI</label>
                                 <p class="fw-semibold mb-0">{{ $order->sender_name }}</p>
                                 <p class="text-muted small mb-0">{{ $order->sender_address }}</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <i class="bx bx-phone"></i>
+                                    {{ $order->sender_phone }}
+                                </p>
                             </div>
                             <div class="col-sm-6">
                                 <label class="form-label text-muted small fw-semibold">NGƯỜI NHẬN</label>
                                 <p class="fw-semibold mb-0">{{ $order->receiver_name }}</p>
                                 <p class="text-muted small mb-0">{{ $order->receiver_address }}</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <i class="bx bx-phone"></i>
+                                    {{ $order->receiver_phone }}
+                                </p>
                             </div>
                             <div class="col-sm-6">
                                 <label class="form-label text-muted small fw-semibold">KHỐI LƯỢNG</label>
