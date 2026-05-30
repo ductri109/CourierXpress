@@ -21,7 +21,7 @@ class CustomerFactory extends Factory
             'phone'         => $fakerVi->unique()->phoneNumber(),
             'password_hash' => Hash::make('123456@a'), // Mật khẩu mẫu mặc định cho tất cả customer
             'address'       => $fakerVi->address(),
-            'created_at'    => now(),
+            'created_at'    => $fakerVi->dateTimeBetween('-5 years', 'now'),
             'updated_at'    => now(),
         ];
     }

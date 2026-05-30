@@ -23,8 +23,10 @@ class CourierFactory extends Factory
             'tracking_id'      => 'CRX-' . $this->faker->unique()->numberBetween(10000000, 99999999),
             'sender_name'      => $fakerVi->name(),
             'sender_address'   => $fakerVi->address(),
+            'sender_phone'     => $fakerVi->phoneNumber(),
             'receiver_name'    => $fakerVi->name(),
             'receiver_address' => $fakerVi->address(),
+            'receiver_phone'   => $fakerVi->phoneNumber(),
             'total_weight'     => $this->faker->randomFloat(2, 0.2, 50.0), // Trọng lượng từ 200g đến 50kg
             'status'           => $this->faker->randomElement($statuses),
 
@@ -32,7 +34,7 @@ class CourierFactory extends Factory
             'customer_id'      => null,
             'agent_id'         => null,
 
-            'created_at'       => $this->faker->dateTimeBetween('-1 months', 'now'),
+            'created_at'       => $this->faker->dateTimeBetween('-3 months', 'now'),
             'updated_at'       => now(),
         ];
     }
