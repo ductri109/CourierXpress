@@ -34,7 +34,7 @@ class CourierFactory extends Factory
             'customer_id'      => null,
             'agent_id'         => null,
 
-            'created_at'       => $this->faker->dateTimeBetween('-1 months', 'now'),
+            'created_at'       => $this->faker->dateTimeBetween('-3 months', 'now'),
             'updated_at'       => now(),
         ];
     }

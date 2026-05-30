@@ -27,7 +27,7 @@ class AgentFactory extends Factory
             'Email'        => $this->faker->unique()->safeEmail(),
             'Username'     => $username . $this->faker->numberBetween(10, 99), // Tránh trùng lặp username
             'PasswordHash' => Hash::make('123456@a'), // Mật khẩu test chung cho các Agent
-            'Status'       => $this->faker->randomElement(['active', 'active', 'inactive']), // Tỷ lệ active cao hơn
+            'Status'       => $this->faker->randomElement(['active', 'busy', 'inactive']), // Tỷ lệ active cao hơn
             'created_at'   => now(),
             'updated_at'   => now(),
         ];
