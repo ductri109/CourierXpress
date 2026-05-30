@@ -104,15 +104,6 @@
             </button>
         </form>
     </div>
-
-    <!-- Bottom Links -->
-    <div class="bg-gray-50 border-t border-gray-100 py-4 px-8 flex justify-center space-x-4 text-xs text-gray-400 font-medium">
-        <a href="#" class="hover:text-gray-600 transition-colors">Bảo mật</a>
-        <span>&bull;</span>
-        <a href="#" class="hover:text-gray-600 transition-colors">Điều khoản</a>
-        <span>&bull;</span>
-        <a href="#" class="hover:text-gray-600 transition-colors">Hỗ trợ</a>
-    </div>
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
