@@ -95,6 +95,7 @@
                         <th class="px-4 py-3 text-left">Người gửi</th>
                         <th class="px-4 py-3 text-left">Người nhận</th>
                         <th class="px-4 py-3 text-left">Cân nặng</th>
+                        <th class="px-4 py-3 text-left">Loại hàng</th>
                         <th class="px-4 py-3 text-left">Phí vận chuyển</th>
                         <th class="px-4 py-3 text-left">COD</th>
                         <th class="px-4 py-3 text-left">Thanh toán</th>
@@ -125,6 +126,10 @@
                                 {{ $courier->total_weight }} kg
                             </td>
 
+                            <td class="px-4 py-3">
+                                {{ $courier->goods_type ?? 'Chưa cập nhật' }}
+                            </td>
+
                             <td class="px-4 py-3 text-red-600 font-semibold">
                                 {{ number_format($courier->shipping_fee, 0, ',', '.') }} VNĐ
                             </td>
@@ -135,50 +140,44 @@
 
                             <td class="px-4 py-3">
                                 @if ($courier->payment_status == 'paid')
-                                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                                        Đã thanh toán
-                                    </span>
+                                    <span class="inline-flex items-center justify-center min-w-[120px] px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold whitespace-nowrap">
+            Đã thanh toán
+        </span>
                                 @else
-                                    <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
-                                        Chưa thanh toán
-                                    </span>
+                                    <span class="inline-flex items-center justify-center min-w-[120px] px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold whitespace-nowrap">
+            Chưa thanh toán
+        </span>
                                 @endif
                             </td>
 
                             <td class="px-4 py-3">
                                 @switch($courier->status)
                                     @case('pending')
-                                        <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
+                                        <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold whitespace-nowrap">
                 Chờ xử lý
             </span>
                                         @break
 
                                     @case('shipping')
-                                        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">
-                Đang vận chuyển
+                                        <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold whitespace-nowrap">
+                Đang giao
             </span>
                                         @break
 
                                     @case('delivered')
-                                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
-                Đã giao thành công
+                                        <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold whitespace-nowrap">
+                Đã giao
             </span>
                                         @break
 
                                     @case('failed')
-                                        <span class="px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-medium">
-                Giao thất bại
-            </span>
-                                        @break
-
-                                    @case('cancelled')
-                                        <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                Đã hủy
+                                        <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold whitespace-nowrap">
+                Thất bại
             </span>
                                         @break
 
                                     @default
-                                        <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                                        <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold whitespace-nowrap">
                 {{ $courier->status }}
             </span>
                                 @endswitch

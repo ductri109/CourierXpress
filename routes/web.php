@@ -121,14 +121,14 @@ Route::post('/orders/payment', [CustomerController::class, 'payment'])
 Route::post('/customer/orders/payment', [CustomerController::class, 'payment'])
     ->name('customer.orders.payment');
 
-Route::get('/customer/booking/{courier}/bill',
-    [CustomerController::class, 'bookingBill'])
+Route::get('/customer/booking/{id}/bill', [CustomerController::class, 'bookingBill'])
     ->name('customer.booking.bill');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/customer/reports', [CustomerReportController::class, 'index'])
         ->name('customer.reports');
 });
+
 
 // ============================================================
 // ADMIN ROUTES
