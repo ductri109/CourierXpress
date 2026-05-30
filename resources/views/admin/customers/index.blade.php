@@ -164,7 +164,6 @@
                         <th>Liên hệ</th>
                         <th class="text-center">Ngày tham gia</th>
                         <th class="text-center">Trạng thái</th>
-                        <th class="text-center">Tổng số đơn</th>
                         <th class="text-end">Thao tác</th>
                     </tr>
                     </thead>
@@ -195,10 +194,7 @@
                                 <td class="text-center">
                                     <span class="badge bg-label-success rounded-pill">Hoạt động</span>
                                 </td>
-                                <td class="text-center fw-semibold">
-                                    {{-- Lấy tổng đơn hàng: Ưu tiên orders_count (nếu controller dùng withCount), sau đó đến total_orders, cuối cùng đếm trực tiếp qua relationship --}}
-                                    {{ $customer->orders_count ?? $customer->total_orders ?? (isset($customer->couriers) ? $customer->couriers->count() : 0) }} đơn
-                                </td>
+
                                 <td class="text-end">
                                     <div class="dropdown">
                                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
