@@ -188,6 +188,29 @@
                                     </select>
                                 </div>
 
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Loại hàng <span class="text-red-500">*</span>
+                                    </label>
+
+                                    <select name="goods_type"
+                                            required
+                                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                        <option value="">-- Chọn loại hàng --</option>
+                                        <option value="Tài liệu" {{ old('goods_type') == 'Tài liệu' ? 'selected' : '' }}>Tài liệu</option>
+                                        <option value="Quần áo" {{ old('goods_type') == 'Quần áo' ? 'selected' : '' }}>Quần áo</option>
+                                        <option value="Mỹ phẩm" {{ old('goods_type') == 'Mỹ phẩm' ? 'selected' : '' }}>Mỹ phẩm</option>
+                                        <option value="Đồ điện tử" {{ old('goods_type') == 'Đồ điện tử' ? 'selected' : '' }}>Đồ điện tử</option>
+                                        <option value="Thực phẩm khô" {{ old('goods_type') == 'Thực phẩm khô' ? 'selected' : '' }}>Thực phẩm khô</option>
+                                        <option value="Hàng dễ vỡ" {{ old('goods_type') == 'Hàng dễ vỡ' ? 'selected' : '' }}>Hàng dễ vỡ</option>
+                                        <option value="Khác" {{ old('goods_type') == 'Khác' ? 'selected' : '' }}>Khác</option>
+                                    </select>
+
+                                    @error('goods_type')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <div class="md:col-span-2 space-y-2">
                                     <label class="block text-sm font-semibold text-gray-700">Ghi chú cho người giao hàng</label>
                                     <textarea name="shipping_notes" rows="2" placeholder="Ví dụ: Hàng dễ vỡ, liên hệ trước khi giao, hàng chất lỏng..."

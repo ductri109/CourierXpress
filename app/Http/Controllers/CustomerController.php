@@ -150,6 +150,8 @@ class CustomerController extends Controller
             'receiver_ward'           => 'required|string',
             'receiver_address_detail' => 'required|string',
 
+            'goods_type' => 'required|string|max:100',
+
             'weight_range' => 'required|string',
         ]);
 
@@ -204,6 +206,7 @@ class CustomerController extends Controller
             'receiver_phone'    => $request->receiver_phone,
 
             'total_weight'     => $total_weight,
+            'goods_type'         => $request->goods_type,
             'status'           => 'pending',
             'customer_id'      => auth('customer')->check() ? auth('customer')->id() : null,
 
@@ -308,8 +311,12 @@ class CustomerController extends Controller
         return back()->with('error', 'Phương thức thanh toán không hợp lệ.');
     }
 
-    public function bookingBill(Courier $courier)
+    public function bookingBill($id)
     {
+        $courier = Courier::where('id', $id)
+            ->where('customer_id', auth()->guard('customer')->id())
+            ->firstOrFail();
+
         return view('customer.booking-bill', compact('courier'));
     }
 }

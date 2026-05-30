@@ -16,6 +16,7 @@ class Courier extends Model
         'receiver_name',
         'receiver_phone',
         'receiver_address',
+        'goods_type',
         'total_weight',
         'status',
         'customer_id',

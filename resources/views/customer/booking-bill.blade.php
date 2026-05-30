@@ -139,7 +139,7 @@
 
     <div class="row">
         <span class="label">Loại hàng</span>
-        <span class="value">{{ $courier->item_type ?? $courier->package_type ?? '---' }}</span>
+        <span class="value">{{ $courier->goods_type ?? '---' }}</span>
     </div>
 
     <div class="row">
