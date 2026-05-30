@@ -179,6 +179,12 @@
                                 <i data-lucide="package" class="w-4 h-4"></i>
                                 <span class="font-medium">Đơn hàng của tôi</span>
                             </a>
+
+                            <a href="{{ route('customer.reports') }}"
+                               class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors">
+                                <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                                <span class="font-medium">Báo cáo chi tiết</span>
+                            </a>
                             <div class="h-px bg-gray-100 my-1 mx-2"></div>
 
                             <form method="POST" action="{{ route('logout') }}">

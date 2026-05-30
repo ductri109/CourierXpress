@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\CustomerReportController;
 
 // ============================================================
 // CUSTOMER ROUTES
@@ -123,6 +124,11 @@ Route::post('/customer/orders/payment', [CustomerController::class, 'payment'])
 Route::get('/customer/booking/{courier}/bill',
     [CustomerController::class, 'bookingBill'])
     ->name('customer.booking.bill');
+
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/customer/reports', [CustomerReportController::class, 'index'])
+        ->name('customer.reports');
+});
 
 // ============================================================
 // ADMIN ROUTES

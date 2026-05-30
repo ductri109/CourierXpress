@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('agent_id')->nullable();
             $table->foreign('agent_id')->references('ID')->on('agents')->onDelete('set null');
             $table->timestamps();
+            $table->decimal('shipping_fee', 12, 2)->default(0);
         });
     }
 
