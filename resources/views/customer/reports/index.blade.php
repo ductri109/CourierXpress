@@ -110,92 +110,111 @@
 
                     <tbody>
                     @forelse ($couriers as $courier)
-                        <tr class="border-t">
-                            <td class="px-4 py-3 font-bold">
-                                {{ $courier->tracking_id }}
+                        <tr class="border-t hover:bg-gray-50 transition">
+                            {{-- 1. Mã vận đơn --}}
+                            <td class="px-4 py-4 align-middle">
+            <span class="font-bold text-gray-900 whitespace-nowrap">
+                {{ $courier->tracking_id ?? 'N/A' }}
+            </span>
                             </td>
 
-                            <td class="px-4 py-3">
-                                {{ $courier->created_at->format('d/m/Y H:i') }}
+                            {{-- 2. Ngày tạo --}}
+                            <td class="px-4 py-4 align-middle">
+                                <div class="text-gray-900 whitespace-nowrap">
+                                    {{ $courier->created_at->format('d/m/Y') }}
+                                </div>
+                                <div class="text-sm text-gray-500 whitespace-nowrap">
+                                    {{ $courier->created_at->format('H:i') }}
+                                </div>
                             </td>
 
-                            <td class="px-4 py-3">
+                            {{-- 3. Người gửi --}}
+                            <td class="px-4 py-4 align-middle">
                                 {{ $courier->sender_name }}
                             </td>
 
-                            <td class="px-4 py-3">
+                            {{-- 4. Người nhận --}}
+                            <td class="px-4 py-4 align-middle">
                                 {{ $courier->receiver_name }}
                             </td>
 
-                            <td class="px-4 py-3">
+                            {{-- 5. Cân nặng --}}
+                            <td class="px-4 py-4 align-middle whitespace-nowrap">
                                 {{ $courier->total_weight }} kg
                             </td>
 
-                            <td class="px-4 py-3">
+                            {{-- 6. Loại hàng --}}
+                            <td class="px-4 py-4 align-middle">
                                 {{ $courier->goods_type ?? 'Chưa cập nhật' }}
                             </td>
 
-                            <td class="px-4 py-3 text-red-600 font-semibold">
-                                {{ number_format($courier->shipping_fee, 0, ',', '.') }} VNĐ
+                            {{-- 7. Phí vận chuyển --}}
+                            <td class="px-4 py-4 align-middle text-red-600 font-bold whitespace-nowrap">
+                                {{ number_format($courier->shipping_fee ?? 0, 0, ',', '.') }} VNĐ
                             </td>
 
-                            <td class="px-4 py-3">
-                                {{ number_format($courier->cod_amount, 0, ',', '.') }} VNĐ
+                            {{-- 8. COD --}}
+                            <td class="px-4 py-4 align-middle whitespace-nowrap">
+                                {{ number_format($courier->cod_amount ?? 0, 0, ',', '.') }} VNĐ
                             </td>
 
-                            <td class="px-4 py-3">
-                                @if ($courier->payment_status == 'paid')
+                            {{-- 9. Thanh toán --}}
+                            <td class="px-4 py-4 align-middle">
+                                @if ($courier->status === 'delivered' || $courier->payment_status === 'paid')
                                     <span class="inline-flex items-center justify-center min-w-[120px] px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold whitespace-nowrap">
-            Đã thanh toán
-        </span>
+                    Đã thanh toán
+                </span>
                                 @else
                                     <span class="inline-flex items-center justify-center min-w-[120px] px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold whitespace-nowrap">
-            Chưa thanh toán
-        </span>
+                    Chưa thanh toán
+                </span>
                                 @endif
                             </td>
 
-                            <td class="px-4 py-3">
+                            {{-- 10. Trạng thái --}}
+                            <td class="px-4 py-4 align-middle">
                                 @switch($courier->status)
                                     @case('pending')
                                         <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold whitespace-nowrap">
-                Chờ xử lý
-            </span>
+                        Chờ xử lý
+                    </span>
                                         @break
 
                                     @case('shipping')
+                                    @case('in_transit')
                                         <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold whitespace-nowrap">
-                Đang giao
-            </span>
+                        Đang giao
+                    </span>
                                         @break
 
                                     @case('delivered')
                                         <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold whitespace-nowrap">
-                Đã giao
-            </span>
+                        Đã giao
+                    </span>
                                         @break
 
                                     @case('failed')
                                         <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold whitespace-nowrap">
-                Thất bại
-            </span>
+                        Thất bại
+                    </span>
                                         @break
 
                                     @default
                                         <span class="inline-flex items-center justify-center min-w-[110px] px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold whitespace-nowrap">
-                {{ $courier->status }}
-            </span>
+                        {{ $courier->status }}
+                    </span>
                                 @endswitch
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center py-6 text-gray-500">
+                            <td colspan="10" class="text-center py-6 text-gray-500">
                                 Chưa có đơn hàng nào
                             </td>
                         </tr>
                     @endforelse
                     </tbody>
+
                 </table>
             </div>
 

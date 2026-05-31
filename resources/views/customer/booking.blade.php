@@ -167,56 +167,60 @@
                     </div>
 
                     {{-- CHI TIẾT HÀNG HÓA --}}
-                    <div class="relative">
-                        <div class="flex items-center space-x-3 mb-6">
-                            <h3 class="text-xl font-bold text-gray-900">Chi tiết hàng hóa</h3>
-                            <div class="flex-1 h-px bg-gray-100 ml-2"></div>
-                        </div>
+                    <div class="bg-primary-50/30 p-6 rounded-2xl border border-primary-100 space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6 items-start">
 
-                        <div class="bg-primary-50/30 p-6 rounded-2xl border border-primary-100 space-y-6">
-                            <div class="grid md:grid-cols-3 gap-6 items-start">
-                                <div class="space-y-2 md:col-span-1">
-                                    <label class="block text-sm font-semibold text-gray-700">Khối lượng ước tính <span class="text-primary-500">*</span></label>
-                                    <select name="weight_range" required
-                                            class="w-full px-4 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm bg-white font-medium text-gray-700">
-                                        <option value="">-- Chọn mức cân nặng --</option>
-                                        <option value="under_0.5" {{ old('weight_range') == 'under_0.5' ? 'selected' : '' }}>Dưới 0.5 kg</option>
-                                        <option value="0.5-1" {{ old('weight_range') == '0.5-1' ? 'selected' : '' }}>Từ 0.5 kg đến 1 kg</option>
-                                        <option value="1-2" {{ old('weight_range') == '1-2' ? 'selected' : '' }}>Từ 1 kg đến 2 kg</option>
-                                        <option value="2-5" {{ old('weight_range') == '2-5' ? 'selected' : '' }}>Từ 2 kg đến 5 kg</option>
-                                        <option value="above_5" {{ old('weight_range') == 'above_5' ? 'selected' : '' }}>Trên 5 kg</option>
-                                    </select>
-                                </div>
+                            {{-- Khối lượng --}}
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">
+                                    Khối lượng ước tính <span class="text-primary-500">*</span>
+                                </label>
 
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Loại hàng <span class="text-red-500">*</span>
-                                    </label>
-
-                                    <select name="goods_type"
-                                            required
-                                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                                        <option value="">-- Chọn loại hàng --</option>
-                                        <option value="Tài liệu" {{ old('goods_type') == 'Tài liệu' ? 'selected' : '' }}>Tài liệu</option>
-                                        <option value="Quần áo" {{ old('goods_type') == 'Quần áo' ? 'selected' : '' }}>Quần áo</option>
-                                        <option value="Mỹ phẩm" {{ old('goods_type') == 'Mỹ phẩm' ? 'selected' : '' }}>Mỹ phẩm</option>
-                                        <option value="Đồ điện tử" {{ old('goods_type') == 'Đồ điện tử' ? 'selected' : '' }}>Đồ điện tử</option>
-                                        <option value="Thực phẩm khô" {{ old('goods_type') == 'Thực phẩm khô' ? 'selected' : '' }}>Thực phẩm khô</option>
-                                        <option value="Hàng dễ vỡ" {{ old('goods_type') == 'Hàng dễ vỡ' ? 'selected' : '' }}>Hàng dễ vỡ</option>
-                                        <option value="Khác" {{ old('goods_type') == 'Khác' ? 'selected' : '' }}>Khác</option>
-                                    </select>
-
-                                    @error('goods_type')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div class="md:col-span-2 space-y-2">
-                                    <label class="block text-sm font-semibold text-gray-700">Ghi chú cho người giao hàng</label>
-                                    <textarea name="shipping_notes" rows="2" placeholder="Ví dụ: Hàng dễ vỡ, liên hệ trước khi giao, hàng chất lỏng..."
-                                              class="w-full px-4 py-3 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm font-medium resize-none text-gray-700 placeholder-gray-400">{{ old('shipping_notes') }}</textarea>
-                                </div>
+                                <select name="weight_range" required
+                                        class="w-full px-4 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm bg-white font-medium text-gray-700 focus:ring-4 focus:ring-primary-50 transition-all">
+                                    <option value="">-- Chọn mức cân nặng --</option>
+                                    <option value="under_0.5" {{ old('weight_range') == 'under_0.5' ? 'selected' : '' }}>Dưới 0.5 kg</option>
+                                    <option value="0.5-1" {{ old('weight_range') == '0.5-1' ? 'selected' : '' }}>Từ 0.5 kg đến 1 kg</option>
+                                    <option value="1-2" {{ old('weight_range') == '1-2' ? 'selected' : '' }}>Từ 1 kg đến 2 kg</option>
+                                    <option value="2-5" {{ old('weight_range') == '2-5' ? 'selected' : '' }}>Từ 2 kg đến 5 kg</option>
+                                    <option value="above_5" {{ old('weight_range') == 'above_5' ? 'selected' : '' }}>Trên 5 kg</option>
+                                </select>
                             </div>
+
+                            {{-- Loại hàng --}}
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">
+                                    Loại hàng hóa <span class="text-primary-500">*</span>
+                                </label>
+
+                                <select name="goods_type" required
+                                        class="w-full px-4 py-3.5 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm bg-white font-medium text-gray-700 focus:ring-4 focus:ring-primary-50 transition-all">
+                                    <option value="">-- Chọn loại hàng --</option>
+                                    <option value="Tài liệu" {{ old('goods_type') == 'Tài liệu' ? 'selected' : '' }}>Tài liệu</option>
+                                    <option value="Quần áo" {{ old('goods_type') == 'Quần áo' ? 'selected' : '' }}>Quần áo</option>
+                                    <option value="Mỹ phẩm" {{ old('goods_type') == 'Mỹ phẩm' ? 'selected' : '' }}>Mỹ phẩm</option>
+                                    <option value="Đồ điện tử" {{ old('goods_type') == 'Đồ điện tử' ? 'selected' : '' }}>Đồ điện tử</option>
+                                    <option value="Thực phẩm khô" {{ old('goods_type') == 'Thực phẩm khô' ? 'selected' : '' }}>Thực phẩm khô</option>
+                                    <option value="Hàng dễ vỡ" {{ old('goods_type') == 'Hàng dễ vỡ' ? 'selected' : '' }}>Hàng dễ vỡ</option>
+                                    <option value="Khác" {{ old('goods_type') == 'Khác' ? 'selected' : '' }}>Khác</option>
+                                </select>
+
+                                @error('goods_type')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Ghi chú --}}
+                            <div class="md:col-span-2 space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">
+                                    Ghi chú cho người giao hàng
+                                </label>
+
+                                <textarea name="shipping_notes" rows="3"
+                                          placeholder="Ví dụ: Hàng dễ vỡ, liên hệ trước khi giao, hàng chất lỏng..."
+                                          class="w-full px-4 py-3 border-2 border-white rounded-xl focus:border-primary-500 focus:outline-none shadow-sm font-medium resize-none text-gray-700 placeholder-gray-400 focus:ring-4 focus:ring-primary-50 transition-all">{{ old('shipping_notes') }}</textarea>
+                            </div>
+
                         </div>
                     </div>
 
