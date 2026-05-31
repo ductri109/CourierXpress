@@ -167,7 +167,9 @@
                             ][$s] ?? 'bg-gray-100 text-gray-700 border-gray-200';
 
                             $paymentMethod = $order->payment_method ?? 'cod';
-                            $paymentStatus = $order->payment_status ?? 'unpaid';
+                           $paymentStatus = $order->status === 'delivered'
+                                 ? 'paid'
+                                     : ($order->payment_status ?? 'unpaid');
 
                             $payCfg = $paymentConfig[$paymentMethod] ?? $paymentConfig['cod'];
                             $payStatusCfg = $paymentStatusConfig[$paymentStatus] ?? $paymentStatusConfig['unpaid'];
@@ -192,26 +194,25 @@
                                             <i data-lucide="calendar" class="inline w-3.5 h-3.5 mr-1"></i>
                                             Tạo lúc {{ $order->created_at->format('H:i - d/m/Y') }}
                                         </p>
-                                        <div class="flex flex-wrap items-center gap-2 mt-2">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-green-100 text-green-700 border-green-200">
-                                                  <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
-                                                    COD
-                                            </span>
 
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-orange-100 text-orange-700 border-orange-200 whitespace-nowrap">
-                                                {{ number_format($order->cod_amount ?? 0, 0, ',', '.') }} VNĐ
-                                            </span>
-                                        </div>
-                                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                                        <div class="flex flex-wrap items-center gap-2 mt-3">
+                                            {{-- Phương thức thanh toán --}}
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payCfg['badge'] }}">
                                                   <i data-lucide="{{ $payCfg['icon'] }}" class="w-3.5 h-3.5"></i>
-                                                    {{ $payCfg['label'] }}
-                                            </span>
-
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payStatusCfg['badge'] }}">
-                                                {{ $payStatusCfg['label'] }}
+                                                          {{ $payCfg['label'] }}
                                              </span>
+
+                                            {{-- Số tiền COD --}}
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-orange-100 text-orange-700 border-orange-200 whitespace-nowrap">
+                                                     {{ number_format($order->cod_amount ?? 0, 0, ',', '.') }} VNĐ
+                                             </span>
+
+                                            {{-- Trạng thái thanh toán --}}
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payStatusCfg['badge'] }}">
+                                                     {{ $payStatusCfg['label'] }}
+                                              </span>
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -255,7 +256,7 @@
                                         <span>In bill</span>
                                     </a>
 
-                                    @if(($order->payment_status ?? 'unpaid') !== 'paid')
+                                    @if($paymentStatus !== 'paid')
                                         <button onclick="openPaymentModal({{ $order->id }})"
                                                 class="h-9 inline-flex items-center space-x-1.5 px-3 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-sm whitespace-nowrap">
                                             <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
@@ -537,6 +538,13 @@
             if (!order) return;
 
             const cfg = statusConfig[order.status] || { label: order.status, badge: 'bg-gray-100 text-gray-700', icon: '📦' };
+            const paymentStatusLabel = order.status === 'delivered'
+                ? 'Đã thanh toán'
+                : ((order.payment_status || 'unpaid') === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán');
+
+            const paymentStatusBadge = order.status === 'delivered' || (order.payment_status || 'unpaid') === 'paid'
+                ? 'bg-green-100 text-green-700 border-green-200'
+                : 'bg-yellow-100 text-yellow-700 border-yellow-200';
             const created = new Date(order.created_at);
             const dateStr = created.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
@@ -601,8 +609,8 @@
             <p class="text-2xl font-extrabold text-green-700">
                 ${codAmount.toLocaleString('vi-VN')} VNĐ
             </p>
-            <p class="text-xs text-gray-400 mt-1">
-                Thanh toán bằng tiền mặt
+           <p class="text-xs mt-1 inline-flex px-2 py-1 rounded-full border ${paymentStatusBadge}">
+                 ${paymentStatusLabel}
             </p>
         </div>
     </div>

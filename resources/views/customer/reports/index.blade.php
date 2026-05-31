@@ -90,8 +90,13 @@
                 <table class="w-full text-sm">
                     <thead class="bg-gray-100 text-gray-600">
                     <tr>
-                        <th class="px-4 py-3 text-left">Mã vận đơn</th>
-                        <th class="px-4 py-3 text-left">Ngày tạo</th>
+                        <th class="px-4 py-4 text-left text-sm font-bold text-gray-700 w-[120px] whitespace-nowrap">
+                            Mã vận đơn
+                        </th>
+
+                        <th class="px-4 py-4 text-left text-sm font-bold text-gray-700 w-[160px] whitespace-nowrap">
+                            Ngày tạo
+                        </th>
                         <th class="px-4 py-3 text-left">Người gửi</th>
                         <th class="px-4 py-3 text-left">Người nhận</th>
                         <th class="px-4 py-3 text-left">Cân nặng</th>
