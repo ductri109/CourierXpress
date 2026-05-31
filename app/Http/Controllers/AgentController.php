@@ -75,11 +75,13 @@ class AgentController extends Controller
     {
         $agentId = Auth::guard('agent')->id();
 
+        // ── Tổng quan đơn hàng ──────────────────────────────────────────
         $totalOrders     = Courier::where('agent_id', $agentId)->count();
         $assignedOrders  = Courier::where('agent_id', $agentId)->where('status', 'assigned')->count();
         $inTransitOrders = Courier::where('agent_id', $agentId)->where('status', 'in_transit')->count();
         $deliveredOrders = Courier::where('agent_id', $agentId)->where('status', 'delivered')->count();
 
+        // ── Đơn cần xử lý & gần đây ─────────────────────────────────────
         $urgentOrders = Courier::where('agent_id', $agentId)
             ->where('status', 'assigned')
             ->with('customer')
@@ -92,13 +94,81 @@ class AgentController extends Controller
             ->limit(10)
             ->get();
 
+        // ── Thống kê 7 ngày gần nhất ────────────────────────────────────
+        $dailyStats = Courier::where('agent_id', $agentId)
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as total'),
+                DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered")
+            )
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // ── Thống kê theo tháng (12 tháng) ──────────────────────────────
+        $monthlyStats = Courier::where('agent_id', $agentId)
+            ->select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as total'),
+                DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered"),
+                DB::raw("SUM(CASE WHEN status = 'canceled' OR status = 'cancelled' THEN 1 ELSE 0 END) as cancelled")
+            )
+            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        // ── Doanh thu theo tháng ─────────────────────────────────────────
+        $revenueByMonth = Courier::where('agent_id', $agentId)
+            ->select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw("SUM(CASE WHEN status = 'delivered' THEN GREATEST(COALESCE(shipping_fee, 0), 35000) ELSE 0 END) as revenue"),
+                DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count")
+            )
+            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        // ── Tổng doanh thu của agent ─────────────────────────────────────
+        $totalRevenue = Courier::where('agent_id', $agentId)
+            ->where('status', 'delivered')
+            ->selectRaw("SUM(GREATEST(COALESCE(shipping_fee, 0), 35000)) as total")
+            ->value('total') ?? 0;
+
+        // ── Doanh thu tháng này ──────────────────────────────────────────
+        $revenueThisMonth = Courier::where('agent_id', $agentId)
+            ->where('status', 'delivered')
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->selectRaw("SUM(GREATEST(COALESCE(shipping_fee, 0), 35000)) as total")
+            ->value('total') ?? 0;
+
+        // ── Bảng doanh thu chi tiết ──────────────────────────────────────
+        $revenueTable = Courier::where('agent_id', $agentId)
+            ->select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as total_orders'),
+                DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count"),
+                DB::raw("SUM(CASE WHEN status = 'canceled' OR status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_count"),
+                DB::raw("SUM(CASE WHEN status = 'delivered' THEN GREATEST(COALESCE(shipping_fee, 0), 35000) ELSE 0 END) as revenue")
+            )
+            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+            ->groupBy('year', 'month')
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get();
+
         return view('agent.dashboard.index', compact(
-            'totalOrders',
-            'assignedOrders',
-            'inTransitOrders',
-            'deliveredOrders',
-            'urgentOrders',
-            'recentOrders'
+            'totalOrders', 'assignedOrders', 'inTransitOrders', 'deliveredOrders',
+            'urgentOrders', 'recentOrders', 'dailyStats', 'monthlyStats',
+            'revenueByMonth', 'totalRevenue', 'revenueThisMonth', 'revenueTable'
         ));
     }
 
