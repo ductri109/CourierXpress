@@ -138,6 +138,14 @@
                             font-medium transition-colors">
                     Liên hệ
                 </a>
+
+                <a href="{{ route('customer.faq') }}"
+                   class="{{ request()->routeIs('faq')
+                            ? 'text-primary-600 font-bold'
+                            : 'text-gray-600 hover:text-primary-600' }}
+                            font-medium transition-colors">
+                    FAQ
+                </a>
             </div>
 
             <div class="hidden md:flex items-center space-x-4">
@@ -301,7 +309,6 @@
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-500 text-sm">© 2026 CourierXpress - Hệ thống quản lý vận đơn trực tuyến.</p>
             <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
-                <a href="{{ route('customer.faq') }}" class="text-secondary hover:text-primary transition-colors duration-200">FAQ</a>
                 <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
                 <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
             </div>
