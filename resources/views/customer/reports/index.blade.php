@@ -3,7 +3,7 @@
 @section('content')
     <div class="max-w-7xl mx-auto px-4 py-8">
 
-        <div class="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl p-8 text-white mb-6">
+        <div class="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl p-8 text-white mb-6 mt-24 sm:mt-20">
             <h1 class="text-3xl font-bold">Báo Cáo Chi Tiết</h1>
             <p class="mt-2 text-red-100">
                 Theo dõi tổng chi phí và các đơn hàng bạn đã tạo
