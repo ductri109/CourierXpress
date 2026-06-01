@@ -1,138 +1,231 @@
 <!DOCTYPE html>
-<html lang="vi" class="light">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light dark">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'media', // Tự động nhận diện Dark Mode
-        }
-    </script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Đơn hàng đã tiếp nhận - CourierXpress</title>
+    <!--[if mso]>
+    <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+    <![endif]-->
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-200 antialiased py-8">
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 
-<div class="max-w-[620px] mx-auto bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+<!-- Wrapper -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;padding:32px 16px;">
+    <tr><td align="center">
 
-    <div class="bg-gradient-to-br from-red-600 to-red-800 pt-10 pb-8 px-10 text-center text-white">
+            <!-- Card -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;">
 
-        <div class="text-center w-full block mb-4">
-            <div class="inline-block w-[64px] h-[64px] bg-white/20 border-2 border-white/40 rounded-full text-center leading-[60px]">
-                <span class="text-[32px] inline-block align-middle">🎉</span>
-            </div>
-        </div>
+                <!-- ── HEADER ── -->
+                <tr>
+                    <td style="background:linear-gradient(135deg,#dc2626 0%,#9f1239 100%);padding:40px 40px 32px;text-align:center;">
+                        <!-- Icon -->
+                        <div style="width:64px;height:64px;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.35);border-radius:50%;margin:0 auto 16px;line-height:64px;font-size:30px;text-align:center;">
+                            📬
+                        </div>
+                        <!-- Brand -->
+                        <div style="font-size:26px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;margin-bottom:4px;">
+                            Courier<span style="color:#fde68a;">Xpress</span>
+                        </div>
+                        <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:20px;letter-spacing:0.5px;">
+                            Hệ thống vận chuyển thông minh 24/7
+                        </div>
+                        <!-- Badge -->
+                        <div style="display:inline-block;background:rgba(0,0,0,0.15);border:1.5px solid rgba(255,255,255,0.2);border-radius:999px;padding:7px 20px;font-size:13px;font-weight:700;color:#ffffff;">
+                            ✅ &nbsp;Đơn hàng đã được tiếp nhận
+                        </div>
+                    </td>
+                </tr>
 
-        <div class="text-[28px] font-black tracking-tight mb-0.5">Courier<span class="text-yellow-300">Xpress</span></div>
-        <div class="text-[12px] text-white/75 mb-5">Hệ thống vận chuyển thông minh 24/7</div>
-        <div class="inline-block bg-black/15 border-[1.5px] border-white/20 rounded-full px-5 py-1.5 text-[13px] font-bold">
-            ✅ &nbsp;Đơn hàng đã được tiếp nhận
-        </div>
-    </div>
+                <!-- ── BODY ── -->
+                <tr>
+                    <td style="padding:36px 40px 0;">
 
-    <div class="p-9">
+                        <!-- Greeting -->
+                        <p style="margin:0 0 6px;font-size:19px;font-weight:800;color:#0f172a;">
+                            Xin chào, {{ $order->sender_name }}!
+                        </p>
+                        <p style="margin:0 0 28px;font-size:13.5px;color:#64748b;line-height:1.7;">
+                            Đơn hàng của bạn đã được <strong style="color:#1e293b;">CourierXpress</strong> tiếp nhận thành công.
+                            Vui lòng lưu lại mã vận đơn bên dưới để theo dõi hành trình gói hàng.
+                        </p>
 
-        <p class="text-[19px] font-extrabold mb-1.5 dark:text-white">Xin chào, {{ $order->sender_name }}!</p>
-        <p class="text-[13.5px] text-slate-500 dark:text-slate-400 mb-7 leading-relaxed">
-            Đơn hàng của bạn đã được <strong class="text-slate-700 dark:text-slate-200">CourierXpress</strong> tiếp nhận thành công. Vui lòng lưu lại mã vận đơn bên dưới để theo dõi hành trình gói hàng.
-        </p>
+                        <!-- Tracking ID box -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(135deg,#fff1f2,#fff5f5);border:2px dashed #fca5a5;border-radius:12px;margin-bottom:28px;">
+                            <tr>
+                                <td style="padding:22px;text-align:center;">
+                                    <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700;color:#ef4444;margin-bottom:6px;">
+                                        Mã vận đơn
+                                    </div>
+                                    <div style="font-size:28px;font-weight:900;color:#b91c1c;letter-spacing:5px;">
+                                        {{ $order->tracking_id }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
 
-        <div class="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950/40 dark:to-rose-950/40 border-2 border-dashed border-red-300 dark:border-red-800 rounded-xl py-5 text-center mb-8">
-            <div class="text-[10px] uppercase tracking-widest font-bold text-red-500 dark:text-red-400 mb-1.5">Mã vận đơn</div>
-            <div class="text-[30px] font-black text-red-700 dark:text-red-500 tracking-[4px]">{{ $order->tracking_id }}</div>
-        </div>
+                        <!-- Section label -->
+                        <p style="margin:0 0 10px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:#94a3b8;">
+                            Tuyến vận chuyển
+                        </p>
 
-        <p class="text-[10px] uppercase tracking-[1.5px] font-bold text-slate-400 mb-3">Tuyến vận chuyển</p>
-        <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-8">
-            <div class="flex items-start gap-3.5">
-                <div class="w-3 h-3 rounded-full mt-1 shrink-0 bg-red-600 ring-[3px] ring-red-200 dark:ring-red-900/50"></div>
-                <div>
-                    <div class="text-[13.5px] font-bold text-slate-900 dark:text-slate-100">{{ $order->sender_name }}</div>
-                    <div class="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">{{ $order->sender_address }}</div>
-                </div>
-            </div>
-            <div class="w-[2px] h-[22px] bg-slate-200 dark:bg-slate-700 ml-[5px] my-1"></div>
-            <div class="flex items-start gap-3.5">
-                <div class="w-3 h-3 rounded-full mt-1 shrink-0 bg-slate-400 dark:bg-slate-500 ring-[3px] ring-slate-200 dark:ring-slate-700"></div>
-                <div>
-                    <div class="text-[13.5px] font-bold text-slate-900 dark:text-slate-100">{{ $order->receiver_name }}</div>
-                    <div class="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">{{ $order->receiver_address }}</div>
-                </div>
-            </div>
-        </div>
+                        <!-- Route -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:28px;">
+                            <tr>
+                                <td style="padding:20px 20px 10px;">
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td style="vertical-align:top;padding-top:3px;padding-right:12px;">
+                                                <div style="width:12px;height:12px;background:#dc2626;border-radius:50%;border:3px solid #fecaca;"></div>
+                                            </td>
+                                            <td>
+                                                <div style="font-size:13.5px;font-weight:700;color:#0f172a;">{{ $order->sender_name }}</div>
+                                                <div style="font-size:12px;color:#64748b;margin-top:2px;">{{ $order->sender_address }}</div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0 20px;">
+                                    <div style="width:2px;height:20px;background:#e2e8f0;margin-left:5px;"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0 20px 20px;">
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td style="vertical-align:top;padding-top:3px;padding-right:12px;">
+                                                <div style="width:12px;height:12px;background:#94a3b8;border-radius:50%;border:3px solid #e2e8f0;"></div>
+                                            </td>
+                                            <td>
+                                                <div style="font-size:13.5px;font-weight:700;color:#0f172a;">{{ $order->receiver_name }}</div>
+                                                <div style="font-size:12px;color:#64748b;margin-top:2px;">{{ $order->receiver_address }}</div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
 
-        <p class="text-[10px] uppercase tracking-[1.5px] font-bold text-slate-400 mb-3">Hóa đơn vận chuyển</p>
-        <table class="w-full text-[13px] mb-8">
-            <thead>
-            <tr>
-                <th class="bg-slate-100 dark:bg-slate-800 text-left px-3 py-2 text-[10px] uppercase tracking-wide text-slate-400 font-bold">Thông tin</th>
-                <th class="bg-slate-100 dark:bg-slate-800 text-right px-3 py-2 text-[10px] uppercase tracking-wide text-slate-400 font-bold">Chi tiết</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300">Mã vận đơn</td>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-right font-bold text-red-600 dark:text-red-500">{{ $order->tracking_id }}</td>
-            </tr>
-            <tr>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300">Ngày tạo đơn</td>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-right font-bold text-slate-900 dark:text-slate-100">{{ $order->created_at->format('H:i — d/m/Y') }}</td>
-            </tr>
-            <tr>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300">Người gửi</td>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-right font-bold text-slate-900 dark:text-slate-100">{{ $order->sender_name }}</td>
-            </tr>
-            <tr>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300">Người nhận</td>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-right font-bold text-slate-900 dark:text-slate-100">{{ $order->receiver_name }}</td>
-            </tr>
-            <tr>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300">Khối lượng hàng</td>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-right font-bold text-slate-900 dark:text-slate-100">{{ $order->total_weight }} kg</td>
-            </tr>
-            <tr>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300">Trạng thái đơn hàng</td>
-                <td class="py-2.5 px-3 border-b border-slate-100 dark:border-slate-800 text-right font-bold text-amber-500">🕐 Đang chờ xử lý</td>
-            </tr>
-            </tbody>
-        </table>
+                        <!-- Section label -->
+                        <p style="margin:0 0 10px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:#94a3b8;">
+                            Thông tin đơn hàng
+                        </p>
 
-        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 mb-8">
-            <div class="flex justify-between text-[13px] text-slate-500 dark:text-slate-400 py-1">
-                <span>Phí cơ bản</span>
-                <span>30.000 ₫</span>
-            </div>
-            <div class="flex justify-between text-[13px] text-slate-500 dark:text-slate-400 py-1">
-                <span>Phí khối lượng ({{ $order->total_weight }} kg × 10.000 ₫)</span>
-                <span>{{ number_format($order->total_weight * 10000, 0, ',', '.') }} ₫</span>
-            </div>
-            <hr class="my-2.5 border-slate-200 dark:border-slate-700">
-            <div class="flex justify-between text-[16px] font-black text-red-600 dark:text-red-500 py-1">
-                <span>Tổng phí vận chuyển</span>
-                <span>{{ number_format($order->shipping_fee, 0, ',', '.') }} ₫</span>
-            </div>
-        </div>
+                        <!-- Invoice table -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+                            <thead>
+                            <tr>
+                                <th style="background:#f1f5f9;text-align:left;padding:9px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;font-weight:700;">Thông tin</th>
+                                <th style="background:#f1f5f9;text-align:right;padding:9px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;font-weight:700;">Chi tiết</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#475569;">Mã vận đơn</td>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:right;font-size:13px;font-weight:700;color:#dc2626;">{{ $order->tracking_id }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#475569;">Ngày tạo đơn</td>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:right;font-size:13px;font-weight:700;color:#0f172a;">{{ $order->created_at->format('H:i — d/m/Y') }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#475569;">Người gửi</td>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:right;font-size:13px;font-weight:700;color:#0f172a;">{{ $order->sender_name }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#475569;">Người nhận</td>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:right;font-size:13px;font-weight:700;color:#0f172a;">{{ $order->receiver_name }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#475569;">Khối lượng hàng</td>
+                                <td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:right;font-size:13px;font-weight:700;color:#0f172a;">{{ $order->total_weight }} kg</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 12px;font-size:13px;color:#475569;">Trạng thái</td>
+                                <td style="padding:10px 12px;text-align:right;font-size:13px;font-weight:700;color:#f59e0b;">🕐 Đang chờ xử lý</td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-        <div class="text-center w-full block mb-8">
-            <a href="{{ config('app.url') }}/tracking?tracking_id={{ $order->tracking_id }}" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-extrabold text-[14px] py-3.5 px-9 rounded-full no-underline shadow-md shadow-yellow-400/20 transition-colors">
-                🔍 &nbsp;Theo dõi đơn hàng ngay
-            </a>
-        </div>
+                        <!-- Fee box -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f8fafc;border-radius:10px;margin-bottom:28px;">
+                            <tr>
+                                <td style="padding:16px 18px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td style="font-size:13px;color:#64748b;padding-bottom:6px;">Phí cơ bản</td>
+                                            <td style="font-size:13px;color:#64748b;text-align:right;padding-bottom:6px;">30.000 ₫</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size:13px;color:#64748b;padding-bottom:10px;">Phí khối lượng ({{ $order->total_weight }} kg × 10.000 ₫)</td>
+                                            <td style="font-size:13px;color:#64748b;text-align:right;padding-bottom:10px;">{{ number_format($order->total_weight * 10000, 0, ',', '.') }} ₫</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top:1px solid #e2e8f0;padding-top:10px;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size:15px;font-weight:900;color:#dc2626;padding-top:4px;">Tổng phí vận chuyển</td>
+                                            <td style="font-size:15px;font-weight:900;color:#dc2626;text-align:right;padding-top:4px;">{{ number_format($order->shipping_fee ?: ($order->total_weight * 10000 + 30000), 0, ',', '.') }} ₫</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
 
-        <p class="text-[12.5px] text-slate-400 dark:text-slate-500 text-center leading-relaxed">
-            Nếu bạn cần hỗ trợ, liên hệ chúng tôi tại <a href="mailto:support@courierxpress.vn" class="text-red-600 dark:text-red-500 no-underline">support@courierxpress.vn</a><br>
-            hoặc ghé trang <a href="{{ config('app.url') }}" class="text-red-600 dark:text-red-500 no-underline">courierxpress.vn</a>
-        </p>
-    </div>
+                        <!-- Notice box -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;margin-bottom:28px;">
+                            <tr>
+                                <td style="padding:14px 16px;">
+                                    <p style="margin:0;font-size:12.5px;color:#92400e;line-height:1.6;">
+                                        <strong>📋 Lưu ý:</strong> Đơn hàng của bạn đang trong hàng đợi và sẽ được nhân viên giao hàng tiếp nhận sớm nhất.
+                                        Bạn sẽ nhận được thông báo khi trạng thái thay đổi.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
 
-    <div class="bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 p-6 text-center">
-        <p class="text-[12px] text-slate-400 dark:text-slate-500 leading-relaxed">
-            © {{ date('Y') }} <strong>CourierXpress</strong>. Tất cả quyền được bảo lưu.<br>
-            Hà Nội, Việt Nam &nbsp;·&nbsp;
-            <a href="{{ config('app.url') }}" class="text-red-600 dark:text-red-500 no-underline">courierxpress.vn</a>
-        </p>
-    </div>
+                        <!-- CTA -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+                            <tr>
+                                <td align="center">
+                                    <a href="{{ config('app.url') }}/tracking?tracking_id={{ $order->tracking_id }}"
+                                       style="display:inline-block;background-color:#eab308;color:#1c1917;font-size:14px;font-weight:800;text-decoration:none;padding:14px 36px;border-radius:999px;">
+                                        🔍 &nbsp;Theo dõi đơn hàng ngay
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
 
-</div>
+                        <!-- Footer note -->
+                        <p style="margin:0 0 36px;font-size:12.5px;color:#94a3b8;text-align:center;line-height:1.7;">
+                            Nếu bạn cần hỗ trợ, liên hệ tại
+                            <a href="mailto:support@courierxpress.vn" style="color:#dc2626;text-decoration:none;">support@courierxpress.vn</a><br>
+                            hoặc ghé trang <a href="{{ config('app.url') }}" style="color:#dc2626;text-decoration:none;">courierxpress.vn</a>
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- ── FOOTER ── -->
+                <tr>
+                    <td style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:22px 40px;text-align:center;">
+                        <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.7;">
+                            © {{ date('Y') }} <strong style="color:#475569;">CourierXpress</strong>. Tất cả quyền được bảo lưu.<br>
+                            Hà Nội, Việt Nam &nbsp;·&nbsp;
+                            <a href="{{ config('app.url') }}" style="color:#dc2626;text-decoration:none;">courierxpress.vn</a>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+            <!-- /Card -->
+
+        </td></tr>
+</table>
+<!-- /Wrapper -->
+
 </body>
 </html>
