@@ -106,8 +106,8 @@ class AdminController extends Controller
 
         // ── Thống kê theo tháng (12 tháng gần nhất) ─────────────────────
         $monthlyStats = Courier::select(
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month'),
+            DB::raw('EXTRACT(YEAR FROM created_at) as year'),
+            DB::raw('EXTRACT(MONTH FROM created_at) as month'),
             DB::raw('COUNT(*) as total'),
             DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered"),
             DB::raw("SUM(CASE WHEN status = 'canceled' OR status = 'cancelled' THEN 1 ELSE 0 END) as cancelled")
@@ -120,8 +120,8 @@ class AdminController extends Controller
 
         // ── Doanh thu theo tháng (delivered × 35,000đ nếu shipping_fee = 0) ──
         $revenueByMonth = Courier::select(
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month'),
+            DB::raw('EXTRACT(YEAR FROM created_at) as year'),
+            DB::raw('EXTRACT(MONTH FROM created_at) as month'),
             DB::raw("SUM(CASE WHEN status = 'delivered' THEN GREATEST(COALESCE(shipping_fee, 0), 35000) ELSE 0 END) as revenue"),
             DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count")
         )
@@ -145,8 +145,8 @@ class AdminController extends Controller
 
         // ── Bảng doanh thu chi tiết từng tháng ──────────────────────────
         $revenueTable = Courier::select(
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month'),
+            DB::raw('EXTRACT(YEAR FROM created_at) as year'),
+            DB::raw('EXTRACT(MONTH FROM created_at) as month'),
             DB::raw('COUNT(*) as total_orders'),
             DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count"),
             DB::raw("SUM(CASE WHEN status = 'canceled' OR status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_count"),
@@ -213,14 +213,11 @@ class AdminController extends Controller
 
         // 🔔 --- ĐOẠN CODE TÍCH HỢP FCM GỬI THÔNG BÁO CHO KHÁCH HÀNG ---
         try {
-            // Tìm khách hàng sở hữu đơn hàng này thông qua mối quan hệ lưu ở bảng Courier
             $customer = Customer::find($order->customer_id);
 
-            // Kiểm tra nếu khách hàng tồn tại và đã cấp quyền nhận thông báo (có fcm_token)
             if ($customer && $customer->fcm_token) {
                 $messaging = app('firebase.messaging');
 
-                // Thiết lập nội dung thông báo kèm mã vận đơn của chính đơn hàng đó
                 $notification = Notification::create(
                     'Đơn hàng của bạn đã được gán tài xế! 📦',
                     'Vận đơn ' . $order->tracking_id . ' đang được chuẩn bị bởi shipper ' . $agent->FullName . '.'
@@ -229,11 +226,9 @@ class AdminController extends Controller
                 $message = CloudMessage::withTarget('token', $customer->fcm_token)
                     ->withNotification($notification);
 
-                // Thực hiện lệnh gửi qua Firebase API v1
                 $messaging->send($message);
             }
         } catch (\Exception $e) {
-            // Ghi log lại nếu lỗi hệ thống mạng/Firebase xảy ra để không làm gián đoạn tiến trình gán của Admin
             \Log::error('Lỗi gửi thông báo FCM CourierXpress: ' . $e->getMessage());
         }
         // --- KẾT THÚC ĐOẠN CODE FCM ---
@@ -433,7 +428,6 @@ class AdminController extends Controller
     // CUSTOMERS
     // ================================================================
 
-//    public function customerOverview($id)   { return view('admin.customers.overview',      ['customerId' => $id]); }
     public function customerSecurity($id)   { return view('admin.customers.index',      ['customerId' => $id]); }
     public function customerBilling($id)    { return view('admin.customers.billing',       ['customerId' => $id]); }
     public function customerNotifications($id) { return view('admin.customers.notifications', ['customerId' => $id]); }
@@ -494,7 +488,6 @@ class AdminController extends Controller
     {
         $query = \App\Models\Customer::query();
 
-        // 1. Tìm kiếm theo full_name, email, phone
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where('full_name', 'like', "%{$search}%")
@@ -504,25 +497,18 @@ class AdminController extends Controller
 
         $customers = $query->orderBy('created_at', 'desc')->get();
 
-        // 2. XỬ LÝ LỖI Ở ĐÂY: Tạm thời gán số đơn hàng = 0 để web chạy được
         foreach ($customers as $customer) {
             $customer->total_orders = 0;
-
-            // Khi nào bảng Order của bạn hoàn thiện, hãy mở comment dòng dưới đây:
             // $customer->total_orders = \App\Models\Order::where('customer_id', $customer->id)->count();
         }
 
-        // 3. Thống kê thẻ KPI
         $totalCustomers = \App\Models\Customer::count();
         $newCustomers = \App\Models\Customer::whereMonth('created_at', date('m'))
             ->whereYear('created_at', date('Y'))
             ->count();
 
         $activeCustomers = $totalCustomers;
-
-        // Tạm gán tổng đơn = 0
         $totalOrders = 0;
-        // $totalOrders = \App\Models\Order::count();
 
         return view('admin.customers.index', compact(
             'customers',
@@ -532,18 +518,12 @@ class AdminController extends Controller
             'totalOrders'
         ));
     }
+
     public function customerOverview($id)
     {
-        // 1. Lấy thông tin khách hàng (Cái này vẫn giữ nguyên vì bạn đã có bảng Customer)
         $customer = \App\Models\Customer::findOrFail($id);
-
-        // 2. TẠM ẨN: Dòng gây lỗi vì chưa có Model Order
-        // $orders = \App\Models\Order::where('customer_id', $id)->orderBy('created_at', 'desc')->get();
-
-        // Thay bằng một danh sách rỗng (Collection trống) để giao diện không bị sập
         $orders = collect([]);
 
-        // 3. Tạm gán các thống kê = 0
         $totalOrders = 0;
         $pendingOrders = 0;
         $inTransitOrders = 0;

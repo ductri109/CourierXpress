@@ -42,6 +42,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // Thêm đoạn này vào
+        'api' => [
+            'driver' => 'token', // Hoặc 'sanctum' nếu bạn dùng Laravel Sanctum
+            'provider' => 'users',
+            'hash' => false,
+        ],
         'customer' => [
             'driver' => 'session',
             'provider' => 'customers',
