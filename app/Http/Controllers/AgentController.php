@@ -109,8 +109,8 @@ class AgentController extends Controller
         // ── Thống kê theo tháng (12 tháng) ──────────────────────────────
         $monthlyStats = Courier::where('agent_id', $agentId)
             ->select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('MONTH(created_at) as month'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as year'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as month'),
                 DB::raw('COUNT(*) as total'),
                 DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered"),
                 DB::raw("SUM(CASE WHEN status = 'canceled' OR status = 'cancelled' THEN 1 ELSE 0 END) as cancelled")
@@ -124,8 +124,8 @@ class AgentController extends Controller
         // ── Doanh thu theo tháng ─────────────────────────────────────────
         $revenueByMonth = Courier::where('agent_id', $agentId)
             ->select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('MONTH(created_at) as month'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as year'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as month'),
                 DB::raw("SUM(CASE WHEN status = 'delivered' THEN GREATEST(COALESCE(shipping_fee, 0), 35000) ELSE 0 END) as revenue"),
                 DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count")
             )
@@ -152,8 +152,8 @@ class AgentController extends Controller
         // ── Bảng doanh thu chi tiết ──────────────────────────────────────
         $revenueTable = Courier::where('agent_id', $agentId)
             ->select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('MONTH(created_at) as month'),
+                DB::raw('EXTRACT(YEAR FROM created_at) as year'),
+                DB::raw('EXTRACT(MONTH FROM created_at) as month'),
                 DB::raw('COUNT(*) as total_orders'),
                 DB::raw("SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count"),
                 DB::raw("SUM(CASE WHEN status = 'canceled' OR status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_count"),
