@@ -298,3 +298,17 @@ Route::get('/run-seeder', function () {
         return "Lỗi khi chạy Seeder: " . $e->getMessage();
     }
 });
+
+Route::get('/fresh-migrate', function () {
+    try {
+        // 1. Xóa sạch mọi thứ và chạy lại toàn bộ migration mới nhất
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
+        
+        // 2. Chạy lại seeder để nạp tài khoản admin
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        
+        return "Tuyệt vời! Đã xóa sạch cấu trúc cũ và tạo lại Database mới hoàn chỉnh có đủ các cột!";
+    } catch (\Exception $e) {
+        return "Lỗi: " . $e->getMessage();
+    }
+});
