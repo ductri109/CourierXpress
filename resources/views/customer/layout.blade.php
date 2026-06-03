@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CourierXpress - Trang Chủ</title>
+    <title>CourierXpress - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,7 +37,6 @@
         .gradient-bg {
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #7f1d1d 100%);
         }
-        /* Thêm hiệu ứng cho các icon box */
         .icon-box {
             background: rgba(220, 38, 38, 0.05);
             border: 1px solid rgba(220, 38, 38, 0.1);
@@ -104,7 +103,7 @@
                             ? 'text-primary-600 font-bold'
                             : 'text-gray-600 hover:text-primary-600' }}
                             font-medium transition-colors">
-                    Trang chủ
+                    Home
                 </a>
 
                 <a href="{{ route('tracking') }}"
@@ -112,7 +111,7 @@
                             ? 'text-primary-600 font-bold'
                             : 'text-gray-600 hover:text-primary-600' }}
                             font-medium transition-colors">
-                    Tra cứu
+                    Tracking
                 </a>
 
                 <a href="{{ route('about') }}"
@@ -120,7 +119,7 @@
                             ? 'text-primary-600 font-bold'
                             : 'text-gray-600 hover:text-primary-600' }}
                             font-medium transition-colors">
-                    Về chúng tôi
+                    About Us
                 </a>
 
                 <a href="{{ route('services') }}"
@@ -128,7 +127,7 @@
                             ? 'text-primary-600 font-bold'
                             : 'text-gray-600 hover:text-primary-600' }}
                             font-medium transition-colors">
-                    Dịch vụ
+                    Services
                 </a>
 
                 <a href="{{ route('contact') }}"
@@ -136,7 +135,7 @@
                             ? 'text-primary-600 font-bold'
                             : 'text-gray-600 hover:text-primary-600' }}
                             font-medium transition-colors">
-                    Liên hệ
+                    Contact
                 </a>
 
                 <a href="{{ route('customer.faq') }}"
@@ -169,29 +168,27 @@
 
                         <div class="absolute right-0 w-56 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-right group-hover:translate-y-0 translate-y-2">
                             <div class="px-4 py-3 border-b border-gray-50 mb-1">
-                                <p class="text-xs text-gray-500">Tài khoản của bạn</p>
-                                {{-- ĐÃ ĐỔI TỪ EMAIL SANG TRƯỜNG PHONE CỦA USER --}}
-                                <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->phone ?? 'Chưa có SĐT' }}</p>
+                                <p class="text-xs text-gray-500">Your Account</p>
+                                <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::guard('customer')->user()->phone ?? 'No Phone Number' }}</p>
                             </div>
 
-                            <form method="GET" action="{{ route('customer.profile.index')  }}">
+                            <form method="GET" action="{{ route('customer.profile.index') }}">
                                 @csrf
-                                <button type="submit" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                                <button type="submit" class="w-full text-left flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                                     <i data-lucide="user" class="w-4 h-4"></i>
-                                    <span class="font-medium">Hồ sơ của tôi</span>
+                                    <span class="font-medium">My Profile</span>
                                 </button>
                             </form>
 
-
                             <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
                                 <i data-lucide="package" class="w-4 h-4"></i>
-                                <span class="font-medium">Đơn hàng của tôi</span>
+                                <span class="font-medium">My Orders</span>
                             </a>
 
                             <a href="{{ route('customer.reports') }}"
                                class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors">
                                 <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                                <span class="font-medium">Báo cáo chi tiết</span>
+                                <span class="font-medium">Detailed Report</span>
                             </a>
                             <div class="h-px bg-gray-100 my-1 mx-2"></div>
 
@@ -199,14 +196,14 @@
                                 @csrf
                                 <button type="submit" class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors font-semibold">
                                     <i data-lucide="log-out" class="w-4 h-4"></i>
-                                    <span>Đăng xuất</span>
+                                    <span>Log Out</span>
                                 </button>
                             </form>
                         </div>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-all shadow-md">
-                        <span>Đăng Nhập</span>
+                        <span>Log In</span>
                     </a>
                 @endauth
             </div>
@@ -215,23 +212,28 @@
                 <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
             </button>
         </div>
-
-        <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobileMenuBtn">
-            <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-        </button>
-    </div>
     </div>
 
     <div class="md:hidden hidden bg-white border-t" id="mobileMenu">
         <div class="px-4 py-4 space-y-3">
-            <a href="#features" class="block py-2 text-gray-600 hover:text-primary-600">Tính năng</a>
-            <a href="#tracking" class="block py-2 text-gray-600 hover:text-primary-600">Tra cứu</a>
-            <a href="#pricing" class="block py-2 text-gray-600 hover:text-primary-600">Bảng giá</a>
-            <a href="#testimonials" class="block py-2 text-gray-600 hover:text-primary-600">Đánh giá</a>
-            <a href="{{ route('login') }}" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold mt-2 flex justify-center items-center space-x-2">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
-                <span>Đăng Xuất</span>
-            </a>
+            <a href="#features" class="block py-2 text-gray-600 hover:text-primary-600">Features</a>
+            <a href="#tracking" class="block py-2 text-gray-600 hover:text-primary-600">Tracking</a>
+            <a href="#pricing" class="block py-2 text-gray-600 hover:text-primary-600">Pricing</a>
+            <a href="#testimonials" class="block py-2 text-gray-600 hover:text-primary-600">Reviews</a>
+            @auth('customer')
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold mt-2 flex justify-center items-center space-x-2">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span>Log Out</span>
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold mt-2 flex justify-center items-center space-x-2">
+                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                    <span>Log In</span>
+                </a>
+            @endauth
         </div>
     </div>
 </nav>
@@ -253,7 +255,7 @@
                         <p class="text-xs text-primary-400">LOGISTICS</p>
                     </div>
                 </div>
-                <p class="text-gray-400 mb-6">Giải pháp logistics toàn diện. Quản lý vận đơn, tra cứu lộ trình dễ dàng hơn bao giờ hết.</p>
+                <p class="text-gray-400 mb-6">Comprehensive logistics solutions. Managing waybills and tracking cargo journeys has never been easier.</p>
                 <div class="flex space-x-4">
                     <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors">
                         <i data-lucide="facebook" class="w-5 h-5"></i>
@@ -268,27 +270,27 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-lg mb-6">Dịch vụ</h4>
+                <h4 class="font-bold text-lg mb-6">Services</h4>
                 <ul class="space-y-3 text-gray-400">
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Giao hàng tiêu chuẩn</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Giao hàng hỏa tốc</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Kho bãi & Fulfillment</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Tích hợp API</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Standard Delivery</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Express Delivery</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Warehousing & Fulfillment</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">API Integration</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-bold text-lg mb-6">Hỗ trợ khách hàng</h4>
+                <h4 class="font-bold text-lg mb-6">Customer Support</h4>
                 <ul class="space-y-3 text-gray-400">
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Trung tâm trợ giúp</a></li>
-                    <li><a href="#tracking" class="hover:text-primary-400 transition-colors">Tra cứu bưu gửi</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Quy định khiếu nại</a></li>
-                    <li><a href="#" class="hover:text-primary-400 transition-colors">Bảng giá cước</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Help Center</a></li>
+                    <li><a href="#tracking" class="hover:text-primary-400 transition-colors">Track Shipment</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Claim Regulations</a></li>
+                    <li><a href="#" class="hover:text-primary-400 transition-colors">Tariff Rates</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-bold text-lg mb-6">Liên hệ</h4>
+                <h4 class="font-bold text-lg mb-6">Contact</h4>
                 <ul class="space-y-3 text-gray-400">
                     <li class="flex items-center space-x-3">
                         <i data-lucide="phone" class="w-5 h-5 text-primary-400"></i>
@@ -300,17 +302,17 @@
                     </li>
                     <li class="flex items-start space-x-3">
                         <i data-lucide="map-pin" class="w-5 h-5 text-primary-400 shrink-0 mt-0.5"></i>
-                        <span>13 Phan Tây Nhạc, Xuân Phương, Hà Nội</span>
+                        <span>13 Phan Tay Nhac, Xuan Phuong, Hanoi</span>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-500 text-sm">© 2026 CourierXpress - Hệ thống quản lý vận đơn trực tuyến.</p>
+            <p class="text-gray-500 text-sm">© 2026 CourierXpress - Online Waybill Management System.</p>
             <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500">
-                <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Điều khoản dịch vụ</a>
-                <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Chính sách bảo mật</a>
+                <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="{{ route('policy') }}" class="hover:text-white transition-colors">Privacy Policy</a>
             </div>
         </div>
     </div>
@@ -318,10 +320,8 @@
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
-    // Initialize Lucide icons
     lucide.createIcons();
 
-    // Mobile menu toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
 
@@ -329,7 +329,6 @@
         mobileMenu.classList.toggle('hidden');
     });
 
-    // Navbar scroll effect
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
@@ -339,7 +338,6 @@
         }
     });
 
-    // Scroll reveal animation
     const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
 
     const revealOnScroll = () => {
@@ -354,9 +352,8 @@
     };
 
     window.addEventListener('scroll', revealOnScroll);
-    revealOnScroll(); // Initial check
+    revealOnScroll();
 
-    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -366,7 +363,6 @@
                     behavior: 'smooth',
                     block: 'start'
                 });
-                // Close mobile menu if open
                 mobileMenu.classList.add('hidden');
             }
         });
@@ -388,20 +384,14 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
-    // Chỉ kích hoạt xin quyền thông báo khi khách hàng đã đăng nhập vào hệ thống
     @if(auth('customer')->check())
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/firebase-messaging-sw.js')
             .then((registration) => {
-
-                // Giao diện trình duyệt sẽ tự động hiện thông báo hỏi "Cho phép nhận thông báo?"
                 Notification.requestPermission().then((permission) => {
                     if (permission === 'granted') {
-
-                        // Nếu khách bấm cho phép, tiến hành lấy token mã hóa thiết bị
                         messaging.getToken({ serviceWorkerRegistration: registration }).then((currentToken) => {
                             if (currentToken) {
-                                // Đẩy token này lên backend Laravel qua Fetch API ngầm
                                 fetch("{{ route('customer.updateFcmToken') }}", {
                                     method: "POST",
                                     headers: {
@@ -411,8 +401,8 @@
                                     body: JSON.stringify({ token: currentToken })
                                 })
                                     .then(response => response.json())
-                                    .then(data => console.log('Đã đồng bộ Token thiết bị với DB:', data))
-                                    .catch(err => console.error('Lỗi đẩy token lên server:', err));
+                                    .then(data => console.log('Device token synchronized with DB:', data))
+                                    .catch(err => console.error('Error pushing token to server:', err));
                             }
                         });
                     }
@@ -421,7 +411,6 @@
     }
     @endif
 
-    // Bắt sự kiện hiển thị thông báo trực tiếp (dạng Alert nổi) nếu khách hàng đang mở tab web xem đơn hàng
     messaging.onMessage((payload) => {
         alert(`${payload.notification.title}\n\n${payload.notification.body}`);
     });

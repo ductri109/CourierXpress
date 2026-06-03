@@ -1,10 +1,10 @@
 @extends('admin.layout')
 
-@section('title', 'Quản lý Khách hàng')
+@section('title', 'Customer Management')
 
 @section('content')
 
-    {{-- Xử lý phân trang trực tiếp trên View (Không cần sửa Controller) --}}
+    {{-- Handle pagination directly in View (No controller changes needed) --}}
     @php
         use Illuminate\Pagination\LengthAwarePaginator;
         use Illuminate\Pagination\Paginator;
@@ -31,11 +31,11 @@
 
         <div class="d-flex justify-content-between align-items-center mb-6">
             <div>
-                <h4 class="mb-1">Quản lý Khách hàng</h4>
-                <p class="mb-0 text-muted">Danh sách khách hàng sử dụng dịch vụ.</p>
+                <h4 class="mb-1">Customer Management</h4>
+                <p class="mb-0 text-muted">List of customers using the service.</p>
             </div>
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddCustomer">
-                <i class="ri-user-add-line me-1"></i> Thêm Khách hàng
+                <i class="ri-user-add-line me-1"></i> Add Customer
             </button>
         </div>
 
@@ -59,11 +59,11 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Tổng Khách hàng</p>
+                                <p class="text-heading mb-1">Total Customers</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $totalCustomers ?? 0 }}</h4>
                                 </div>
-                                <small class="text-muted">Đã đăng ký</small>
+                                <small class="text-muted">Registered</small>
                             </div>
                             <div class="avatar">
                                 <div class="avatar-initial bg-label-primary rounded">
@@ -80,12 +80,12 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Khách hàng mới</p>
+                                <p class="text-heading mb-1">New Customers</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $newCustomers ?? 0 }}</h4>
-                                    <p class="text-success mb-1 small">Tháng này</p>
+                                    <p class="text-success mb-1 small">This month</p>
                                 </div>
-                                <small class="text-muted">Tăng trưởng</small>
+                                <small class="text-muted">Growth</small>
                             </div>
                             <div class="avatar">
                                 <div class="avatar-initial bg-label-success rounded">
@@ -102,11 +102,11 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Đang hoạt động</p>
+                                <p class="text-heading mb-1">Active</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $activeCustomers ?? 0 }}</h4>
                                 </div>
-                                <small class="text-muted">Tất cả tài khoản</small>
+                                <small class="text-muted">All accounts</small>
                             </div>
                             <div class="avatar">
                                 <div class="avatar-initial bg-label-warning rounded">
@@ -123,11 +123,11 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Tổng Đơn Hệ Thống</p>
+                                <p class="text-heading mb-1">Total Orders</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $totalOrders ?? 0 }}</h4>
                                 </div>
-                                <small class="text-muted">Toàn hệ thống</small>
+                                <small class="text-muted">System-wide</small>
                             </div>
                             <div class="avatar">
                                 <div class="avatar-initial bg-label-info rounded">
@@ -144,11 +144,11 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center gap-3 flex-wrap">
                 <div>
-                    <h5 class="card-title mb-1">Danh sách Khách hàng</h5>
-                    <small class="text-muted">Tổng: {{ isset($customers) && method_exists($customers, 'total') ? $customers->total() : (isset($customers) ? $customers->count() : 0) }} khách hàng</small>
+                    <h5 class="card-title mb-1">Customer List</h5>
+                    <small class="text-muted">Total: {{ isset($customers) && method_exists($customers, 'total') ? $customers->total() : (isset($customers) ? $customers->count() : 0) }} customers</small>
                 </div>
                 <form method="GET" action="{{ route('admin.customers.index') }}" class="d-flex gap-2">
-                    <input type="text" name="search" class="form-control" placeholder="Tìm tên, email, SĐT..." value="{{ request('search') }}" style="min-width:220px">
+                    <input type="text" name="search" class="form-control" placeholder="Search name, email, phone..." value="{{ request('search') }}" style="min-width:220px">
                     <button class="btn btn-outline-primary" type="submit"><i class="ri-search-line"></i></button>
                     @if(request()->has('search'))
                         <a href="{{ route('admin.customers.index') }}" class="btn btn-outline-secondary">Reset</a>
@@ -160,11 +160,11 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Khách hàng</th>
-                        <th>Liên hệ</th>
-                        <th class="text-center">Ngày tham gia</th>
-                        <th class="text-center">Trạng thái</th>
-                        <th class="text-end">Thao tác</th>
+                        <th>Customer</th>
+                        <th>Contact</th>
+                        <th class="text-center">Joined Date</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -192,7 +192,7 @@
                                     {{ $customer->created_at ? $customer->created_at->format('d/m/Y') : 'N/A' }}
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-label-success rounded-pill">Hoạt động</span>
+                                    <span class="badge bg-label-success rounded-pill">Active</span>
                                 </td>
 
                                 <td class="text-end">
@@ -202,19 +202,19 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a class="dropdown-item" href="{{ route('admin.customers.overview', $customer->id) }}">
-                                                <i class="ri-eye-line me-2"></i> Xem chi tiết
+                                                <i class="ri-eye-line me-2"></i> View Details
                                             </a>
                                             <button class="dropdown-item" type="button"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#editCustomer{{ $customer->id }}">
-                                                <i class="ri-pencil-line me-2"></i> Chỉnh sửa
+                                                <i class="ri-pencil-line me-2"></i> Edit
                                             </button>
                                             <div class="dropdown-divider"></div>
                                             <form action="#" method="POST"
-                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">
+                                                  onsubmit="return confirm('Are you sure you want to delete this customer?')">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="ri-delete-bin-6-line me-2"></i> Xóa khách hàng
+                                                    <i class="ri-delete-bin-6-line me-2"></i> Delete Customer
                                                 </button>
                                             </form>
                                         </div>
@@ -222,20 +222,20 @@
                                 </td>
                             </tr>
 
-                            {{-- Modal sửa khách hàng --}}
+                            {{-- Edit Customer Modal --}}
                             <div class="modal fade" id="editCustomer{{ $customer->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <form action="#" method="POST">
                                             @csrf @method('PUT')
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Sửa Khách hàng — {{ $customer->full_name }}</h5>
+                                                <h5 class="modal-title">Edit Customer — {{ $customer->full_name }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="form-floating form-floating-outline mb-4">
                                                     <input type="text" name="full_name" class="form-control" value="{{ $customer->full_name }}" required>
-                                                    <label>Họ tên</label>
+                                                    <label>Full Name</label>
                                                 </div>
                                                 <div class="form-floating form-floating-outline mb-4">
                                                     <input type="email" name="email" class="form-control" value="{{ $customer->email }}" required>
@@ -243,16 +243,16 @@
                                                 </div>
                                                 <div class="form-floating form-floating-outline mb-4">
                                                     <input type="text" name="phone" class="form-control" value="{{ $customer->phone }}" required>
-                                                    <label>Số điện thoại</label>
+                                                    <label>Phone Number</label>
                                                 </div>
                                                 <div class="form-floating form-floating-outline mb-4">
                                                     <input type="text" name="address" class="form-control" value="{{ $customer->address }}">
-                                                    <label>Địa chỉ</label>
+                                                    <label>Address</label>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </form>
                                     </div>
@@ -263,7 +263,7 @@
                         <tr>
                             <td colspan="6" class="text-center text-muted py-6">
                                 <i class="ri-user-line ri-48px d-block mb-2 text-muted opacity-50"></i>
-                                Chưa có khách hàng nào. <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddCustomer">Thêm ngay</a>
+                                No customers found. <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddCustomer">Add one now</a>
                             </td>
                         </tr>
                     @endif
@@ -271,7 +271,7 @@
                 </table>
             </div>
 
-            {{-- Thanh Phân Trang --}}
+            {{-- Pagination --}}
             @if(isset($customers) && method_exists($customers, 'hasPages') && $customers->hasPages())
                 <div class="card-footer border-top px-4 py-3">
                     {{ $customers->appends(request()->query())->links('pagination::bootstrap-5') }}
@@ -281,37 +281,37 @@
 
     </div>
 
-    {{-- ===== OFFCANVAS THÊM KHÁCH HÀNG ===== --}}
+    {{-- ===== ADD CUSTOMER OFFCANVAS ===== --}}
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddCustomer" aria-labelledby="offcanvasAddCustomerLabel">
         <div class="offcanvas-header border-bottom">
-            <h5 id="offcanvasAddCustomerLabel" class="offcanvas-title">Thêm Khách hàng mới</h5>
+            <h5 id="offcanvasAddCustomerLabel" class="offcanvas-title">Add New Customer</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0">
             <form action="#" method="POST">
                 @csrf
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="text" class="form-control" name="full_name" placeholder="Nguyễn Văn B" required>
-                    <label>Họ tên *</label>
+                    <input type="text" class="form-control" name="full_name" placeholder="John Doe" required>
+                    <label>Full Name *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="email" class="form-control" name="email" placeholder="khachhang@example.com" required>
+                    <input type="email" class="form-control" name="email" placeholder="customer@example.com" required>
                     <label>Email *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
                     <input type="text" class="form-control" name="phone" placeholder="0981 234 567" required>
-                    <label>Số điện thoại *</label>
+                    <label>Phone Number *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="text" class="form-control" name="address" placeholder="123 Đường ABC, Quận X">
-                    <label>Địa chỉ</label>
+                    <input type="text" class="form-control" name="address" placeholder="123 Street, District X">
+                    <label>Address</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="password" class="form-control" name="password" placeholder="Mật khẩu" required minlength="6">
-                    <label>Mật khẩu (tối thiểu 6 ký tự) *</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" required minlength="6">
+                    <label>Password (min 6 chars) *</label>
                 </div>
-                <button type="submit" class="btn btn-primary me-3">Lưu Khách hàng</button>
-                <button type="reset" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Huỷ</button>
+                <button type="submit" class="btn btn-primary me-3">Save Customer</button>
+                <button type="reset" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Cancel</button>
             </form>
         </div>
     </div>

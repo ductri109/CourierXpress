@@ -1,4 +1,4 @@
-@extends('customer.layout') {{-- Chuẩn cấu trúc file layout.blade.php của bạn --}}
+@extends('customer.layout') {{-- Matching your file layout.blade.php structure --}}
 
 @section('content')
     <div class="bg-gray-50 min-h-screen pt-32 pb-12">
@@ -6,10 +6,10 @@
 
             <div class="text-center mb-12">
                 <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                    Các câu hỏi thường gặp (<span class="text-red-600">FAQ</span>)
+                    Frequently Asked Questions (<span class="text-red-600">FAQ</span>)
                 </h1>
                 <p class="mt-4 text-lg text-gray-500">
-                    CourierXpress luôn sẵn sàng giải đáp những thắc mắc của bạn về dịch vụ vận chuyển và quản lý vận đơn.
+                    CourierXpress is always ready to answer your questions regarding shipping services and waybill management.
                 </p>
             </div>
 
@@ -17,7 +17,7 @@
                 @forelse($faqs as $category => $items)
                     <div>
                         <h2 class="text-xl font-bold text-gray-800 mb-4 border-l-4 border-red-600 pl-3">
-                            Danh mục: {{ $category }}
+                            Category: {{ $category }}
                         </h2>
 
                         <div class="space-y-4">
@@ -45,7 +45,7 @@
                     </div>
                 @empty
                     <div class="text-center py-12 bg-white rounded-lg shadow">
-                        <p class="text-gray-500 text-lg">Hiện tại chưa có câu hỏi thường gặp nào.</p>
+                        <p class="text-gray-500 text-lg">Currently, there are no frequently asked questions available.</p>
                     </div>
                 @endforelse
             </div>

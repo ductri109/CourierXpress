@@ -1,10 +1,10 @@
 @extends('admin.layout')
 
-@section('title', 'Quản lý Agent')
+@section('title', 'Agent Management')
 
 @section('content')
 
-    {{-- Xử lý phân trang trực tiếp trên View (Không cần sửa Controller) --}}
+    {{-- Handle pagination directly in View --}}
     @php
         use Illuminate\Pagination\LengthAwarePaginator;
         use Illuminate\Pagination\Paginator;
@@ -29,11 +29,11 @@
 
         <div class="d-flex justify-content-between align-items-center mb-6">
             <div>
-                <h4 class="mb-1">Quản lý Agent</h4>
-                <p class="mb-0 text-muted">Danh sách đại lý giao hàng — dữ liệu thật từ database.</p>
+                <h4 class="mb-1">Agent Management</h4>
+                <p class="mb-0 text-muted">Delivery agent list — real data from database.</p>
             </div>
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddAgent">
-                <i class="ri-user-add-line me-1"></i> Thêm Agent
+                <i class="ri-user-add-line me-1"></i> Add Agent
             </button>
         </div>
 
@@ -49,19 +49,19 @@
                 <div class="d-flex align-items-start gap-3">
                     <i class="ri-key-2-line ri-24px mt-1 text-info"></i>
                     <div>
-                        <h6 class="mb-1 fw-bold">Thông tin đăng nhập của Agent mới</h6>
-                        <p class="mb-1 small">Hãy ghi lại và gửi cho agent trước khi đóng thông báo này.</p>
+                        <h6 class="mb-1 fw-bold">New Agent Login Credentials</h6>
+                        <p class="mb-1 small">Please save and send these to the agent before closing this notification.</p>
                         <div class="d-flex gap-4 mt-2 flex-wrap">
                             <div>
-                                <span class="text-muted small">Tên đăng nhập</span><br>
+                                <span class="text-muted small">Username</span><br>
                                 <code class="fs-6 text-dark fw-bold">{{ $na['username'] }}</code>
                             </div>
                             <div>
-                                <span class="text-muted small">Mật khẩu</span><br>
+                                <span class="text-muted small">Password</span><br>
                                 <code class="fs-6 text-dark fw-bold">{{ $na['password'] }}</code>
                             </div>
                             <div>
-                                <span class="text-muted small">Link đăng nhập</span><br>
+                                <span class="text-muted small">Login Link</span><br>
                                 <a href="{{ route('agent.login') }}" target="_blank" class="small">{{ route('agent.login') }}</a>
                             </div>
                         </div>
@@ -84,11 +84,11 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Tổng Agent</p>
+                                <p class="text-heading mb-1">Total Agents</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $totalAgents }}</h4>
                                 </div>
-                                <small class="text-muted">Đã đăng ký</small>
+                                <small class="text-muted">Registered</small>
                             </div>
                             <div class="avatar">
                                 <div class="avatar-initial bg-label-primary rounded">
@@ -105,10 +105,10 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Đang rảnh</p>
+                                <p class="text-heading mb-1">Available</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $activeAgents }}</h4>
-                                    <p class="text-success mb-1 small">Sẵn sàng nhận đơn</p>
+                                    <p class="text-success mb-1 small">Ready to work</p>
                                 </div>
                                 <small class="text-muted">Status: active</small>
                             </div>
@@ -127,10 +127,10 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Đang bận</p>
+                                <p class="text-heading mb-1">Busy</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $busyAgents }}</h4>
-                                    <p class="text-warning mb-1 small">Đang giao đơn</p>
+                                    <p class="text-warning mb-1 small">Currently delivering</p>
                                 </div>
                                 <small class="text-muted">Status: busy</small>
                             </div>
@@ -149,11 +149,11 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p class="text-heading mb-1">Tổng đơn đã giao</p>
+                                <p class="text-heading mb-1">Total Delivered</p>
                                 <div class="d-flex align-items-center">
                                     <h4 class="mb-1 me-2">{{ $totalDelivered }}</h4>
                                 </div>
-                                <small class="text-muted">Tất cả agent</small>
+                                <small class="text-muted">Across all agents</small>
                             </div>
                             <div class="avatar">
                                 <div class="avatar-initial bg-label-info rounded">
@@ -170,16 +170,16 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center gap-3 flex-wrap">
                 <div>
-                    <h5 class="card-title mb-1">Danh sách Agent</h5>
-                    <small class="text-muted">Tổng: {{ method_exists($agents, 'total') ? $agents->total() : $agents->count() }} agent</small>
+                    <h5 class="card-title mb-1">Agent List</h5>
+                    <small class="text-muted">Total: {{ method_exists($agents, 'total') ? $agents->total() : $agents->count() }} agent(s)</small>
                 </div>
                 <form method="GET" action="{{ route('admin.agents.index') }}" class="d-flex gap-2">
-                    <input type="text" name="search" class="form-control" placeholder="Tìm tên, email, SĐT..." value="{{ request('search') }}" style="min-width:220px">
+                    <input type="text" name="search" class="form-control" placeholder="Search name, email, phone..." value="{{ request('search') }}" style="min-width:220px">
                     <select name="status" class="form-select" style="min-width:130px">
-                        <option value="">Tất cả</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Đang rảnh</option>
-                        <option value="busy" {{ request('status') === 'busy' ? 'selected' : '' }}>Đang bận</option>
-                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Ngưng hoạt động</option>
+                        <option value="">All</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="busy" {{ request('status') === 'busy' ? 'selected' : '' }}>Busy</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
                     <button class="btn btn-outline-primary" type="submit"><i class="ri-search-line"></i></button>
                     @if(request()->hasAny(['search', 'status']))
@@ -193,13 +193,13 @@
                     <thead>
                     <tr>
                         <th>Agent</th>
-                        <th>Liên hệ</th>
-                        <th>Tên đăng nhập</th>
-                        <th class="text-center">Trạng thái</th>
-                        <th class="text-center">Đơn tổng</th>
-                        <th class="text-center">Đã giao</th>
-                        <th class="text-center">Đang giao</th>
-                        <th class="text-end">Thao tác</th>
+                        <th>Contact</th>
+                        <th>Username</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Total Orders</th>
+                        <th class="text-center">Delivered</th>
+                        <th class="text-center">In Transit</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -228,11 +228,11 @@
                             <td class="text-center">
                                 @php $st = strtolower($agent->Status); @endphp
                                 @if($st === 'active')
-                                    <span class="badge bg-label-success rounded-pill">Đang rảnh</span>
+                                    <span class="badge bg-label-success rounded-pill">Active</span>
                                 @elseif($st === 'busy')
-                                    <span class="badge bg-label-warning rounded-pill">Đang bận</span>
+                                    <span class="badge bg-label-warning rounded-pill">Busy</span>
                                 @elseif($st === 'inactive')
-                                    <span class="badge bg-label-danger rounded-pill">Ngưng hoạt động</span>
+                                    <span class="badge bg-label-danger rounded-pill">Inactive</span>
                                 @else
                                     <span class="badge bg-label-secondary rounded-pill">{{ $agent->Status }}</span>
                                 @endif
@@ -247,21 +247,21 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <a class="dropdown-item" href="{{ route('admin.agents.show', $agent->ID) }}">
-                                            <i class="ri-eye-line me-2"></i> Xem chi tiết
+                                            <i class="ri-eye-line me-2"></i> View Details
                                         </a>
                                         <button class="dropdown-item" type="button"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#editAgent{{ $agent->ID }}">
-                                            <i class="ri-pencil-line me-2"></i> Chỉnh sửa
+                                            <i class="ri-pencil-line me-2"></i> Edit
                                         </button>
 
-                                        {{-- Đổi trạng thái nhanh --}}
+                                        {{-- Quick status change --}}
                                         @if($st !== 'active')
                                             <form action="{{ route('admin.agents.status', $agent->ID) }}" method="POST">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="active">
                                                 <button type="submit" class="dropdown-item text-success">
-                                                    <i class="ri-user-follow-line me-2"></i> Đặt thành Rảnh
+                                                    <i class="ri-user-follow-line me-2"></i> Set to Active
                                                 </button>
                                             </form>
                                         @endif
@@ -270,7 +270,7 @@
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="busy">
                                                 <button type="submit" class="dropdown-item text-warning">
-                                                    <i class="ri-truck-line me-2"></i> Đặt thành Bận
+                                                    <i class="ri-truck-line me-2"></i> Set to Busy
                                                 </button>
                                             </form>
                                         @endif
@@ -279,17 +279,17 @@
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="inactive">
                                                 <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="ri-forbid-line me-2"></i> Ngưng hoạt động
+                                                    <i class="ri-forbid-line me-2"></i> Set to Inactive
                                                 </button>
                                             </form>
                                         @endif
 
                                         <div class="dropdown-divider"></div>
                                         <form action="{{ route('admin.agents.destroy', $agent->ID) }}" method="POST"
-                                              onsubmit="return confirm('Xóa agent {{ $agent->FullName }}? Thao tác này không thể hoàn tác!')">
+                                              onsubmit="return confirm('Delete agent {{ $agent->FullName }}? This action cannot be undone!')">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger">
-                                                <i class="ri-delete-bin-6-line me-2"></i> Xóa agent
+                                                <i class="ri-delete-bin-6-line me-2"></i> Delete agent
                                             </button>
                                         </form>
                                     </div>
@@ -297,45 +297,45 @@
                             </td>
                         </tr>
 
-                        {{-- Modal sửa --}}
+                        {{-- Edit Modal --}}
                         <div class="modal fade" id="editAgent{{ $agent->ID }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <form action="{{ route('admin.agents.update', $agent->ID) }}" method="POST">
                                         @csrf @method('PUT')
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Sửa Agent — {{ $agent->FullName }}</h5>
+                                            <h5 class="modal-title">Edit Agent — {{ $agent->FullName }}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-floating form-floating-outline mb-4">
-                                                <input type="text" name="FullName" class="form-control" value="{{ $agent->FullName }}" placeholder="Họ tên" required>
-                                                <label>Họ tên</label>
+                                                <input type="text" name="FullName" class="form-control" value="{{ $agent->FullName }}" placeholder="Full Name" required>
+                                                <label>Full Name</label>
                                             </div>
                                             <div class="form-floating form-floating-outline mb-4">
                                                 <input type="email" name="Email" class="form-control" value="{{ $agent->Email }}" placeholder="Email" required>
                                                 <label>Email</label>
                                             </div>
                                             <div class="form-floating form-floating-outline mb-4">
-                                                <input type="text" name="Phone" class="form-control" value="{{ $agent->Phone }}" placeholder="Số điện thoại" required>
-                                                <label>Số điện thoại</label>
+                                                <input type="text" name="Phone" class="form-control" value="{{ $agent->Phone }}" placeholder="Phone Number" required>
+                                                <label>Phone Number</label>
                                             </div>
                                             <div class="form-floating form-floating-outline mb-4">
                                                 <select name="Status" class="form-select">
-                                                    <option value="active" {{ strtolower($agent->Status) === 'active' ? 'selected' : '' }}>Đang rảnh</option>
-                                                    <option value="busy" {{ strtolower($agent->Status) === 'busy' ? 'selected' : '' }}>Đang bận</option>
-                                                    <option value="inactive" {{ strtolower($agent->Status) === 'inactive' ? 'selected' : '' }}>Ngưng hoạt động</option>
+                                                    <option value="active" {{ strtolower($agent->Status) === 'active' ? 'selected' : '' }}>Active</option>
+                                                    <option value="busy" {{ strtolower($agent->Status) === 'busy' ? 'selected' : '' }}>Busy</option>
+                                                    <option value="inactive" {{ strtolower($agent->Status) === 'inactive' ? 'selected' : '' }}>Inactive</option>
                                                 </select>
-                                                <label>Trạng thái</label>
+                                                <label>Status</label>
                                             </div>
                                             <div class="form-floating form-floating-outline">
-                                                <input type="password" name="new_password" class="form-control" placeholder="Để trống nếu không đổi">
-                                                <label>Mật khẩu mới (để trống = không đổi)</label>
+                                                <input type="password" name="new_password" class="form-control" placeholder="Leave blank to keep current">
+                                                <label>New Password (leave blank to keep current)</label>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
-                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
                                         </div>
                                     </form>
                                 </div>
@@ -346,7 +346,7 @@
                         <tr>
                             <td colspan="8" class="text-center text-muted py-6">
                                 <i class="ri-shield-user-line ri-48px d-block mb-2 text-muted opacity-50"></i>
-                                Chưa có agent nào. <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddAgent">Thêm ngay</a>
+                                No agents found. <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddAgent">Add one now</a>
                             </td>
                         </tr>
                     @endforelse
@@ -354,7 +354,7 @@
                 </table>
             </div>
 
-            {{-- Thanh Phân Trang --}}
+            {{-- Pagination --}}
             @if(method_exists($agents, 'hasPages') && $agents->hasPages())
                 <div class="card-footer border-top px-4 py-3">
                     {{ $agents->appends(request()->query())->links('pagination::bootstrap-5') }}
@@ -364,18 +364,18 @@
 
     </div>
 
-    {{-- ===== OFFCANVAS THÊM AGENT ===== --}}
+    {{-- ===== ADD AGENT OFFCANVAS ===== --}}
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddAgent" aria-labelledby="offcanvasAddAgentLabel">
         <div class="offcanvas-header border-bottom">
-            <h5 id="offcanvasAddAgentLabel" class="offcanvas-title">Thêm Agent mới</h5>
+            <h5 id="offcanvasAddAgentLabel" class="offcanvas-title">Add New Agent</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0">
             <form action="{{ route('admin.agents.store') }}" method="POST">
                 @csrf
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="text" class="form-control" name="FullName" placeholder="Nguyễn Văn A" required>
-                    <label>Họ tên *</label>
+                    <input type="text" class="form-control" name="FullName" placeholder="Nguyen Van A" required>
+                    <label>Full Name *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
                     <input type="email" class="form-control" name="Email" placeholder="agent@example.com" required>
@@ -383,22 +383,22 @@
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
                     <input type="text" class="form-control" name="Phone" placeholder="0981 234 567" required>
-                    <label>Số điện thoại *</label>
+                    <label>Phone Number *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
                     <input type="text" class="form-control" name="Username" placeholder="agent_username" required>
-                    <label>Tên đăng nhập *</label>
+                    <label>Username *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="password" class="form-control" name="password" placeholder="Mật khẩu" required minlength="6">
-                    <label>Mật khẩu (tối thiểu 6 ký tự) *</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" required minlength="6">
+                    <label>Password (min 6 characters) *</label>
                 </div>
                 <div class="form-floating form-floating-outline mb-5">
-                    <input type="password" class="form-control" name="password_confirmation" placeholder="Xác nhận mật khẩu" required>
-                    <label>Xác nhận mật khẩu *</label>
+                    <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password" required>
+                    <label>Confirm Password *</label>
                 </div>
-                <button type="submit" class="btn btn-primary me-3">Lưu Agent</button>
-                <button type="reset" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Huỷ</button>
+                <button type="submit" class="btn btn-primary me-3">Save Agent</button>
+                <button type="reset" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">Cancel</button>
             </form>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,9 +45,9 @@
             {{-- Nav --}}
             <div class="p-4 space-y-6">
 
-                {{-- Tổng quan --}}
+                {{-- Overview --}}
                 <div>
-                    <span class="px-3 text-[0.7rem] font-bold text-gray-400 uppercase tracking-wider block mb-2">Tổng quan</span>
+                    <span class="px-3 text-[0.7rem] font-bold text-gray-400 uppercase tracking-wider block mb-2">Overview</span>
                     <a href="{{ route('agent.dashboard') }}"
                        class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all
                               {{ request()->routeIs('agent.dashboard') ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -56,22 +56,23 @@
                     </a>
                 </div>
 
-                {{-- Quản lý bưu cục --}}
+                {{-- Branch Management --}}
                 <div>
-                    <span class="px-3 text-[0.7rem] font-bold text-gray-400 uppercase tracking-wider block mb-2">Quản lý bưu cục</span>
+                    <span class="px-3 text-[0.7rem] font-bold text-gray-400 uppercase tracking-wider block mb-2">Branch Management</span>
                     <div class="space-y-1">
                         <a href="{{ route('agent.orders.index') }}"
                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all
                                   {{ request()->is('agent/orders*') ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                             <i data-lucide="file-text" class="w-4 h-4"></i>
-                            <span>Quản Lý Đơn Hàng </span>
+                            <span>Order Management</span>
                         </a>
-                        {{-- Khách Hàng --}}
+
+                        {{-- Customers --}}
                         <a href="{{ route('agent.customers.index') }}"
                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all
                                   {{ request()->is('agent/customers*') ? 'bg-primary-50 text-primary-600 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                             <i data-lucide="users" class="w-4 h-4"></i>
-                            <span>Quản Lý Khách Hàng</span>
+                            <span>Customer Management</span>
                         </a>
                     </div>
                 </div>
@@ -98,7 +99,7 @@
                 @csrf
                 <button type="submit" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl font-semibold text-sm text-red-600 hover:bg-red-50 transition-all">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
-                    <span>Đăng xuất</span>
+                    <span>Logout</span>
                 </button>
             </form>
         </div>
@@ -114,14 +115,14 @@
                 <span>Agent Portal</span>
             </div>
 
-            {{-- Alert đơn chờ nhận --}}
+            {{-- Pending order alert --}}
             @php
                 $pendingCount = \App\Models\Courier::where('agent_id', Auth::guard('agent')->id())->where('status', 'assigned')->count();
             @endphp
             @if($pendingCount > 0)
                 <a href="{{ route('agent.orders.index') }}" class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-amber-100 transition">
                     <i data-lucide="bell" class="w-3.5 h-3.5"></i>
-                    {{ $pendingCount }} đơn chờ bạn nhận
+                    {{ $pendingCount }} orders waiting for acceptance
                 </a>
             @endif
 

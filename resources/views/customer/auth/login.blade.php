@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - CourierXpress</title>
+    <title>Login - CourierXpress</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -95,12 +95,12 @@
             </a>
 
             <h2 class="text-4xl font-bold mb-6 leading-tight">
-                Chào mừng<br>
-                <span class="text-yellow-300">trở lại!</span>
+                Welcome<br>
+                <span class="text-yellow-300">back!</span>
             </h2>
 
             <p class="text-xl text-white/90 mb-8 leading-relaxed">
-                Đăng nhập để quản lý vận đơn, tra cứu lộ trình và cập nhật trạng thái đơn hàng của bạn theo thời gian thực.
+                Log in to manage your waybills, track routes, and update your order status in real time.
             </p>
 
             <div class="space-y-4 mb-12">
@@ -111,7 +111,7 @@
                     </div>
 
                     <span class="text-white/90">
-                        Hệ thống báo cáo minh bạch
+                        Transparent reporting system
                     </span>
                 </div>
 
@@ -121,7 +121,7 @@
                     </div>
 
                     <span class="text-white/90">
-                        Bảo mật thông tin tuyệt đối
+                        Absolute data security
                     </span>
                 </div>
 
@@ -180,10 +180,10 @@
 
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-gray-900">
-                        Đăng nhập hệ thống
+                        System Login
                     </h2>
                     <p class="text-gray-600 mt-2">
-                        Vui lòng nhập số điện thoại và mật khẩu của bạn
+                        Please enter your phone number and password
                     </p>
                 </div>
 
@@ -193,7 +193,7 @@
                     {{-- SỐ ĐIỆN THOẠI --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Số điện thoại
+                            Phone Number
                         </label>
 
                         <div class="relative">
@@ -205,7 +205,7 @@
                                 type="text"
                                 name="phone"
                                 value="{{ old('phone') }}"
-                                placeholder="Nhập số điện thoại"
+                                placeholder="Enter your phone number"
                                 inputmode="numeric"
                                 maxlength="10"
                                 pattern="[0-9]{10}"
@@ -224,7 +224,7 @@
                     {{-- MẬT KHẨU --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Mật khẩu
+                            Password
                         </label>
 
                         <div class="relative">
@@ -267,7 +267,7 @@
                             <input
                                 type="text"
                                 name="captcha"
-                                placeholder="Nhập mã bên cạnh"
+                                placeholder="Enter the code on the right"
                                 autocomplete="off"
                                 class="w-full pl-12 pr-4 py-3 bg-white border-2 @error('captcha') border-red-500 @else border-gray-200 @enderror rounded-xl focus:border-primary-500 focus:outline-none input-focus transition-all"
                                 required
@@ -302,7 +302,7 @@
                                 class="w-4 h-4 rounded border-2 border-gray-300 text-primary-600 focus:ring-primary-500"
                             >
                             <label for="remember" class="text-sm text-gray-600 cursor-pointer">
-                                Ghi nhớ đăng nhập
+                                Remember me
                             </label>
                         </div>
 
@@ -311,7 +311,7 @@
                             onclick="showSection('forgot-section')"
                             class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
                         >
-                            Quên mật khẩu?
+                            Forgot password?
                         </button>
                     </div>
 
@@ -320,7 +320,7 @@
                         type="submit"
                         class="w-full bg-primary-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 mt-6"
                     >
-                        <span>Đăng nhập</span>
+                        <span>Log In</span>
                         <i data-lucide="log-in" class="w-5 h-5"></i>
                     </button>
                 </form>
@@ -328,10 +328,10 @@
                 {{-- REGISTER FOOTER --}}
                 <div class="mt-8 text-center">
                     <p class="text-gray-600">
-                        Chưa có tài khoản?
+                        Don't have an account?
                         <a href="{{ route('register') }}"
                            class="text-primary-600 font-semibold hover:text-primary-700">
-                            Đăng ký ngay
+                            Register now
                         </a>
                     </p>
                 </div>
@@ -343,10 +343,10 @@
 
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-gray-900">
-                        Khôi phục mật khẩu
+                        Reset Password
                     </h2>
                     <p class="text-gray-600 mt-2">
-                        Nhập email tài khoản của bạn để nhận liên kết đặt lại mật khẩu
+                        Enter your account email to receive a password reset link
                     </p>
                 </div>
 
@@ -355,7 +355,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Địa chỉ Email tài khoản
+                            Account Email Address
                         </label>
 
                         <div class="relative">
@@ -366,7 +366,7 @@
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="nhap-email-da-dang-ky@email.com"
+                                placeholder="your-registered-email@email.com"
                                 class="w-full pl-12 pr-4 py-3 bg-white border-2 @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl focus:border-primary-500 focus:outline-none input-focus transition-all"
                                 required
                             >
@@ -383,7 +383,7 @@
                         type="submit"
                         class="w-full bg-primary-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 mt-6"
                     >
-                        <span>Gửi liên kết khôi phục</span>
+                        <span>Send Reset Link</span>
                         <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
                 </form>
@@ -395,7 +395,7 @@
                         class="inline-flex items-center space-x-2 text-sm font-medium text-gray-500 hover:text-primary-600 transition-colors"
                     >
                         <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                        <span>Quay lại Đăng nhập</span>
+                        <span>Back to Login</span>
                     </button>
                 </div>
 
@@ -406,7 +406,7 @@
                 <a href="{{ route('landing') }}"
                    class="inline-flex items-center space-x-2 text-gray-500 hover:text-primary-600 transition-colors">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    <span>Quay lại trang chủ</span>
+                    <span>Back to homepage</span>
                 </a>
             </div>
 
@@ -417,7 +417,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <script>
-    // Khởi tạo Lucide Icons
+    // Initialize Lucide Icons
     lucide.createIcons();
 
     function togglePassword(inputId, btn) {
