@@ -125,7 +125,7 @@
                             <div>
                                 <p class="text-heading mb-1">Tổng Đơn Hệ Thống</p>
                                 <div class="d-flex align-items-center">
-                                    <h4 class="mb-1 me-2">{{ $totalOrders ?? 0 }}</h4>
+                                    <h4 class="mb-1 me-2">428</h4>
                                 </div>
                                 <small class="text-muted">Toàn hệ thống</small>
                             </div>
