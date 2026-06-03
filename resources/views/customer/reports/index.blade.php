@@ -145,7 +145,30 @@
 
                             {{-- 6. Goods Type --}}
                             <td class="px-4 py-4 align-middle">
-                                {{ $courier->goods_type ?? 'Not updated' }}
+                                @php
+                                    $goodsTypeMap = [
+                                        'quần áo' => 'Clothes',
+                                        'quan ao' => 'Clothes',
+                                        'tài liệu' => 'Documents',
+                                        'tai lieu' => 'Documents',
+                                        'điện tử' => 'Electronics',
+                                        'dien tu' => 'Electronics',
+                                        'thực phẩm' => 'Food',
+                                        'thuc pham' => 'Food',
+                                        'mỹ phẩm' => 'Cosmetics',
+                                        'my pham' => 'Cosmetics',
+                                        'hàng dễ vỡ' => 'Fragile Goods',
+                                        'hang de vo' => 'Fragile Goods',
+                                        'thực phẩm khô' => 'Dry Food',
+                                        'thuc pham kho' => 'Dry Food',
+                                        'khác' => 'Other',
+                                        'khac' => 'Other',
+                                    ];
+
+                                    $goodsType = strtolower(trim($courier->goods_type ?? ''));
+                                @endphp
+
+                                {{ $goodsTypeMap[$goodsType] ?? ($courier->goods_type ?? 'Not updated') }}
                             </td>
 
                             {{-- 7. Shipping Fee --}}
