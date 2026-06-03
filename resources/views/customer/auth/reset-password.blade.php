@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt lại mật khẩu mới - CourierXpress</title>
+    <title>Set New Password - CourierXpress</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -49,57 +49,103 @@
             <span>Logistics</span>
         </div>
     </div>
+
     <div class="intro-content">
-        <h2>Thiết lập<br><span>mật khẩu mới</span></h2>
-        <p>Vui lòng cập nhật mật khẩu có độ bảo mật cao để bảo vệ tài khoản giao dịch vận chuyển của bạn.</p>
+        <h2>Set Up<br><span>Your New Password</span></h2>
+
+        <p>
+            Please update your password with a strong and secure one
+            to protect your shipping transaction account.
+        </p>
+
         <ul class="features">
-            <li><i class="fa-solid fa-chart-simple"></i> Hệ thống báo cáo minh bạch</li>
-            <li><i class="fa-solid fa-shield-halved"></i> Bảo mật thông tin tuyệt đối</li>
+            <li>
+                <i class="fa-solid fa-chart-simple"></i>
+                Transparent Reporting System
+            </li>
+
+            <li>
+                <i class="fa-solid fa-shield-halved"></i>
+                Complete Information Security
+            </li>
         </ul>
     </div>
+
     <div></div>
 </div>
 
 <div class="right-side">
     <div class="form-container">
-        <h2>Đặt lại mật khẩu</h2>
-        <p class="subtitle">Nhập mật khẩu mới cho tài khoản của bạn</p>
+        <h2>Reset Password</h2>
+        <p class="subtitle">Enter a new password for your account</p>
 
         <form action="{{ route('password.update') }}" method="POST">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
 
             <div class="form-group">
-                <label for="email">Địa chỉ Email tài khoản</label>
+                <label for="email">Account Email Address</label>
+
                 <div class="input-wrapper">
                     <i class="fa-regular fa-envelope"></i>
-                    <input type="email" id="email" name="email" value="{{ $email ?? old('email') }}" required readonly>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ $email ?? old('email') }}"
+                        required
+                        readonly
+                    >
                 </div>
+
                 @error('email')
-                <span class="text-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</span>
+                <span class="text-error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ $message }}
+                </span>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="password">Mật khẩu mới</label>
+                <label for="password">New Password</label>
+
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" name="password" required placeholder="Nhập tối thiểu 8 ký tự">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        placeholder="Enter at least 8 characters"
+                    >
                 </div>
+
                 @error('password')
-                <span class="text-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</span>
+                <span class="text-error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ $message }}
+                </span>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="password_confirmation">Xác nhận mật khẩu mới</label>
+                <label for="password_confirmation">Confirm New Password</label>
+
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required placeholder="Nhập lại mật khẩu mới">
+                    <input
+                        type="password"
+                        id="password_confirmation"
+                        name="password_confirmation"
+                        required
+                        placeholder="Re-enter your new password"
+                    >
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit">Xác nhận cập nhật</button>
+            <button type="submit" class="btn-submit">
+                Confirm Update
+            </button>
         </form>
     </div>
 </div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bill đơn hàng</title>
+    <title>Order Bill</title>
 
     <style>
         body {
@@ -106,67 +106,74 @@
 <div class="bill">
     <div class="header">
         <h1>CourierXpress</h1>
-        <p>PHIẾU GỬI HÀNG / BILL THANH TOÁN</p>
+        <p>SHIPPING WAYBILL / PAYMENT BILL</p>
         <div class="tracking">
             {{ $courier->tracking_code ?? $courier->code ?? ('CX-' . $courier->id) }}
         </div>
     </div>
 
     <div class="row">
-        <span class="label">Người gửi</span>
+        <span class="label">Sender</span>
         <span class="value">{{ $courier->sender_name ?? '---' }}</span>
     </div>
 
     <div class="row">
-        <span class="label">SĐT người gửi</span>
+        <span class="label">Sender Phone</span>
         <span class="value">{{ $courier->sender_phone }}</span>
     </div>
 
     <div class="row">
-        <span class="label">Người nhận</span>
+        <span class="label">Receiver</span>
         <span class="value">{{ $courier->receiver_name ?? '---' }}</span>
     </div>
 
     <div class="row">
-        <span class="label">SĐT người nhận</span>
+        <span class="label">Receiver Phone</span>
         <span class="value">{{ $courier->receiver_phone }}</span>
     </div>
 
     <div class="row">
-        <span class="label">Địa chỉ nhận</span>
+        <span class="label">Destination Address</span>
         <span class="value">{{ $courier->receiver_address ?? $courier->destination_address ?? '---' }}</span>
     </div>
 
     <div class="row">
-        <span class="label">Loại hàng</span>
-        <span class="value">{{ $courier->goods_type ?? '---' }}</span>
+        <span class="label">Goods Type</span>
+        <span class="value">{{ [
+    'Tài liệu' => 'Documents',
+    'Quần áo' => 'Clothes',
+    'Đồ điện tử' => 'Electronics',
+    'Thực phẩm' => 'Food',
+    'Hàng dễ vỡ' => 'Fragile Goods',
+    'Khác' => 'Other',
+][$courier->goods_type] ?? $courier->goods_type }}</span>
     </div>
 
     <div class="row">
-        <span class="label">Khối lượng</span>
+        <span class="label">Weight</span>
         <span class="value">{{ $courier->total_weight }} kg</span>
     </div>
 
     <div class="row">
-        <span class="label">Phương thức thanh toán</span>
-        <span class="value">COD - Thanh toán khi nhận hàng</span>
+        <span class="label">Payment Method</span>
+        <span class="value">COD - Cash on Delivery</span>
     </div>
 
     <div class="row">
-        <span class="label">Số tiền COD</span>
+        <span class="label">COD Amount</span>
         <span class="value amount">
             {{ number_format($courier->cod_amount ?? $courier->price ?? 0, 0, ',', '.') }} VNĐ
         </span>
     </div>
 
     <div class="row">
-        <span class="label">Ngày tạo</span>
-        <span class="value">{{ $courier->created_at ? $courier->created_at->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</span>
+        <span class="label">Created Date</span>
+        <span class="value">{{ $courier->created_at ? $courier->created_at->format('m/d/Y H:i') : now()->format('m/d/Y H:i') }}</span>
     </div>
 
     <div class="actions">
-        <a href="{{ route('customer.orders.index') }}" class="btn btn-back">Về đơn hàng</a>
-        <button onclick="window.print()" class="btn">In bill</button>
+        <a href="{{ route('customer.orders.index') }}" class="btn btn-back">Back to Orders</a>
+        <button onclick="window.print()" class="btn">Print Bill</button>
     </div>
 </div>
 

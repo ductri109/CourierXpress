@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Khôi phục mật khẩu - CourierXpress</title>
+    <title>Reset Password - CourierXpress</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -286,19 +286,19 @@
     </div>
 
     <div class="intro-content">
-        <h2>Khôi phục<br><span>mật khẩu!</span></h2>
+        <h2>Reset<br><span>Password!</span></h2>
         <p>
-            Nhập email tài khoản khách hàng để nhận liên kết đặt lại mật khẩu.
+            Enter your customer account email to receive a password reset link.
         </p>
 
         <ul class="features">
             <li>
                 <i class="fa-solid fa-envelope"></i>
-                Nhận liên kết đặt lại mật khẩu qua email
+                Receive a password reset link via email
             </li>
             <li>
                 <i class="fa-solid fa-shield-halved"></i>
-                Bảo mật thông tin tài khoản khách hàng
+                Secure your customer account information
             </li>
         </ul>
     </div>
@@ -308,10 +308,10 @@
 
 <div class="right-side">
     <div class="form-container">
-        <h2>Khôi phục mật khẩu</h2>
+        <h2>Reset Password</h2>
 
         <p class="subtitle">
-            Nhập email tài khoản của bạn để nhận liên kết đặt lại mật khẩu.
+            Enter your account email to receive a password reset link.
         </p>
 
         @if (session('status'))
@@ -336,7 +336,7 @@
             @csrf
 
             <div class="form-group">
-                <label for="email">Địa chỉ Email tài khoản</label>
+                <label for="email">Account Email Address</label>
 
                 <div class="input-wrapper">
                     <i class="fa-regular fa-envelope"></i>
@@ -347,7 +347,7 @@
                         name="email"
                         value="{{ old('email') }}"
                         required
-                        placeholder="Nhập email của bạn"
+                        placeholder="Enter your email"
                         autocomplete="email"
                     >
                 </div>
@@ -361,7 +361,7 @@
             </div>
 
             <button type="submit" class="btn-submit">
-                Gửi liên kết khôi phục
+                Send Reset Link
                 <i class="fa-regular fa-paper-plane"></i>
             </button>
         </form>
@@ -370,18 +370,18 @@
             @if (Route::has('login'))
                 <a href="{{ route('login') }}">
                     <i class="fa-solid fa-arrow-left"></i>
-                    Quay lại đăng nhập
+                    Back to Login
                 </a>
             @else
                 <a href="/login">
                     <i class="fa-solid fa-arrow-left"></i>
-                    Quay lại đăng nhập
+                    Back to Login
                 </a>
             @endif
 
             <a href="/">
                 <i class="fa-solid fa-house"></i>
-                Quay lại trang chủ
+                Back to Home
             </a>
         </div>
     </div>

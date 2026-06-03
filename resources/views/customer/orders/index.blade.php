@@ -1,6 +1,6 @@
 @extends('customer.layout')
 
-@section('title', 'Đơn Hàng Của Tôi - CourierXpress')
+@section('title', 'My Orders - CourierXpress')
 
 @section('content')
     <div class="pt-24 pb-20 bg-gray-50 min-h-screen">
@@ -8,9 +8,9 @@
 
             {{-- Breadcrumb --}}
             <div class="flex items-center space-x-2 text-sm text-gray-500 mb-6 ml-2">
-                <a href="{{ route('landing') }}" class="hover:text-primary-600 transition-colors">Trang chủ</a>
+                <a href="{{ route('landing') }}" class="hover:text-primary-600 transition-colors">Home</a>
                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                <span class="text-primary-600 font-medium">Đơn hàng của tôi</span>
+                <span class="text-primary-600 font-medium">My orders</span>
             </div>
 
             {{-- Toast --}}
@@ -38,17 +38,17 @@
                 <div class="gradient-bg p-10 text-white relative overflow-hidden">
                     <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="text-left">
-                            <h2 class="text-3xl font-extrabold tracking-tight">Đơn Hàng Của Tôi</h2>
-                            <p class="text-white/80 mt-2 font-medium">Theo dõi tất cả các đơn hàng bạn đã tạo</p>
+                            <h2 class="text-3xl font-extrabold tracking-tight">My Orders</h2>
+                            <p class="text-white/80 mt-2 font-medium">Track all the orders you have created</p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="text-center bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
                                 <p class="text-2xl font-extrabold">{{ $orders->total() }}</p>
-                                <p class="text-white/70 text-xs font-medium uppercase tracking-wider">Tổng đơn</p>
+                                <p class="text-white/70 text-xs font-medium uppercase tracking-wider">Total Orders</p>
                             </div>
                             <a href="{{ route('booking') }}" class="flex items-center space-x-2 bg-white text-primary-600 px-5 py-3 rounded-2xl font-bold hover:bg-primary-50 transition-all shadow-lg">
                                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                                <span>Tạo đơn mới</span>
+                                <span>Create New Order</span>
                             </a>
                         </div>
                     </div>
@@ -59,11 +59,11 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-100 border-b border-gray-100">
                     @php
                         $statusConfig = [
-                            'pending'    => ['label' => 'Chờ xử lý',    'color' => 'yellow', 'icon' => 'clock'],
-                            'assigned'   => ['label' => 'Đã phân công', 'color' => 'blue',   'icon' => 'user-check'],
-                            'in_transit' => ['label' => 'Đang giao',    'color' => 'indigo', 'icon' => 'truck'],
-                            'delivered'  => ['label' => 'Đã giao',      'color' => 'green',  'icon' => 'package-check'],
-                            'failed'     => ['label' => 'Thất bại',     'color' => 'red',    'icon' => 'x-circle'],
+                            'pending'    => ['label' => 'Pending',     'color' => 'yellow', 'icon' => 'clock'],
+                            'assigned'   => ['label' => 'Assigned',    'color' => 'blue',   'icon' => 'user-check'],
+                            'in_transit' => ['label' => 'In Transit',  'color' => 'indigo', 'icon' => 'truck'],
+                            'delivered'  => ['label' => 'Delivered',   'color' => 'green',  'icon' => 'package-check'],
+                            'failed'     => ['label' => 'Failed',      'color' => 'red',    'icon' => 'x-circle'],
                         ];
                         $statColors = [
                             'yellow' => ['bg' => 'bg-yellow-50', 'text' => 'text-yellow-600', 'icon' => 'text-yellow-400'],
@@ -75,7 +75,7 @@
                         $paymentConfig = [
                              'cod' => [
                               'label' => 'COD',
-                            'name' => 'Thanh toán khi nhận hàng',
+                            'name' => 'Cash on Delivery',
                             'badge' => 'bg-orange-100 text-orange-700 border-orange-200',
                             'icon' => 'banknote',
                         ],
@@ -83,15 +83,15 @@
 
                         $paymentStatusConfig = [
                         'unpaid' => [
-                        'label' => 'Chưa thanh toán',
+                        'label' => 'Unpaid',
                         'badge' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
                         ],
                         'paid' => [
-                        'label' => 'Đã thanh toán',
+                        'label' => 'Paid',
                         'badge' => 'bg-green-100 text-green-700 border-green-200',
                         ],
                         'failed' => [
-                        'label' => 'Thanh toán lỗi',
+                        'label' => 'Payment Error',
                         'badge' => 'bg-red-100 text-red-700 border-red-200',
                         ],
                         ];
@@ -118,13 +118,13 @@
                         <div class="relative flex-1">
                             <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
                             <input type="text" name="search" value="{{ request('search') }}"
-                                   placeholder="Tìm theo mã vận đơn, người nhận..."
+                                   placeholder="Search by tracking ID, receiver..."
                                    class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-50 bg-white transition-all">
                         </div>
 
                         {{-- Status Filter --}}
                         <select name="status" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 focus:border-primary-400 focus:outline-none bg-white min-w-[160px]">
-                            <option value="">Tất cả trạng thái</option>
+                            <option value="">All Statuses</option>
                             @foreach($statusConfig as $val => $cfg)
                                 <option value="{{ $val }}" {{ request('status') == $val ? 'selected' : '' }}>{{ $cfg['label'] }}</option>
                             @endforeach
@@ -132,19 +132,19 @@
 
                         {{-- Sort --}}
                         <select name="sort" class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 focus:border-primary-400 focus:outline-none bg-white min-w-[160px]">
-                            <option value="newest" {{ request('sort','newest') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
-                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Cũ nhất</option>
+                            <option value="newest" {{ request('sort','newest') == 'newest' ? 'selected' : '' }}>Newest</option>
+                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
                         </select>
 
                         <button type="submit" class="px-5 py-2.5 gradient-bg text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-all flex items-center space-x-2 whitespace-nowrap">
                             <i data-lucide="filter" class="w-4 h-4"></i>
-                            <span>Lọc</span>
+                            <span>Filter</span>
                         </button>
 
                         @if(request()->hasAny(['search','status','sort']))
                             <a href="{{ route('customer.orders.index') }}" class="px-5 py-2.5 bg-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-300 transition-all flex items-center space-x-2 whitespace-nowrap">
                                 <i data-lucide="x" class="w-4 h-4"></i>
-                                <span>Xoá lọc</span>
+                                <span>Clear Filter</span>
                             </a>
                         @endif
                     </form>
@@ -192,22 +192,22 @@
                                         </div>
                                         <p class="text-sm text-gray-500">
                                             <i data-lucide="calendar" class="inline w-3.5 h-3.5 mr-1"></i>
-                                            Tạo lúc {{ $order->created_at->format('H:i - d/m/Y') }}
+                                            Created at {{ $order->created_at->format('H:i - d/m/Y') }}
                                         </p>
 
                                         <div class="flex flex-wrap items-center gap-2 mt-3">
-                                            {{-- Phương thức thanh toán --}}
+                                            {{-- Payment Method --}}
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payCfg['badge'] }}">
                                                   <i data-lucide="{{ $payCfg['icon'] }}" class="w-3.5 h-3.5"></i>
                                                           {{ $payCfg['label'] }}
                                              </span>
 
-                                            {{-- Số tiền COD --}}
+                                            {{-- COD Amount --}}
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-orange-100 text-orange-700 border-orange-200 whitespace-nowrap">
                                                      {{ number_format($order->cod_amount ?? 0, 0, ',', '.') }} VNĐ
                                              </span>
 
-                                            {{-- Trạng thái thanh toán --}}
+                                            {{-- Payment Status --}}
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ $payStatusCfg['badge'] }}">
                                                      {{ $payStatusCfg['label'] }}
                                               </span>
@@ -219,7 +219,7 @@
                                 {{-- Center: Sender → Receiver --}}
                                 <div class="grid grid-cols-[1fr_80px_1fr] items-center gap-4 min-w-0">
                                     <div class="text-right min-w-0">
-                                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Người gửi</p>
+                                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Sender</p>
                                         <p class="font-semibold text-gray-800 text-sm truncate">{{ $order->sender_name }}</p>
                                         <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->sender_address, 28) }}</p>
                                     </div>
@@ -234,7 +234,7 @@
                                     </div>
 
                                     <div class="min-w-0">
-                                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Người nhận</p>
+                                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Receiver</p>
                                         <p class="font-semibold text-gray-800 text-sm truncate">{{ $order->receiver_name }}</p>
                                         <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->receiver_address, 28) }}</p>
                                     </div>
@@ -244,50 +244,50 @@
                                 <div class="flex flex-wrap xl:flex-nowrap items-center justify-end gap-2 shrink-0">
                                     <button onclick="copyTracking('{{ $order->tracking_id }}')"
                                             class="h-9 inline-flex items-center space-x-1.5 px-3 border border-gray-200 text-gray-500 rounded-xl text-xs font-semibold hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50 transition-all whitespace-nowrap"
-                                            title="Sao chép mã vận đơn">
+                                            title="Copy Tracking ID">
                                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                        <span>Sao chép</span>
+                                        <span>Copy</span>
                                     </button>
 
                                     <a href="{{ route('customer.booking.bill', $order->id) }}"
                                        target="_blank"
                                        class="h-9 inline-flex items-center space-x-1.5 px-3 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-sm whitespace-nowrap">
                                         <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-                                        <span>In bill</span>
+                                        <span>Print Bill</span>
                                     </a>
 
                                     @if($paymentStatus !== 'paid')
                                         <button onclick="openPaymentModal({{ $order->id }})"
                                                 class="h-9 inline-flex items-center space-x-1.5 px-3 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-sm whitespace-nowrap">
                                             <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
-                                            <span>Thanh toán</span>
+                                            <span>Pay Now</span>
                                         </button>
                                     @endif
 
                                     <button onclick="openDetail({{ $order->id }})"
                                             class="h-9 inline-flex items-center space-x-1.5 px-3 gradient-bg text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm whitespace-nowrap">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                        <span>Chi tiết</span>
+                                        <span>Details</span>
                                     </button>
                                 </div>
 
-                                </div>
+                            </div>
 
-                            {{-- Progress Bar (chỉ cho đơn đang tiến hành) --}}
+                            {{-- Progress Bar --}}
                             @if(in_array($s, ['pending', 'assigned', 'in_transit']))
                                 @php
                                     $progress = ['pending' => 25, 'assigned' => 55, 'in_transit' => 80][$s];
                                 @endphp
                                 <div class="mt-5 w-full">
                                     <div class="flex justify-between text-xs text-gray-400 mb-1">
-                                        <span>Tiến độ</span>
+                                        <span>Progress</span>
                                         <span>{{ $progress }}%</span>
                                     </div>
                                     <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                                         <div class="h-full tracking-line rounded-full" style="width: {{ $progress }}%"></div>
                                     </div>
                                     <div class="flex justify-between mt-2">
-                                        @foreach(['Tiếp nhận', 'Phân công', 'Đang giao', 'Hoàn thành'] as $i => $step)
+                                        @foreach(['Received', 'Assigned', 'In Transit', 'Completed'] as $i => $step)
                                             <span class="text-xs {{ $progress >= ($i+1)*25 ? 'text-primary-600 font-semibold' : 'text-gray-300' }}">{{ $step }}</span>
                                         @endforeach
                                     </div>
@@ -295,12 +295,12 @@
                             @elseif($s === 'delivered')
                                 <div class="mt-3 ml-14 flex items-center space-x-2 text-green-600 text-xs font-semibold">
                                     <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                                    <span>Đơn hàng đã được giao thành công!</span>
+                                    <span>Order has been delivered successfully!</span>
                                 </div>
                             @elseif($s === 'failed')
                                 <div class="mt-3 ml-14 flex items-center space-x-2 text-red-500 text-xs font-semibold">
                                     <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                                    <span>Giao hàng thất bại. Vui lòng liên hệ để hỗ trợ.</span>
+                                    <span>Delivery failed. Please contact support for assistance.</span>
                                 </div>
                             @endif
                         </div>
@@ -309,22 +309,22 @@
                             <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                                 <i data-lucide="package-x" class="w-12 h-12 text-gray-300"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-400 mb-2">Chưa có đơn hàng nào</h3>
+                            <h3 class="text-xl font-bold text-gray-400 mb-2">No orders found</h3>
                             <p class="text-gray-400 text-sm mb-8">
                                 @if(request()->hasAny(['search','status']))
-                                    Không tìm thấy đơn hàng phù hợp với bộ lọc hiện tại.
+                                    No orders match your current filter criteria.
                                 @else
-                                    Bạn chưa tạo đơn hàng nào. Hãy bắt đầu ngay!
+                                    You haven't created any orders yet. Start now!
                                 @endif
                             </p>
                             @if(request()->hasAny(['search','status']))
                                 <a href="{{ route('customer.orders.index') }}" class="px-6 py-3 border-2 border-primary-200 text-primary-600 rounded-2xl font-semibold hover:bg-primary-50 transition-all">
-                                    Xoá bộ lọc
+                                    Clear Filters
                                 </a>
                             @else
                                 <a href="{{ route('booking') }}" class="px-8 py-3.5 gradient-bg text-white rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg flex items-center space-x-2">
                                     <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                                    <span>Tạo đơn hàng đầu tiên</span>
+                                    <span>Create Your First Order</span>
                                 </a>
                             @endif
                         </div>
@@ -335,8 +335,8 @@
                 @if($orders->hasPages())
                     <div class="p-6 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
                         <p class="text-sm text-gray-500">
-                            Hiển thị <strong>{{ $orders->firstItem() }}</strong> – <strong>{{ $orders->lastItem() }}</strong>
-                            trong tổng số <strong>{{ $orders->total() }}</strong> đơn hàng
+                            Showing <strong>{{ $orders->firstItem() }}</strong> – <strong>{{ $orders->lastItem() }}</strong>
+                            of <strong>{{ $orders->total() }}</strong> orders
                         </p>
                         <div class="flex items-center gap-1">
                             {{-- Previous --}}
@@ -382,8 +382,8 @@
                         <i data-lucide="shield-check" class="w-6 h-6 text-blue-600"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-gray-900">Thông tin được bảo vệ</p>
-                        <p class="text-xs text-gray-500">Dữ liệu đơn hàng của bạn được mã hóa và bảo mật tuyệt đối.</p>
+                        <p class="text-sm font-bold text-gray-900">Protected Information</p>
+                        <p class="text-xs text-gray-500">Your order data is completely encrypted and secure.</p>
                     </div>
                 </div>
                 <i data-lucide="lock" class="w-5 h-5 text-gray-300"></i>
@@ -391,7 +391,7 @@
         </div>
     </div>
 
-    {{-- Modal Chi tiết đơn hàng --}}
+    {{-- Order Detail Modal --}}
     <div id="orderDetailModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDetail()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
@@ -400,7 +400,7 @@
                 <div class="gradient-bg p-6 text-white relative overflow-hidden">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-xl font-extrabold">Chi Tiết Vận Đơn</h3>
+                            <h3 class="text-xl font-extrabold">Waybill Details</h3>
                             <p id="modalTrackingId" class="font-mono font-bold text-white/90 mt-1 text-lg"></p>
                         </div>
                         <button onclick="closeDetail()" class="p-2 bg-white/20 rounded-xl hover:bg-white/30 transition-all">
@@ -418,14 +418,14 @@
 
                 <div class="p-6 pt-0 border-t border-gray-100">
                     <button onclick="closeDetail()" class="w-full py-3 border-2 border-gray-200 text-gray-600 rounded-2xl font-semibold hover:bg-gray-50 transition-all">
-                        Đóng
+                        Close
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Modal Thanh toán đơn hàng --}}
+    {{-- Payment Modal --}}
     <div id="paymentModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closePaymentModal()"></div>
 
@@ -435,7 +435,7 @@
                 <div class="gradient-bg p-6 text-white relative overflow-hidden">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-xl font-extrabold">Thanh Toán Đơn Hàng</h3>
+                            <h3 class="text-xl font-extrabold">Order Payment</h3>
                             <p id="paymentTrackingId" class="font-mono font-bold text-white/90 mt-1 text-lg"></p>
                         </div>
 
@@ -453,26 +453,26 @@
                     <input type="hidden" name="order_id" id="paymentOrderId">
 
                     <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Thông tin đơn hàng</p>
+                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Order Information</p>
 
                         <div class="flex items-center justify-between mt-2">
-                            <span class="text-sm text-gray-500">Mã vận đơn</span>
+                            <span class="text-sm text-gray-500">Tracking ID</span>
                             <span id="paymentTrackingText" class="font-mono font-extrabold text-gray-900"></span>
                         </div>
 
                         <div class="flex items-center justify-between mt-2">
-                            <span class="text-sm text-gray-500">Người nhận</span>
+                            <span class="text-sm text-gray-500">Receiver</span>
                             <span id="paymentReceiverName" class="font-bold text-gray-800 text-sm"></span>
                         </div>
                     </div>
 
                     <div class="flex items-center justify-between mt-2">
-                        <span class="text-sm text-gray-500">Số tiền COD</span>
+                        <span class="text-sm text-gray-500">COD Amount</span>
                         <span id="paymentCodAmount" class="font-extrabold text-green-700 text-base"></span>
                     </div>
 
                     <div>
-                        <p class="text-sm font-extrabold text-gray-900 mb-3">Chọn phương thức thanh toán</p>
+                        <p class="text-sm font-extrabold text-gray-900 mb-3">Select Payment Method</p>
 
                         <label class="block cursor-pointer mb-3">
                             <input type="radio" name="payment_method" value="cod" class="peer hidden" checked>
@@ -484,8 +484,8 @@
                                             <i data-lucide="banknote" class="w-6 h-6 text-green-600"></i>
                                         </div>
                                         <div>
-                                            <p class="font-extrabold text-gray-900">Thanh toán khi nhận hàng</p>
-                                            <p class="text-xs text-gray-500 mt-0.5">Trả tiền mặt cho shipper khi nhận hàng</p>
+                                            <p class="font-extrabold text-gray-900">Cash on Delivery</p>
+                                            <p class="text-xs text-gray-500 mt-0.5">Pay cash to the courier upon delivery</p>
                                         </div>
                                     </div>
 
@@ -497,15 +497,16 @@
                         </label>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-3 mt-6">
                         <button type="button"
                                 onclick="closePaymentModal()"
                                 class="py-3 border-2 border-gray-200 text-gray-600 rounded-2xl font-semibold hover:bg-gray-50 transition-all">
-                            Hủy
+                            Cancel
                         </button>
 
                         <button type="submit"
                                 class="py-3 bg-green-600 text-white rounded-2xl font-bold hover:bg-green-700 transition-all shadow-lg">
-                            Xác nhận
+                            Confirm
                         </button>
                     </div>
                 </form>
@@ -513,11 +514,11 @@
         </div>
     </div>
 
-    {{-- Toast copy --}}
+    {{-- Copy Toast --}}
     <div id="copyToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden">
         <div class="flex items-center space-x-2 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-semibold">
             <i data-lucide="check" class="w-4 h-4 text-green-400"></i>
-            <span>Đã sao chép mã vận đơn!</span>
+            <span>Tracking ID copied!</span>
         </div>
     </div>
 
@@ -526,11 +527,11 @@
         const ordersData = @json($orders->items());
 
         const statusConfig = {
-            pending:    { label: 'Chờ xử lý',    badge: 'bg-yellow-100 text-yellow-700', icon: '🕐' },
-            assigned:   { label: 'Đã phân công', badge: 'bg-blue-100 text-blue-700',     icon: '👤' },
-            in_transit: { label: 'Đang giao',    badge: 'bg-indigo-100 text-indigo-700', icon: '🚚' },
-            delivered:  { label: 'Đã giao',      badge: 'bg-green-100 text-green-700',   icon: '✅' },
-            failed:     { label: 'Thất bại',     badge: 'bg-red-100 text-red-700',       icon: '❌' },
+            pending:    { label: 'Pending',    badge: 'bg-yellow-100 text-yellow-700', icon: '🕐' },
+            assigned:   { label: 'Assigned',   badge: 'bg-blue-100 text-blue-700',     icon: '👤' },
+            in_transit: { label: 'In Transit', badge: 'bg-indigo-100 text-indigo-700', icon: '🚚' },
+            delivered:  { label: 'Delivered',  badge: 'bg-green-100 text-green-700',   icon: '✅' },
+            failed:     { label: 'Failed',     badge: 'bg-red-100 text-red-700',       icon: '❌' },
         };
 
         function openDetail(id) {
@@ -539,14 +540,14 @@
 
             const cfg = statusConfig[order.status] || { label: order.status, badge: 'bg-gray-100 text-gray-700', icon: '📦' };
             const paymentStatusLabel = order.status === 'delivered'
-                ? 'Đã thanh toán'
-                : ((order.payment_status || 'unpaid') === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán');
+                ? 'Paid'
+                : ((order.payment_status || 'unpaid') === 'paid' ? 'Paid' : 'Unpaid');
 
             const paymentStatusBadge = order.status === 'delivered' || (order.payment_status || 'unpaid') === 'paid'
                 ? 'bg-green-100 text-green-700 border-green-200'
                 : 'bg-yellow-100 text-yellow-700 border-yellow-200';
             const created = new Date(order.created_at);
-            const dateStr = created.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+            const dateStr = created.toLocaleString('en-US', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
             document.getElementById('modalTrackingId').textContent = order.tracking_id;
 
@@ -562,18 +563,18 @@
             document.getElementById('modalContent').innerHTML = `
             <div class="space-y-4">
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                    <span class="text-sm text-gray-500 font-medium">Trạng thái</span>
+                    <span class="text-sm text-gray-500 font-medium">Status</span>
                     <span class="px-3 py-1.5 rounded-full text-sm font-bold ${cfg.badge}">${cfg.icon} ${cfg.label}</span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div class="p-4 bg-primary-50 rounded-2xl border border-primary-100">
-                        <p class="text-xs text-primary-500 font-bold uppercase tracking-wider mb-1">Người gửi</p>
+                        <p class="text-xs text-primary-500 font-bold uppercase tracking-wider mb-1">Sender</p>
                         <p class="font-bold text-gray-800 text-sm">${order.sender_name}</p>
                         <p class="text-xs text-gray-500 mt-1">${order.sender_address}</p>
                     </div>
                     <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Người nhận</p>
+                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Receiver</p>
                         <p class="font-bold text-gray-800 text-sm">${order.receiver_name}</p>
                         <p class="text-xs text-gray-500 mt-1">${order.receiver_address}</p>
                     </div>
@@ -583,40 +584,40 @@
                     <div class="p-4 bg-gray-50 rounded-2xl flex items-center space-x-3">
                         <span class="text-2xl">⚖️</span>
                         <div>
-                            <p class="text-xs text-gray-400 font-medium">Khối lượng</p>
+                            <p class="text-xs text-gray-400 font-medium">Weight</p>
                             <p class="font-extrabold text-gray-800">${order.total_weight} kg</p>
                         </div>
                     </div>
                     <div class="p-4 bg-gray-50 rounded-2xl flex items-center space-x-3">
                         <span class="text-2xl">📅</span>
                         <div>
-                            <p class="text-xs text-gray-400 font-medium">Ngày tạo</p>
+                            <p class="text-xs text-gray-400 font-medium">Created Date</p>
                             <p class="font-bold text-gray-800 text-sm">${dateStr}</p>
                         </div>
                     </div>
                 </div>
                 <div class="p-4 bg-green-50 rounded-2xl border border-green-100">
-    <div class="flex items-center justify-between">
-        <div>
-            <p class="text-xs text-green-600 font-bold uppercase tracking-wider mb-1">
-                Thanh toán COD
-            </p>
-            <p class="text-sm text-gray-500">
-                Số tiền cần thanh toán khi nhận hàng
-            </p>
-        </div>
-        <div class="text-right">
-            <p class="text-2xl font-extrabold text-green-700">
-                ${codAmount.toLocaleString('vi-VN')} VNĐ
-            </p>
-           <p class="text-xs mt-1 inline-flex px-2 py-1 rounded-full border ${paymentStatusBadge}">
-                 ${paymentStatusLabel}
-            </p>
-        </div>
-    </div>
-</div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-green-600 font-bold uppercase tracking-wider mb-1">
+                                COD Payment
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                Amount to pay upon delivery
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-extrabold text-green-700">
+                                ${codAmount.toLocaleString('vi-VN')} VNĐ
+                            </p>
+                           <p class="text-xs mt-1 inline-flex px-2 py-1 rounded-full border ${paymentStatusBadge}">
+                                 ${paymentStatusLabel}
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div class="p-4 bg-gray-50 rounded-2xl flex items-center justify-between">
-                    <span class="text-sm text-gray-500 font-medium">Mã vận đơn</span>
+                    <span class="text-sm text-gray-500 font-medium">Tracking ID</span>
                     <div class="flex items-center space-x-2">
                         <span class="font-mono font-extrabold text-gray-900">${order.tracking_id}</span>
                         <button onclick="copyTracking('${order.tracking_id}')" class="p-1.5 hover:bg-primary-100 rounded-lg transition-all text-primary-500">
@@ -625,7 +626,7 @@
                     </div>
                 </div>
             </div>
-        `;
+            `;
 
             document.getElementById('orderDetailModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';

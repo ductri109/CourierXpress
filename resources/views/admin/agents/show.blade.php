@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
-@section('title', 'Chi tiết Agent — {{ $agent->FullName }}')
+@section('title', 'Agent Details — {{ $agent->FullName }}')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <h4 class="fw-bold py-3 mb-4">
         <span class="text-muted fw-light">
-            <a href="{{ route('admin.agents.index') }}" class="text-muted">Quản lý Agent</a> /
+            <a href="{{ route('admin.agents.index') }}" class="text-muted">Agent Management</a> /
         </span>
             {{ $agent->FullName }}
         </h4>
@@ -35,11 +35,11 @@
 
                         @php $st = strtolower($agent->Status); @endphp
                         @if($st === 'active')
-                            <span class="badge bg-label-success rounded-pill px-3 py-2">Đang rảnh</span>
+                            <span class="badge bg-label-success rounded-pill px-3 py-2">Available</span>
                         @elseif($st === 'busy')
-                            <span class="badge bg-label-warning rounded-pill px-3 py-2">Đang bận</span>
+                            <span class="badge bg-label-warning rounded-pill px-3 py-2">Busy</span>
                         @elseif($st === 'inactive')
-                            <span class="badge bg-label-danger rounded-pill px-3 py-2">Ngưng hoạt động</span>
+                            <span class="badge bg-label-danger rounded-pill px-3 py-2">Inactive</span>
                         @else
                             <span class="badge bg-label-secondary rounded-pill px-3 py-2">{{ $agent->Status }}</span>
                         @endif
@@ -59,29 +59,29 @@
                         </div>
                         <div class="d-flex align-items-center">
                             <i class="ri-calendar-line me-2 text-muted"></i>
-                            <span class="small">Tạo ngày {{ $agent->created_at->format('d/m/Y') }}</span>
+                            <span class="small">Joined on {{ $agent->created_at->format('d/m/Y') }}</span>
                         </div>
                     </div>
                 </div>
 
-                {{-- Thống kê nhanh --}}
+                {{-- Quick Statistics --}}
                 <div class="card">
-                    <div class="card-header"><h6 class="mb-0">Thống kê đơn hàng</h6></div>
+                    <div class="card-header"><h6 class="mb-0">Order Statistics</h6></div>
                     <div class="card-body p-0">
                         <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
-                            <span class="small text-muted">Tổng đơn</span>
+                            <span class="small text-muted">Total Orders</span>
                             <span class="fw-bold">{{ $totalOrders }}</span>
                         </div>
                         <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
-                            <span class="small text-muted">Chờ nhận</span>
+                            <span class="small text-muted">Pending</span>
                             <span class="fw-bold text-warning">{{ $assignedOrders }}</span>
                         </div>
                         <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
-                            <span class="small text-muted">Đang giao</span>
+                            <span class="small text-muted">In Transit</span>
                             <span class="fw-bold text-primary">{{ $inTransitOrders }}</span>
                         </div>
                         <div class="d-flex align-items-center justify-content-between px-4 py-3">
-                            <span class="small text-muted">Đã giao thành công</span>
+                            <span class="small text-muted">Delivered</span>
                             <span class="fw-bold text-success">{{ $deliveredOrders }}</span>
                         </div>
                     </div>
@@ -92,18 +92,18 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Đơn hàng của agent</h5>
-                        <span class="badge bg-label-primary">{{ $orders->count() }} đơn</span>
+                        <h5 class="mb-0">Agent's Orders</h5>
+                        <span class="badge bg-label-primary">{{ $orders->count() }} orders</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                             <tr>
-                                <th>Mã vận đơn</th>
-                                <th>Người nhận</th>
-                                <th class="text-center">Khối lượng</th>
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Ngày tạo</th>
+                                <th>Tracking ID</th>
+                                <th>Receiver</th>
+                                <th class="text-center">Weight</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Created At</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -122,19 +122,19 @@
                                     <td class="text-center">
                                         @switch($order->status)
                                             @case('pending')
-                                                <span class="badge bg-label-warning rounded-pill">Chờ xử lý</span>
+                                                <span class="badge bg-label-warning rounded-pill">Pending</span>
                                                 @break
                                             @case('assigned')
-                                                <span class="badge bg-label-primary rounded-pill">Chờ nhận</span>
+                                                <span class="badge bg-label-primary rounded-pill">Assigned</span>
                                                 @break
                                             @case('in_transit')
-                                                <span class="badge bg-label-info rounded-pill">Đang giao</span>
+                                                <span class="badge bg-label-info rounded-pill">In Transit</span>
                                                 @break
                                             @case('delivered')
-                                                <span class="badge bg-label-success rounded-pill">Đã giao</span>
+                                                <span class="badge bg-label-success rounded-pill">Delivered</span>
                                                 @break
                                             @case('cancelled')
-                                                <span class="badge bg-label-danger rounded-pill">Đã hủy</span>
+                                                <span class="badge bg-label-danger rounded-pill">Cancelled</span>
                                                 @break
                                             @default
                                                 <span class="badge bg-label-secondary rounded-pill">{{ ucfirst($order->status) }}</span>
@@ -145,7 +145,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="text-center text-muted py-5">
-                                        Agent này chưa có đơn hàng nào.
+                                        This agent has no orders assigned.
                                     </td>
                                 </tr>
                             @endforelse
@@ -156,7 +156,7 @@
 
                 <div class="mt-3">
                     <a href="{{ route('admin.agents.index') }}" class="btn btn-outline-secondary">
-                        <i class="ri-arrow-left-line me-1"></i> Quay lại
+                        <i class="ri-arrow-left-line me-1"></i> Back
                     </a>
                 </div>
             </div>
